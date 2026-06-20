@@ -4,10 +4,18 @@ Legend: ✅ built · ◐ partial · ⬜ not started. Each topic = a Codex chapte
 
 ## Status at a glance
 - ✅ **Shell & engine:** Next.js app, Warm Farm design system, `SiteNav`, home/campus, `FlowMap`, shared `Callout`, the `OrderJourney` interactive pattern.
-- ✅ **World 1 — The Codex: COMPLETE.** All 10 parts written and live, every chapter grounded in the real Burger Farm code (verified against `apps/backend/prisma/schema.prisma`, the menu feature, motion engine, render.yaml, etc.).
+- ✅ **Docs UI (Google-Docs style):** `app/codex/layout.jsx` wraps every Codex page in a left **sidebar** (`components/CodexSidebar.jsx`, all parts + the tech reference, active-highlighting, mobile drawer) and a right **"On this page" scrollspy rail** (`components/OnThisPage.jsx`). Structure driven by `lib/curriculum.js`.
+- ✅ **World 1 — The Codex: COMPLETE.** All 10 parts, every chapter grounded in real Burger Farm code.
+- ✅ **Tech Reference: COMPLETE — 22 encyclopedic pages.** `/codex/tech/<slug>`, a dynamic route reading `lib/tech-content.js`, rendered by `components/TechArticle.jsx`. Each answers what/inside/why+alternatives/how-we-use/when-it-breaks. Slugs: dart, typescript, nodejs, flutter, riverpod, dio, nextjs, refine, express, prisma, postgresql, sql, http-rest, json, auth, realtime-sync, idempotency, transactions, state-machines, ledgers, caching, concurrency. **Add a key to `TECH_CONTENT` → its page + sidebar entry appear automatically.**
+- ✅ **The Roadmap (roadmap.sh-style):** `/roadmap` + `components/Roadmap.jsx` — a clickable system-map spine (drawer → chapter/tech/sim) and a "Deep flows" view stepping through place-order, admin-price-change, and login moment by moment.
 - ✅ **World 2 — The Simulator: hub + 4 interactives** (order-journey, scaling, cart-drift, loyalty-ledger).
-- ⬜ **Cross-cutting upgrades** (knowledge graph, Mermaid, 3D, progress tracking) — optional polish, not started.
+- ✅ **Home campus:** 3 ways in (Read / Map / Play) + a Tech Reference encyclopedia grid.
+- ✅ **Production build green:** 43 static pages (`npm run build`).
+- ◐ **More interactives** (Visualgo/Brilliant-style: JWT anatomy, request lifecycle, index/B-tree lookup, the layer call-stack) — next.
+- ⬜ **Cross-cutting upgrades** (React-Flow knowledge graph, Mermaid, 3D order-journey, localStorage progress) — optional polish.
 - ⬜ **Deploy to Vercel** — owner will do this; site builds clean.
+
+> Dev-server note: after many rapid edits, Next dev can wedge (stale `.next` cache → phantom compile errors or dropped CSS). Fix = `preview_stop` → `rm -rf .next` → `preview_start`. The production build is the source of truth for correctness.
 
 ## The curriculum — all Codex chapters built ✅
 > Anchors = the real Burger Farm files the chapter is grounded in.
