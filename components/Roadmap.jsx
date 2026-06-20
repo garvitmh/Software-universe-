@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import RoadmapFlow from "@/components/RoadmapFlow";
 
 // ── The system as a journey, roadmap.sh-style ──────────────────────────────
 const STAGES = [
@@ -198,43 +199,7 @@ export default function Roadmap({ readyTech = [] }) {
       </div>
 
       {view === "system" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 0 }}>
-          {STAGES.map((stage, i) => {
-            const tint = TINTS[stage.tint];
-            return (
-              <div key={stage.id} style={{ display: "flex", gap: 18 }}>
-                {/* spine */}
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 24 }}>
-                  <span style={{ width: 16, height: 16, borderRadius: 999, background: tint.ink, boxShadow: `0 0 0 4px ${tint.soft}`, flexShrink: 0, marginTop: 8 }} />
-                  {i < STAGES.length - 1 && <span style={{ width: 2, flex: 1, background: "var(--hairline-2)", margin: "4px 0" }} />}
-                </div>
-                {/* card */}
-                <div style={{ flex: 1, paddingBottom: 26 }}>
-                  <button onClick={() => setSel({ ...stage, isStage: true })} style={{ display: "block", textAlign: "left", width: "100%", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-                    <div style={{ fontFamily: "Fraunces", fontSize: 22, fontWeight: 600, color: "var(--ink)" }}>{stage.title}</div>
-                    <div style={{ fontSize: 14.5, color: "var(--muted)", marginTop: 3, lineHeight: 1.5 }}>{stage.summary}</div>
-                  </button>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
-                    {stage.nodes.map((n) => (
-                      <button
-                        key={n.id}
-                        onClick={() => setSel({ ...n, stageTint: stage.tint })}
-                        style={{
-                          fontSize: 13, fontWeight: 500, color: "var(--ink-2)",
-                          background: "var(--surface)", border: "1px solid var(--hairline-2)",
-                          borderRadius: 999, padding: "7px 14px", cursor: "pointer",
-                          transition: "all .14s ease",
-                        }}
-                      >
-                        {n.title}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <RoadmapFlow stages={STAGES} tints={TINTS} onSelect={setSel} />
       )}
 
       {view === "flows" && (
