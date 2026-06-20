@@ -1,5 +1,7 @@
 import Link from "next/link";
 import FlowMap from "@/components/FlowMap";
+import { TECH_SECTIONS, techHref } from "@/lib/curriculum";
+import { TECH_CONTENT } from "@/lib/tech-content";
 
 const PARTS = [
   { n: "01", title: "Foundations — how it all fits together", status: "open", href: "/codex/foundations" },
@@ -61,28 +63,38 @@ export default function Home() {
       {/* Two worlds */}
       <section className="wrap" style={{ paddingTop: 36, paddingBottom: 10 }}>
         <div style={{ textAlign: "center", marginBottom: 22 }}>
-          <span className="eyebrow">Two worlds, one campus</span>
-          <h2 style={{ fontSize: 30, marginTop: 8 }}>Read it, or experience it.</h2>
+          <span className="eyebrow">Three ways in, one campus</span>
+          <h2 style={{ fontSize: 30, marginTop: 8 }}>Read it, map it, or play with it.</h2>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
           <WorldCard
             href="/codex/foundations"
-            badge="World 1"
+            badge="Read"
             tint="var(--amber-soft)"
             ink="var(--amber)"
             icon={<BookIcon />}
             title="The Codex"
-            desc="The deep library. Every domain explained in plain language, simple → deep, wall-to-wall diagrams. The why, the what-else, and what breaks when it goes wrong."
+            desc="The deep library — Google-Docs style. 10 chapters on your system plus a 22-page encyclopedia of every technology, simple → deep, wall-to-wall diagrams."
             cta="Open the Codex"
           />
           <WorldCard
+            href="/roadmap"
+            badge="Map"
+            tint="var(--brand-soft)"
+            ink="var(--brand-2)"
+            icon={<MapIcon />}
+            title="The Roadmap"
+            desc="The whole stack as a clickable map. Open any node for a door into the chapter, the tech page, or the simulator — then step through the deep flows, moment by moment."
+            cta="Walk the roadmap"
+          />
+          <WorldCard
             href="/simulator"
-            badge="World 2"
+            badge="Play"
             tint="var(--teal-soft)"
             ink="var(--teal)"
             icon={<PlayIcon />}
             title="The Simulator"
-            desc="See it move. Watch an order travel the whole system, drag the sliders, and trigger the disasters — crash the database, fail a payment — then watch how we save it."
+            desc="See it move. Watch an order travel the system, drag the scaling slider, break the cart on purpose — then watch the architecture save it."
             cta="Enter the Simulator"
           />
         </div>
@@ -97,6 +109,40 @@ export default function Home() {
         <div className="card" style={{ padding: 10 }}>
           {PARTS.map((p, i) => (
             <PartRow key={p.n} part={p} last={i === PARTS.length - 1} />
+          ))}
+        </div>
+      </section>
+
+      {/* Tech reference encyclopedia */}
+      <section className="wrap" style={{ paddingTop: 50, paddingBottom: 10 }}>
+        <div style={{ textAlign: "center", marginBottom: 20 }}>
+          <span className="eyebrow">The encyclopedia</span>
+          <h2 style={{ fontSize: 30, marginTop: 8 }}>Every technology in your stack, explained.</h2>
+          <p className="muted" style={{ fontSize: 14.5, maxWidth: 580, margin: "8px auto 0", lineHeight: 1.55 }}>
+            A deep, plain-language page on each tool and concept — what it is, what&apos;s inside it, why it (and not the alternatives), how it works in <em>your</em> code, and exactly when it breaks.
+          </p>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 14 }}>
+          {TECH_SECTIONS.map((sec) => (
+            <div key={sec.id} className="card" style={{ padding: "16px 18px" }}>
+              <div className="eyebrow" style={{ marginBottom: 11 }}>{sec.label}</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+                {sec.items.map((it) => {
+                  const ready = !!TECH_CONTENT[it.slug];
+                  const base = {
+                    fontSize: 12.5, fontWeight: 500, padding: "6px 11px", borderRadius: 999,
+                    border: "1px solid var(--hairline-2)",
+                  };
+                  return ready ? (
+                    <Link key={it.slug} href={techHref(it.slug)} style={{ ...base, background: "var(--surface-warm)", color: "var(--ink-2)" }}>
+                      {it.title}
+                    </Link>
+                  ) : (
+                    <span key={it.slug} style={{ ...base, color: "var(--faint)", opacity: 0.6 }}>{it.title}</span>
+                  );
+                })}
+              </div>
+            </div>
           ))}
         </div>
       </section>
@@ -170,4 +216,7 @@ function BookIcon() {
 }
 function PlayIcon() {
   return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M10 8.5l6 3.5-6 3.5z" fill="currentColor" /></svg>;
+}
+function MapIcon() {
+  return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 4 3 7v13l6-3 6 3 6-3V4l-6 3-6-3z" /><path d="M9 4v13M15 7v13" /></svg>;
 }
