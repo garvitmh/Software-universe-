@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Roadmap from "@/components/Roadmap";
+import { Reveal } from "@/components/Bits";
 import { TECH_CONTENT } from "@/lib/tech-content";
 
 export const metadata = {
@@ -16,15 +17,21 @@ export default function RoadmapPage() {
         Back to the campus
       </Link>
 
-      <div style={{ marginBottom: 30, maxWidth: 640 }}>
-        <span className="pill" style={{ background: "var(--brand-soft)", color: "var(--brand-2)", marginBottom: 14 }}>The Roadmap</span>
-        <h1 style={{ fontSize: 42, lineHeight: 1.05 }}>The whole system, as a map you can walk.</h1>
-        <p style={{ fontSize: 18, color: "var(--ink-2)", marginTop: 14, lineHeight: 1.55 }}>
-          Click any node to open it — what it is, why it's there, and a door straight into the deep chapter, the tech page, or the live simulator. Then switch to <strong>Deep flows</strong> to step through exactly what happens, moment by moment, when an order is placed.
-        </p>
-      </div>
+      <Reveal>
+        <div style={{ marginBottom: 30, maxWidth: 660 }}>
+          <span className="pill" style={{ background: "var(--brand-soft)", color: "var(--brand-2)", marginBottom: 14 }}>The Roadmap</span>
+          <h1 style={{ fontSize: "clamp(38px, 5.5vw, 56px)", lineHeight: 1.03, fontWeight: 600, letterSpacing: "-.02em" }}>
+            The whole system, as a <span className="grad-text" style={{ fontStyle: "italic" }}>map you can walk.</span>
+          </h1>
+          <p style={{ fontSize: 18, color: "var(--ink-2)", marginTop: 14, lineHeight: 1.55 }}>
+            Click any node to open it — what it is, why it's there, and a door straight into the deep chapter, the tech page, or the live simulator. Then switch to <strong>Deep flows</strong> to step through exactly what happens, moment by moment, when an order is placed.
+          </p>
+        </div>
+      </Reveal>
 
-      <Roadmap readyTech={readyTech} />
+      <Reveal delay={0.08}>
+        <Roadmap readyTech={readyTech} />
+      </Reveal>
     </main>
   );
 }

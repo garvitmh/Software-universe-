@@ -22,7 +22,7 @@
   --radius: 14px;
   --radius-lg: 20px;
   --radius-xl: 28px;
-  --maxw: 1080px;
+  --maxw: 1160px;
 
   /* ── Bold & playful accents ── */
   --pop-pink: #FF4D8D;
@@ -180,6 +180,13 @@ p { margin: 0; }
 .inside-card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 12px; padding: 13px 15px; }
 .inside-card h4 { font-family: "Inter"; font-size: 14px; font-weight: 600; letter-spacing: 0; margin-bottom: 3px; }
 .inside-card p { font-size: 13px; color: var(--muted); margin: 0; }
+
+/* Inline interactive widgets embedded in prose */
+.inline-widget { margin: 1.8rem 0; border: 1px solid var(--hairline-2); border-radius: 18px; background: linear-gradient(180deg, var(--surface-warm), var(--surface)); padding: 18px 20px 20px; box-shadow: var(--shadow); }
+.inline-widget-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.inline-widget-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #fff; background: var(--brand); padding: 3px 9px; border-radius: 999px; }
+.inline-widget-title { font-family: "Inter"; font-size: 14.5px; font-weight: 600; color: var(--ink); }
+.inline-widget-hint { font-size: 12.5px; color: var(--faint); margin-top: 12px; }
 
 /* Inline jargon-buster <Term> */
 .term {
