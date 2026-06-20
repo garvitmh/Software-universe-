@@ -45,20 +45,7 @@ export default function SiteNav() {
 
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
           <NavLink href="/codex/foundations" label="The Codex" />
-          <NavLink href="/simulator/order-journey" label="The Simulator" />
-          <span
-            style={{
-              marginLeft: 8,
-              fontSize: 12.5,
-              color: "var(--faint)",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-            }}
-          >
-            <span className="tag-dot" style={{ background: "var(--brand)" }} />
-            Lesson 1 / ~40
-          </span>
+          <NavLink href="/simulator" label="The Simulator" />
         </div>
       </div>
     </nav>

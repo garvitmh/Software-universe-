@@ -34,7 +34,7 @@ export default function Home() {
             Not documentation. A universe you explore.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 28, flexWrap: "wrap" }}>
-            <Link href="/simulator/order-journey" className="btn btn-primary">
+            <Link href="/simulator" className="btn btn-primary">
               Enter the Simulator
               <Arrow />
             </Link>
@@ -76,7 +76,7 @@ export default function Home() {
             cta="Open the Codex"
           />
           <WorldCard
-            href="/simulator/order-journey"
+            href="/simulator"
             badge="World 2"
             tint="var(--teal-soft)"
             ink="var(--teal)"
