@@ -128,7 +128,7 @@ export default function DatabasePage() {
 
       <div style={{ marginTop: 30, paddingTop: 22, borderTop: "1px solid var(--hairline)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
         <Link href="/codex/backend" className="muted" style={{ fontSize: 14 }}>← Part 04 — The backend</Link>
-        <span style={{ fontSize: 14, color: "var(--faint)" }}>Next — The admin panel, the control room · coming soon</span>
+        <Link href="/codex/admin-panel" className="muted" style={{ fontSize: 14 }}>Part 06 — The admin panel →</Link>
       </div>
     </main>
   );
