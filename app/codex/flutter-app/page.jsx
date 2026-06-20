@@ -66,7 +66,7 @@ export default function FlutterAppPage() {
 
       <div style={{ marginTop: 30, paddingTop: 22, borderTop: "1px solid var(--hairline)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
         <Link href="/codex/state-management" className="muted" style={{ fontSize: 14 }}>← Part 02 — State</Link>
-        <span style={{ fontSize: 14, color: "var(--faint)" }}>Next — The backend, the brain · coming soon</span>
+        <Link href="/codex/backend" className="muted" style={{ fontSize: 14 }}>Part 04 — The backend →</Link>
       </div>
     </main>
   );
