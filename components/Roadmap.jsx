@@ -1,112 +1,130 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import RoadmapFlow from "@/components/RoadmapFlow";
+import { useState, useEffect } from "react";
+import RoadmapFlowVertical from "@/components/RoadmapFlowVertical";
+import { TECH_CONTENT } from "@/lib/tech-content";
+import TechArticle from "@/components/TechArticle";
 
 // ── The system as a journey, roadmap.sh-style ──────────────────────────────
 const STAGES = [
   {
-    id: "app",
-    title: "The customer's app",
+    id: "01-foundations",
+    title: "Phase 01: Foundations",
+    tint: "brand",
+    summary: "What we are building, and how all the pieces fit together.",
+    detail: "Before writing a single line of code, we define the architecture. How does a phone talk to a server? Where does data live? This is the blueprint.",
+    chapter: "foundations",
+    nodes: []
+  },
+  {
+    id: "02-thinking",
+    title: "Phase 02: Thinking Tools",
+    tint: "pink",
+    summary: "Mental models for enterprise architecture: layers, separation, and single sources of truth.",
+    detail: "Why do we put logic in services? What is a repository? Why must state have exactly one source of truth? These are the unshakeable rules we follow.",
+    chapter: "layers-and-separation",
+    nodes: []
+  },
+  {
+    id: "03-app",
+    title: "Phase 03: The Flutter App",
     tint: "purple",
-    summary: "What the customer taps. Shows things, asks for things, stores almost nothing.",
-    detail:
-      "The app is a Flutter program. Its job is to render the UI and ask the backend for everything — the menu, prices, the cart's fate. It holds no truth of its own, which is exactly why prices can change without shipping a new app.",
+    summary: "Drawing the pixels the user taps and holding the client-side state.",
+    detail: "We build the mobile application using Flutter and Dart. It's completely dumb—it just draws what the backend tells it to, and sends user actions back over the wire.",
     chapter: "flutter-app",
     nodes: [
       { id: "dart", title: "Dart", tech: "dart", note: "The language it's written in — typed, null-safe, two compile modes." },
       { id: "flutter", title: "Flutter", tech: "flutter", note: "Everything is a widget; it draws its own pixels, identical on both phones." },
       { id: "riverpod", title: "Riverpod", tech: "riverpod", note: "Holds shared state (the cart) so the screen never disagrees with itself." },
-      { id: "dio", title: "Dio + interceptors", tech: "dio", chapter: "flutter-app", note: "One network client; interceptors attach the auth cookie & a request-id to every call." },
-      { id: "layers", title: "Layers & repository", chapter: "layers-and-separation", note: "UI → provider → repository → network. Each layer talks only to its neighbour." },
-    ],
+      { id: "dio", title: "Dio", tech: "dio", note: "One network client; interceptors attach auth cookies to every call." },
+    ]
   },
   {
-    id: "wire",
-    title: "The wire between them",
-    tint: "blue",
-    summary: "How the app and backend actually talk: a request over HTTP, carrying JSON, proving who it is.",
-    detail:
-      "Every interaction is an HTTP request to a URL under /api/v1, carrying JSON. State-changing requests prove identity with an httpOnly cookie and a CSRF token. This is the membrane where 'never trust the client' is enforced.",
-    chapter: "backend",
-    nodes: [
-      { id: "http", title: "HTTP & REST", tech: "http-rest", chapter: "backend", note: "Methods (GET/POST), URLs, status codes — the grammar of the web." },
-      { id: "json", title: "JSON", tech: "json", chapter: "backend", note: "The text shape data travels in, the same in Dart and JavaScript." },
-      { id: "auth", title: "Auth: JWT · cookie · CSRF", tech: "auth", chapter: "backend", note: "An httpOnly cookie proves who you are; a CSRF token proves the request is genuine." },
-    ],
-  },
-  {
-    id: "backend",
-    title: "The backend",
+    id: "04-backend",
+    title: "Phase 04: The Backend & APIs",
     tint: "amber",
-    summary: "The brain. Catches the request, runs the guards, does the real work, replies.",
-    detail:
-      "A Node.js + Express program. A request flows through middleware (auth, CSRF, tracing) → a route → a thin handler → a service that holds the real logic. The backend is stateless, so you can run many copies of it.",
+    summary: "The brain that catches requests, runs guards, and processes logic.",
+    detail: "A Node.js + Express program. A request flows through middleware (auth, CSRF) → a route → a thin handler → a service that holds the real business logic.",
     chapter: "backend",
     nodes: [
-      { id: "nodejs", title: "Node.js", tech: "nodejs", note: "Runs JavaScript on the server; an event loop that never blocks on waiting." },
+      { id: "http", title: "HTTP & REST", tech: "http-rest", note: "Methods (GET/POST), URLs, status codes — the grammar of the web." },
+      { id: "json", title: "JSON", tech: "json", note: "The text shape data travels in." },
+      { id: "nodejs", title: "Node.js", tech: "nodejs", note: "Runs JavaScript on the server; an event loop that never blocks." },
       { id: "express", title: "Express", tech: "express", note: "Maps URLs to handlers and runs middleware guards in order." },
-      { id: "middleware", title: "Middleware guards", chapter: "backend", note: "requireAdmin, requireCsrf — code that runs before the handler and can block." },
-    ],
+      { id: "auth", title: "Auth: JWT & CSRF", tech: "auth", note: "Proving who you are and ensuring the request is genuine." },
+    ]
   },
   {
-    id: "data",
-    title: "The database",
+    id: "05-data",
+    title: "Phase 05: The Database",
     tint: "teal",
     summary: "The permanent memory. Linked tables, exact money, all-or-nothing writes.",
-    detail:
-      "PostgreSQL, reached through Prisma. Every order is a row, linked to its user, store and items by foreign keys. Money is an exact Decimal; an idempotency key blocks double-charges; transactions make a multi-row order all-or-nothing.",
+    detail: "PostgreSQL, reached through Prisma. Every order is a row, linked to its user, store and items. Money is exact, and transactions make writes all-or-nothing.",
     chapter: "database",
     nodes: [
-      { id: "prisma", title: "Prisma", tech: "prisma", note: "Translates code objects ↔ database rows, and keeps schema + code in lock-step." },
-      { id: "postgresql", title: "PostgreSQL", tech: "postgresql", note: "The relational database — tables, foreign keys, indexes, ACID transactions." },
-      { id: "sql", title: "SQL & indexes", tech: "sql", chapter: "database", note: "How data is queried, and how an index makes 'this store's pending orders' instant." },
-      { id: "transactions", title: "Transactions", tech: "transactions", chapter: "database", note: "All-or-nothing groups of writes — the bedrock of handling money safely." },
-    ],
+      { id: "postgresql", title: "PostgreSQL", tech: "postgresql", note: "The relational database — tables, foreign keys, indexes." },
+      { id: "prisma", title: "Prisma", tech: "prisma", note: "Translates code objects ↔ database rows safely." },
+      { id: "sql", title: "SQL & indexes", tech: "sql", note: "How data is queried, and how indexes make it fast." },
+      { id: "transactions", title: "Transactions", tech: "transactions", note: "All-or-nothing writes — the bedrock of handling money." },
+    ]
   },
   {
-    id: "admin",
-    title: "The control room",
+    id: "06-admin",
+    title: "Phase 06: The Admin Panel",
     tint: "pink",
-    summary: "A separate web app that writes the data the customer app reads. Change the business, not the code.",
-    detail:
-      "The admin panel (Next.js + Refine) writes to the same database the app reads. Content is data (ContentBlock/Item), not code — so a new offer is a few rows, not a deploy. Every write is logged in an AuditLog.",
+    summary: "A control room to change prices and content without developers.",
+    detail: "The admin panel (Next.js + Refine) writes to the same database the app reads. Content is data, not code — so a new offer is a few rows, not a deploy.",
     chapter: "admin-panel",
     nodes: [
-      { id: "nextjs", title: "Next.js & React", tech: "nextjs", chapter: "admin-panel", note: "The framework the admin (and this very site) is built with." },
-      { id: "refine", title: "Refine", tech: "refine", chapter: "admin-panel", note: "Generates the list/create/edit/show screens over each resource." },
-      { id: "content", title: "Content as data", chapter: "admin-panel", note: "Offers, banners, per-store overrides — all rows the admin controls, schedulable." },
-    ],
+      { id: "nextjs", title: "Next.js", tech: "nextjs", note: "The React framework the admin panel is built with." },
+      { id: "refine", title: "Refine", tech: "refine", note: "Generates the list/create/edit/show screens quickly." },
+      { id: "realtime", title: "Live sync", tech: "realtime-sync", note: "How the admin's changes appear instantly." },
+    ]
   },
   {
-    id: "systems",
-    title: "Big systems",
+    id: "07-builder",
+    title: "Phase 07: The Motion Engine",
+    tint: "purple",
+    summary: "Making the app feel premium with complex UI interactions.",
+    detail: "We step back to the app to build the custom Burger Builder. We use complex Flutter layouts and animations to deliver a premium user experience.",
+    chapter: "burger-builder",
+    nodes: []
+  },
+  {
+    id: "08-systems",
+    title: "Phase 08: Big Systems",
     tint: "brand",
-    summary: "Where the order touches the outside world: a bank, a kitchen, a driver — and stays correct anyway.",
-    detail:
-      "Payments (a state machine + webhooks), the order's lifecycle (OrderStatus + an OrderEvent audit log), loyalty (an append-only ledger with idempotency and optimistic concurrency), and serviceability. The patterns that keep money and orders correct.",
+    summary: "Where the order touches the outside world and stays correct.",
+    detail: "Payments, the order's lifecycle, and loyalty ledgers. These are the strict patterns that keep money and state correct even when networks fail.",
     chapter: "big-systems",
     nodes: [
-      { id: "idempotency", title: "Idempotency", tech: "idempotency", chapter: "big-systems", note: "Why a retried order can't charge or credit you twice.", sim: "loyalty-ledger" },
-      { id: "statemachines", title: "State machines", tech: "state-machines", chapter: "big-systems", note: "An order is always in exactly one known state; only some moves are legal.", sim: "order-journey" },
-      { id: "ledgers", title: "Ledgers", tech: "ledgers", chapter: "big-systems", note: "Points & money tracked as an append-only tape, like a bank.", sim: "loyalty-ledger" },
-    ],
+      { id: "idempotency", title: "Idempotency", tech: "idempotency", note: "Why a retried order can't charge you twice." },
+      { id: "statemachines", title: "State machines", tech: "state-machines", note: "An order is always in exactly one known state." },
+      { id: "ledgers", title: "Ledgers", tech: "ledgers", note: "Points & money tracked as an append-only tape." },
+    ]
   },
   {
-    id: "scale",
-    title: "Scale & going live",
-    tint: "teal",
-    summary: "The same design, with capacity added around it — then shipped to the world.",
-    detail:
-      "Caching, load-balanced copies, queues, read replicas and observability take the system from 10 to a million users. Then a release pipeline (test → build → migrate → start) deploys it to Render, with secrets in the environment and infra described as code.",
+    id: "09-scale",
+    title: "Phase 09: Scale",
+    tint: "blue",
+    summary: "Capacity added around the system to survive a million users.",
+    detail: "We add caching, read replicas, and concurrency handling. We learn how to make the system fast when thousands of users hit it at once.",
     chapter: "scale",
     nodes: [
-      { id: "caching", title: "Caching & queues", tech: "caching", chapter: "scale", note: "Compute once and serve many; push slow work off the request path.", sim: "scaling" },
-      { id: "scaling", title: "Scaling the stack", chapter: "scale", note: "Stateless copies behind a load balancer; indexes and replicas under load.", sim: "scaling" },
-      { id: "deploy", title: "Deployment & ops", chapter: "deployment", note: "Pipeline, env secrets, infra-as-code, migrations, containers, rollbacks." },
-    ],
+      { id: "caching", title: "Caching", tech: "caching", note: "Compute once and serve many." },
+      { id: "concurrency", title: "Concurrency", tech: "concurrency", note: "Handling races when two users hit the same resource." },
+    ]
   },
+  {
+    id: "10-deploy",
+    title: "Phase 10: Deployment",
+    tint: "teal",
+    summary: "Shipping the code to the world safely.",
+    detail: "Pipelines, environments, and secrets. How we take code from our laptop and put it on a secure server for the world to use.",
+    chapter: "deployment",
+    nodes: []
+  }
 ];
 
 // ── Deep, step-by-step flows ───────────────────────────────────────────────
@@ -175,6 +193,22 @@ export default function Roadmap({ readyTech = [] }) {
   const [view, setView] = useState("system"); // 'system' | 'flows'
   const [sel, setSel] = useState(null); // selected node/stage for drawer
   const [openFlow, setOpenFlow] = useState("order");
+  const [nodeStatus, setNodeStatus] = useState({});
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("roadmap_status");
+      if (saved) setNodeStatus(JSON.parse(saved));
+    } catch (e) {}
+  }, []);
+
+  const updateStatus = (status) => {
+    if (!sel) return;
+    const newStatus = { ...nodeStatus, [sel.id]: status };
+    if (status === null) delete newStatus[sel.id]; // null means remove status
+    setNodeStatus(newStatus);
+    localStorage.setItem("roadmap_status", JSON.stringify(newStatus));
+  };
 
   const Seg = ({ id, label }) => (
     <button
@@ -199,7 +233,7 @@ export default function Roadmap({ readyTech = [] }) {
       </div>
 
       {view === "system" && (
-        <RoadmapFlow stages={STAGES} tints={TINTS} onSelect={setSel} />
+        <RoadmapFlowVertical stages={STAGES} tints={TINTS} onSelect={setSel} nodeStatus={nodeStatus} />
       )}
 
       {view === "flows" && (
@@ -245,33 +279,45 @@ export default function Roadmap({ readyTech = [] }) {
       {sel && (
         <>
           <div onClick={() => setSel(null)} style={{ position: "fixed", inset: 0, background: "rgba(36,26,16,.32)", zIndex: 60 }} />
-          <div style={{ position: "fixed", top: 0, right: 0, height: "100vh", width: "min(440px, 92vw)", background: "var(--bg)", borderLeft: "1px solid var(--hairline)", boxShadow: "var(--shadow-lg)", zIndex: 61, padding: "26px 26px 40px", overflowY: "auto" }}>
-            <button onClick={() => setSel(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted)", fontSize: 14, display: "inline-flex", alignItems: "center", gap: 6, marginBottom: 16 }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
-              Close
-            </button>
-            <div style={{ fontFamily: "Fraunces", fontSize: 26, fontWeight: 600, lineHeight: 1.1 }}>{sel.title}</div>
-            <p style={{ fontSize: 15.5, color: "var(--ink-2)", marginTop: 12, lineHeight: 1.6 }}>{sel.detail || sel.note}</p>
+          <div style={{ position: "fixed", top: 0, right: 0, height: "100vh", width: "min(440px, 92vw)", background: "var(--bg)", borderLeft: "1px solid var(--hairline)", boxShadow: "var(--shadow-lg)", zIndex: 61, display: "flex", flexDirection: "column" }}>
+            <div style={{ padding: "26px 26px 0" }}>
+              <button onClick={() => setSel(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted)", fontSize: 14, display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12" /></svg>
+                Close
+              </button>
+            </div>
+            <div style={{ flex: 1, overflowY: "auto", padding: "24px 30px" }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "var(--brand)", textTransform: "uppercase", letterSpacing: 0.5 }}>{sel.isStage ? "Phase overview" : "Tech deep dive"}</div>
+              
+              {/* Progress Tracking */}
+              <div style={{ display: "flex", gap: 8, marginTop: 16, marginBottom: 16 }}>
+                <button onClick={() => updateStatus(nodeStatus[sel.id] === 'done' ? null : 'done')} className="btn" style={{ flex: 1, background: nodeStatus[sel.id] === 'done' ? "#10B981" : "var(--surface)", color: nodeStatus[sel.id] === 'done' ? "#fff" : "var(--ink)", border: "1px solid var(--hairline-2)", fontSize: 13, padding: "8px" }}>✓ Done</button>
+                <button onClick={() => updateStatus(nodeStatus[sel.id] === 'learning' ? null : 'learning')} className="btn" style={{ flex: 1, background: nodeStatus[sel.id] === 'learning' ? "#F59E0B" : "var(--surface)", color: nodeStatus[sel.id] === 'learning' ? "#fff" : "var(--ink)", border: "1px solid var(--hairline-2)", fontSize: 13, padding: "8px" }}>● Learning</button>
+                <button onClick={() => updateStatus(nodeStatus[sel.id] === 'skip' ? null : 'skip')} className="btn" style={{ flex: 1, background: nodeStatus[sel.id] === 'skip' ? "#6B7280" : "var(--surface)", color: nodeStatus[sel.id] === 'skip' ? "#fff" : "var(--ink)", border: "1px solid var(--hairline-2)", fontSize: 13, padding: "8px" }}>⨯ Skip</button>
+              </div>
+              {sel.tech && TECH_CONTENT[sel.tech] ? (
+                <div style={{ marginTop: -20, marginLeft: -20, marginRight: -20 }}>
+                  <TechArticle content={TECH_CONTENT[sel.tech]} />
+                </div>
+              ) : (
+                <>
+                  <h2 style={{ fontFamily: "Fraunces", fontSize: 24, fontWeight: 700, color: "var(--ink)", marginTop: 6 }}>{sel.title}</h2>
+                  <p style={{ fontSize: 15.5, color: "var(--ink-2)", marginTop: 12, lineHeight: 1.6 }}>{sel.detail || sel.note}</p>
+                </>
+              )}
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 22 }}>
-              {(sel.chapter) && (
-                <Link href={`/codex/${sel.chapter}`} onClick={() => setSel(null)} className="btn btn-primary" style={{ justifyContent: "space-between" }}>
-                  Read the chapter <span>→</span>
-                </Link>
-              )}
-              {sel.tech && ready.has(sel.tech) && (
-                <Link href={`/codex/tech/${sel.tech}`} onClick={() => setSel(null)} className="btn btn-ghost" style={{ justifyContent: "space-between" }}>
-                  Tech deep-dive: {sel.title} <span>→</span>
-                </Link>
-              )}
-              {sel.tech && !ready.has(sel.tech) && (
-                <span style={{ fontSize: 13, color: "var(--faint)", padding: "6px 2px" }}>Tech deep-dive page coming soon.</span>
-              )}
-              {sel.sim && (
-                <Link href={`/simulator/${sel.sim}`} onClick={() => setSel(null)} className="btn btn-ghost" style={{ justifyContent: "space-between" }}>
-                  Run the simulator <span>→</span>
-                </Link>
-              )}
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 22 }}>
+                {(sel.chapter) && (
+                  <Link href={`/codex/${sel.chapter}`} onClick={() => setSel(null)} className="btn btn-primary" style={{ justifyContent: "space-between" }}>
+                    Read the chapter <span>→</span>
+                  </Link>
+                )}
+                {sel.sim && (
+                  <Link href={`/simulator/${sel.sim}`} onClick={() => setSel(null)} className="btn btn-ghost" style={{ justifyContent: "space-between" }}>
+                    Run the simulator <span>→</span>
+                  </Link>
+                )}
+              </div>
             </div>
           </div>
         </>
