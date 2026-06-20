@@ -85,7 +85,7 @@ export default function BackendPage() {
 
       <div style={{ marginTop: 30, paddingTop: 22, borderTop: "1px solid var(--hairline)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
         <Link href="/codex/flutter-app" className="muted" style={{ fontSize: 14 }}>← Part 03 — Flutter app</Link>
-        <span style={{ fontSize: 14, color: "var(--faint)" }}>Next — The database, the memory · coming soon</span>
+        <Link href="/codex/database" className="muted" style={{ fontSize: 14 }}>Part 05 — The database →</Link>
       </div>
     </main>
   );
