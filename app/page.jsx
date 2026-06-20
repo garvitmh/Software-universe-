@@ -1,148 +1,168 @@
 import Link from "next/link";
 import FlowMap from "@/components/FlowMap";
-import { TECH_SECTIONS, techHref } from "@/lib/curriculum";
+import HomeHero from "@/components/home/HomeHero";
+import { Reveal, Tilt, Marquee, CountUp } from "@/components/Bits";
+import { TECH_SECTIONS, ALL_TECH, techHref } from "@/lib/curriculum";
 import { TECH_CONTENT } from "@/lib/tech-content";
 
 const PARTS = [
-  { n: "01", title: "Foundations — how it all fits together", status: "open", href: "/codex/foundations" },
-  { n: "02", title: "The thinking tools — layers & state", status: "open", href: "/codex/layers-and-separation" },
-  { n: "03", title: "Your Flutter app, layer by layer", status: "open", href: "/codex/flutter-app" },
-  { n: "04", title: "The backend — the brain", status: "open", href: "/codex/backend" },
-  { n: "05", title: "The database — the memory", status: "open", href: "/codex/database" },
-  { n: "06", title: "The admin panel — the control room", status: "open", href: "/codex/admin-panel" },
-  { n: "07", title: "The burger builder & motion engine", status: "open", href: "/codex/burger-builder" },
-  { n: "08", title: "Big systems — payments, orders, loyalty, delivery", status: "open", href: "/codex/big-systems" },
-  { n: "09", title: "Enterprise plumbing & scale — caching, queues, a million users", status: "open", href: "/codex/scale" },
-  { n: "10", title: "Deployment & ops — Render, Docker, Kubernetes, the lot", status: "open", href: "/codex/deployment" },
+  { n: "01", title: "Foundations — how it all fits together", href: "/codex/foundations" },
+  { n: "02", title: "The thinking tools — layers & state", href: "/codex/layers-and-separation" },
+  { n: "03", title: "Your Flutter app, layer by layer", href: "/codex/flutter-app" },
+  { n: "04", title: "The backend — the brain", href: "/codex/backend" },
+  { n: "05", title: "The database — the memory", href: "/codex/database" },
+  { n: "06", title: "The admin panel — the control room", href: "/codex/admin-panel" },
+  { n: "07", title: "The burger builder & motion engine", href: "/codex/burger-builder" },
+  { n: "08", title: "Big systems — payments, orders, loyalty, delivery", href: "/codex/big-systems" },
+  { n: "09", title: "Enterprise plumbing & scale", href: "/codex/scale" },
+  { n: "10", title: "Deployment & ops — going live", href: "/codex/deployment" },
+];
+
+const STATS = [
+  { to: 10, suffix: "", label: "deep chapters" },
+  { to: 22, suffix: "", label: "tech deep-dives" },
+  { to: 4, suffix: "", label: "live simulators" },
+  { to: 1, suffix: "", label: "real codebase" },
+];
+
+const WAYS = [
+  { href: "/codex/foundations", tag: "Read", title: "The Codex", grad: "var(--grad-warm)", emoji: "📖",
+    desc: "Deep docs you can poke. 10 chapters on your system + a 22-page encyclopedia of every technology — what it is, why it, and when it breaks." },
+  { href: "/roadmap", tag: "Map", title: "The Roadmap", grad: "var(--grad-sunset)", emoji: "🗺️",
+    desc: "The whole stack as a living map. Open any node, follow the data as it flows, and step through each deep flow moment by moment." },
+  { href: "/simulator", tag: "Play", title: "The Simulator", grad: "var(--grad-cool)", emoji: "🎮",
+    desc: "Break it on purpose. Watch an order travel the system, drag the scaling slider to a million users, and see the architecture save the day." },
 ];
 
 export default function Home() {
   return (
     <main>
-      {/* Hero */}
-      <section className="wrap" style={{ paddingTop: 64, paddingBottom: 24, textAlign: "center" }}>
-        <div className="fade-up">
-          <span className="pill" style={{ marginBottom: 18 }}>
-            <span className="tag-dot" style={{ background: "var(--brand)" }} />
-            Built on your real Burger Farm codebase
-          </span>
-          <h1 style={{ fontSize: 54, lineHeight: 1.04, maxWidth: 760, margin: "0 auto", fontWeight: 600 }}>
-            Your codebase,
-            <br />
-            <span style={{ color: "var(--brand)" }}>explained.</span>
-          </h1>
-          <p style={{ fontSize: 19, color: "var(--ink-2)", maxWidth: 580, margin: "20px auto 0", lineHeight: 1.55 }}>
-            From zero to architect — the app, the backend, the database, the admin, and the reasoning behind every decision.
-            Not documentation. A universe you explore.
-          </p>
-          <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 28, flexWrap: "wrap" }}>
-            <Link href="/simulator" className="btn btn-primary">
-              Enter the Simulator
-              <Arrow />
-            </Link>
-            <Link href="/codex/foundations" className="btn btn-ghost">
-              Open the Codex
-            </Link>
+      <HomeHero />
+
+      {/* Tech marquee */}
+      <section style={{ padding: "10px 0 6px" }}>
+        <Marquee speed={32}>
+          {ALL_TECH.map((t) => (
+            <span key={t.slug} className="chip3d" style={{ whiteSpace: "nowrap" }}>{t.title}</span>
+          ))}
+        </Marquee>
+      </section>
+
+      {/* Stats */}
+      <section className="wrap" style={{ paddingTop: 36, paddingBottom: 18 }}>
+        <Reveal>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }} className="stats-grid">
+            {STATS.map((s) => (
+              <div key={s.label} className="sticker" style={{ padding: "20px 18px", textAlign: "center" }}>
+                <div className="grad-text" style={{ fontFamily: "Fraunces", fontSize: 44, fontWeight: 700, lineHeight: 1 }}>
+                  <CountUp to={s.to} suffix={s.suffix} />
+                </div>
+                <div style={{ fontSize: 13.5, color: "var(--muted)", marginTop: 6, fontWeight: 500 }}>{s.label}</div>
+              </div>
+            ))}
           </div>
+        </Reveal>
+      </section>
+
+      {/* Three ways in */}
+      <section className="wrap" style={{ paddingTop: 40 }}>
+        <Reveal>
+          <div style={{ textAlign: "center", marginBottom: 26 }}>
+            <span className="eyebrow">Three ways in, one campus</span>
+            <h2 style={{ fontSize: "clamp(28px, 4vw, 40px)", marginTop: 8 }}>Read it, map it, or play with it.</h2>
+          </div>
+        </Reveal>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 18 }} className="ways-grid">
+          {WAYS.map((w, i) => (
+            <Reveal key={w.href} delay={i * 0.08}>
+              <Link href={w.href}>
+                <Tilt max={8} style={{ height: "100%" }}>
+                  <div className="card" style={{ padding: 0, height: "100%", overflow: "hidden", borderRadius: "var(--radius-chunky)" }}>
+                    <div style={{ height: 84, background: w.grad, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 22px" }}>
+                      <span style={{ fontSize: 34 }}>{w.emoji}</span>
+                      <span style={{ color: "#fff", fontWeight: 700, fontSize: 13, letterSpacing: ".12em", textTransform: "uppercase", background: "rgba(0,0,0,.18)", padding: "5px 12px", borderRadius: 999 }}>{w.tag}</span>
+                    </div>
+                    <div style={{ padding: "20px 22px 24px" }}>
+                      <h3 style={{ fontFamily: "Fraunces", fontSize: 25, fontWeight: 600 }}>{w.title}</h3>
+                      <p style={{ color: "var(--ink-2)", fontSize: 15, marginTop: 10, lineHeight: 1.6 }}>{w.desc}</p>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 8, color: "var(--brand-2)", fontWeight: 700, fontSize: 14.5, marginTop: 16 }}>
+                        Open <Arrow />
+                      </span>
+                    </div>
+                  </div>
+                </Tilt>
+              </Link>
+            </Reveal>
+          ))}
         </div>
       </section>
 
       {/* System map */}
-      <section className="wrap" style={{ paddingTop: 28, paddingBottom: 28 }}>
-        <div className="card" style={{ padding: "26px 22px 30px", borderRadius: "var(--radius-xl)" }}>
-          <div style={{ textAlign: "center", marginBottom: 6 }}>
-            <span className="eyebrow">Your system at a glance</span>
-            <p className="muted" style={{ fontSize: 14, marginTop: 6 }}>
-              Watch a request flow through it — the app asks, the backend decides, the database remembers. Click any part to explore.
-            </p>
+      <section className="wrap" style={{ paddingTop: 52, paddingBottom: 10 }}>
+        <Reveal>
+          <div className="card" style={{ padding: "26px 22px 30px", borderRadius: "var(--radius-xl)" }}>
+            <div style={{ textAlign: "center", marginBottom: 6 }}>
+              <span className="eyebrow">Your system at a glance</span>
+              <p className="muted" style={{ fontSize: 14, marginTop: 6 }}>
+                Watch a request flow through it — the app asks, the backend decides, the database remembers.
+              </p>
+            </div>
+            <FlowMap />
           </div>
-          <FlowMap />
-        </div>
-      </section>
-
-      {/* Two worlds */}
-      <section className="wrap" style={{ paddingTop: 36, paddingBottom: 10 }}>
-        <div style={{ textAlign: "center", marginBottom: 22 }}>
-          <span className="eyebrow">Three ways in, one campus</span>
-          <h2 style={{ fontSize: 30, marginTop: 8 }}>Read it, map it, or play with it.</h2>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
-          <WorldCard
-            href="/codex/foundations"
-            badge="Read"
-            tint="var(--amber-soft)"
-            ink="var(--amber)"
-            icon={<BookIcon />}
-            title="The Codex"
-            desc="The deep library — Google-Docs style. 10 chapters on your system plus a 22-page encyclopedia of every technology, simple → deep, wall-to-wall diagrams."
-            cta="Open the Codex"
-          />
-          <WorldCard
-            href="/roadmap"
-            badge="Map"
-            tint="var(--brand-soft)"
-            ink="var(--brand-2)"
-            icon={<MapIcon />}
-            title="The Roadmap"
-            desc="The whole stack as a clickable map. Open any node for a door into the chapter, the tech page, or the simulator — then step through the deep flows, moment by moment."
-            cta="Walk the roadmap"
-          />
-          <WorldCard
-            href="/simulator"
-            badge="Play"
-            tint="var(--teal-soft)"
-            ink="var(--teal)"
-            icon={<PlayIcon />}
-            title="The Simulator"
-            desc="See it move. Watch an order travel the system, drag the scaling slider, break the cart on purpose — then watch the architecture save it."
-            cta="Enter the Simulator"
-          />
-        </div>
+        </Reveal>
       </section>
 
       {/* Learning path */}
-      <section className="wrap" style={{ paddingTop: 44 }}>
-        <div style={{ textAlign: "center", marginBottom: 18 }}>
-          <span className="eyebrow">Your path</span>
-          <h2 style={{ fontSize: 30, marginTop: 8 }}>From the first tap to a million users.</h2>
-        </div>
-        <div className="card" style={{ padding: 10 }}>
+      <section className="wrap" style={{ paddingTop: 52 }}>
+        <Reveal>
+          <div style={{ textAlign: "center", marginBottom: 18 }}>
+            <span className="eyebrow">Your path</span>
+            <h2 style={{ fontSize: "clamp(28px, 4vw, 40px)", marginTop: 8 }}>From the first tap to a million users.</h2>
+          </div>
+        </Reveal>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }} className="path-grid">
           {PARTS.map((p, i) => (
-            <PartRow key={p.n} part={p} last={i === PARTS.length - 1} />
+            <Reveal key={p.n} delay={(i % 2) * 0.06}>
+              <Link href={p.href}>
+                <div className="card" style={{ padding: "16px 18px", display: "flex", alignItems: "center", gap: 14, borderRadius: 16, transition: "transform .16s var(--ease-bounce)" }}>
+                  <span style={{ fontFamily: "JetBrains Mono", fontSize: 13, fontWeight: 700, color: "#fff", background: "var(--grad-warm)", width: 36, height: 36, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{p.n}</span>
+                  <span style={{ flex: 1, fontSize: 15, fontWeight: 500, color: "var(--ink)" }}>{p.title}</span>
+                  <Arrow />
+                </div>
+              </Link>
+            </Reveal>
           ))}
         </div>
       </section>
 
       {/* Tech reference encyclopedia */}
-      <section className="wrap" style={{ paddingTop: 50, paddingBottom: 10 }}>
-        <div style={{ textAlign: "center", marginBottom: 20 }}>
-          <span className="eyebrow">The encyclopedia</span>
-          <h2 style={{ fontSize: 30, marginTop: 8 }}>Every technology in your stack, explained.</h2>
-          <p className="muted" style={{ fontSize: 14.5, maxWidth: 580, margin: "8px auto 0", lineHeight: 1.55 }}>
-            A deep, plain-language page on each tool and concept — what it is, what&apos;s inside it, why it (and not the alternatives), how it works in <em>your</em> code, and exactly when it breaks.
-          </p>
-        </div>
+      <section className="wrap" style={{ paddingTop: 56, paddingBottom: 20 }}>
+        <Reveal>
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <span className="eyebrow">The encyclopedia</span>
+            <h2 style={{ fontSize: "clamp(28px, 4vw, 40px)", marginTop: 8 }}>Every technology in your stack.</h2>
+            <p className="muted" style={{ fontSize: 14.5, maxWidth: 580, margin: "8px auto 0", lineHeight: 1.55 }}>
+              A deep page on each tool and concept — what it is, what&apos;s inside it, why it (and not the alternatives), how it works in <em>your</em> code, and exactly when it breaks.
+            </p>
+          </div>
+        </Reveal>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 14 }}>
-          {TECH_SECTIONS.map((sec) => (
-            <div key={sec.id} className="card" style={{ padding: "16px 18px" }}>
-              <div className="eyebrow" style={{ marginBottom: 11 }}>{sec.label}</div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
-                {sec.items.map((it) => {
-                  const ready = !!TECH_CONTENT[it.slug];
-                  const base = {
-                    fontSize: 12.5, fontWeight: 500, padding: "6px 11px", borderRadius: 999,
-                    border: "1px solid var(--hairline-2)",
-                  };
-                  return ready ? (
-                    <Link key={it.slug} href={techHref(it.slug)} style={{ ...base, background: "var(--surface-warm)", color: "var(--ink-2)" }}>
-                      {it.title}
-                    </Link>
-                  ) : (
-                    <span key={it.slug} style={{ ...base, color: "var(--faint)", opacity: 0.6 }}>{it.title}</span>
-                  );
-                })}
+          {TECH_SECTIONS.map((sec, i) => (
+            <Reveal key={sec.id} delay={(i % 3) * 0.06}>
+              <div className="card" style={{ padding: "16px 18px", height: "100%" }}>
+                <div className="eyebrow" style={{ marginBottom: 11 }}>{sec.label}</div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+                  {sec.items.map((it) => {
+                    const ready = !!TECH_CONTENT[it.slug];
+                    return ready ? (
+                      <Link key={it.slug} href={techHref(it.slug)} className="chip3d">{it.title}</Link>
+                    ) : (
+                      <span key={it.slug} className="chip3d" style={{ color: "var(--faint)", opacity: 0.55 }}>{it.title}</span>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -150,73 +170,6 @@ export default function Home() {
   );
 }
 
-function WorldCard({ href, badge, tint, ink, icon, title, desc, cta }) {
-  return (
-    <Link href={href}>
-      <div
-        className="card"
-        style={{
-          padding: "26px 24px",
-          height: "100%",
-          borderRadius: "var(--radius-xl)",
-          transition: "transform .18s ease, box-shadow .25s ease",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-          <span style={{ width: 46, height: 46, borderRadius: 13, background: tint, color: ink, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            {icon}
-          </span>
-          <span style={{ fontSize: 12, fontWeight: 600, letterSpacing: ".1em", textTransform: "uppercase", color: "var(--faint)" }}>{badge}</span>
-        </div>
-        <h3 style={{ fontFamily: "Fraunces", fontSize: 26, fontWeight: 600 }}>{title}</h3>
-        <p style={{ color: "var(--ink-2)", fontSize: 15.5, marginTop: 10, lineHeight: 1.6, flex: 1 }}>{desc}</p>
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 8, color: "var(--brand-2)", fontWeight: 600, fontSize: 15, marginTop: 18 }}>
-          {cta} <Arrow />
-        </span>
-      </div>
-    </Link>
-  );
-}
-
-function PartRow({ part, last }) {
-  const open = part.status === "open";
-  const inner = (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 14,
-        padding: "14px 14px",
-        borderBottom: last ? "none" : "1px solid var(--hairline)",
-        borderRadius: 12,
-        background: open ? "var(--brand-soft)" : "transparent",
-      }}
-    >
-      <span style={{ fontSize: 13, fontWeight: 600, width: 22, color: open ? "var(--brand-2)" : "var(--faint)" }}>{part.n}</span>
-      <span style={{ flex: 1, fontSize: 15, fontWeight: open ? 600 : 500, color: open ? "var(--ink)" : "var(--ink-2)" }}>{part.title}</span>
-      {open ? (
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "var(--brand-2)", fontSize: 13, fontWeight: 600 }}>
-          Start <Arrow />
-        </span>
-      ) : (
-        <span style={{ fontSize: 12, color: "var(--faint)" }}>soon</span>
-      )}
-    </div>
-  );
-  return open ? <Link href={part.href}>{inner}</Link> : inner;
-}
-
 function Arrow() {
   return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>;
-}
-function BookIcon() {
-  return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 5a2 2 0 0 1 2-2h11v17H6a2 2 0 0 0-2 2z" /><path d="M17 3h1a2 2 0 0 1 2 2v15" /></svg>;
-}
-function PlayIcon() {
-  return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M10 8.5l6 3.5-6 3.5z" fill="currentColor" /></svg>;
-}
-function MapIcon() {
-  return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 4 3 7v13l6-3 6 3 6-3V4l-6 3-6-3z" /><path d="M9 4v13M15 7v13" /></svg>;
 }

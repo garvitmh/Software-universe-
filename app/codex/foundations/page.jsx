@@ -1,6 +1,8 @@
 import Link from "next/link";
 import FlowMap from "@/components/FlowMap";
 import Callout from "@/components/Callout";
+import Term from "@/components/Term";
+import Aside from "@/components/Aside";
 
 export default function FoundationsPage() {
   return (
@@ -15,24 +17,41 @@ export default function FoundationsPage() {
 
       <div className="prose" style={{ marginTop: 22 }}>
         <p className="lead">
-          Everything you built — and everything we’ll ever discuss — is one of four things, or a conversation between them. Get this picture solid and nothing later will feel like magic.
+          Everything you built — and everything we’ll ever discuss — is one of four things, or a conversation between them. Get this one picture solid and nothing later will feel like magic. We’ll go slowly, and anything underlined you can hover (or tap) to clear the doubt on the spot.
+        </p>
+
+        <p style={{ fontSize: 14, color: "var(--faint)", display: "flex", alignItems: "center", gap: 8, margin: "0 0 1.4rem" }}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10" /><path d="M12 16v-4M12 8h.01" /></svg>
+          Try it: hover this → <Term def="You just cleared your first doubt. Every underlined word works like this — a plain-language definition, right where you need it.">a definition appears here</Term>.
         </p>
 
         <h2>The four characters</h2>
         <p>
-          Your Burger Farm isn’t one program. It’s four cooperating parts, and you literally have a folder for each:
+          Your Burger Farm isn’t one program. It’s <strong>four cooperating parts</strong>, and you literally have a folder for each. Think of them as four characters in a play, each with one job, constantly passing messages to one another.
         </p>
+
         <p>
-          <strong>The app</strong> (<code>apps/mobile-app</code>, built with Flutter) is the part the customer sees and touches. Its job is to <strong>show</strong> things and to <strong>ask</strong> for things. Crucially, it stores almost nothing — when it needs the menu, it doesn’t remember it, it asks.
+          <strong>1. The app</strong> — the <Term id="frontend">frontend</Term> — is the part the customer sees and touches (<code>apps/mobile-app</code>, built with <Term id="flutter">Flutter</Term>). Its whole job is to <strong>show</strong> things and to <strong>ask</strong> for things. Here’s the surprising part: it stores almost nothing. When it needs the menu, it doesn’t remember it from last time — it <em>asks</em> for a fresh copy.
         </p>
+
+        <Aside q="Wait — if the app keeps almost nothing, isn't that slower?">
+          A little, sometimes — but it buys something far more valuable: the app is never wrong. If the owner drops a price, you see the new price the next time the screen loads, because you’re always asking for the live truth instead of trusting a stale copy on your phone. (And for speed, the system keeps ready-made copies of rarely-changing things — that’s <Term id="cache">caching</Term>, which we cover much later.) The rule to remember: <strong>the app asks; it doesn’t remember.</strong>
+        </Aside>
+
         <p>
-          <strong>The backend</strong> (<code>apps/backend</code>, built with Node and Express) is the brain. It runs on a computer in a data centre — a <strong>server</strong> — and it does the real work: checking rules, taking payments, deciding what’s allowed. The app talks to it constantly.
+          <strong>2. The backend</strong> is the brain (<code>apps/backend</code>, built with <Term id="nodejs">Node.js</Term> and <Term id="express">Express</Term>). It runs on a <Term id="server">server</Term> and does the real work: checking the rules, taking payments, deciding what’s allowed. The app talks to it constantly. Its golden rule is <strong>never trust the <Term id="client">client</Term></strong> — the phone can be tampered with, so the backend re-checks everything itself.
         </p>
+
+        <Aside q="What's a 'server', really? Is it 'the cloud'?">
+          A server is just a computer — but one that runs all the time in a data centre and exists to answer requests over the internet, rather than to sit on a desk. “The cloud” simply means renting these computers from a company (like Google or Amazon) instead of owning the physical box. So “it runs on a server in the cloud” = “it runs on a computer we rent that’s always on.” Nothing more mystical than that.
+        </Aside>
+
         <p>
-          <strong>The database</strong> (PostgreSQL) is the memory. Every order, payment and customer is stored here as rows in tables, organised so the backend can find anything instantly — and so nothing is lost when a server restarts.
+          <strong>3. The database</strong> is the memory (<Term id="database">PostgreSQL</Term>). Every order, payment, and customer is stored here as <Term id="row">rows</Term> in <Term id="table">tables</Term>, organised so the backend can find anything instantly — and so nothing is lost when a server restarts. The app never touches it directly; only the backend does.
         </p>
+
         <p>
-          <strong>The admin panel</strong> (<code>apps/admin-panel</code>, built with Next.js) is the control room. It’s a separate screen the business uses to change prices, add offers, or mark an item sold out — without ever touching code or shipping a new app.
+          <strong>4. The admin panel</strong> is the control room (<code>apps/admin-panel</code>, built with <Term id="nextjs">Next.js</Term>). It’s a <em>separate</em> screen the business uses to change prices, add offers, or mark an item sold out — without touching code or shipping a new app. It’s not the customer app with a secret mode; it’s its own application, used by staff.
         </p>
 
         <div style={{ margin: "1.8rem 0" }}>
@@ -50,10 +69,13 @@ export default function FoundationsPage() {
 
         <h2>The journey of a single tap</h2>
         <p>
-          When you tap “Place order”, that one action travels through all four (and a few more). The app sends a request; the backend validates it; the payment is authorised; the database writes it down; the kitchen system is told; it gets cooked and delivered — and status flows back to your screen the whole way.
+          When you tap “Place order”, that one action travels through all four characters (and a few more). Let’s walk it slowly, because this journey is the spine of the entire system:
         </p>
         <p>
-          This journey is the spine of the entire system, so rather than just read it, <strong>watch it move</strong> — and then break it on purpose to see why each safety net exists.
+          The app gathers your cart and sends a <Term id="request">request</Term> to the backend. The backend <strong><Term def="To 'validate' means to check something is true and allowed before acting on it — is the store open? is this really the current price? is the payment real? The backend never assumes; it verifies.">validates</Term></strong> it — is the store open, is the price right, is the address one you deliver to? Then the payment is authorised; the database <strong>writes the order down</strong> all-or-nothing, so a half-saved order can’t exist (that’s a <Term id="transaction">transaction</Term>); the kitchen system is told; the food is cooked and delivered — and the order’s status flows back to your screen the whole way.
+        </p>
+        <p>
+          That’s a lot of safety nets for one tap. Rather than just read it, <strong>watch it move</strong> — and then break it on purpose to see why each net exists:
         </p>
 
         <div style={{ margin: "1.6rem 0" }}>
@@ -68,15 +90,14 @@ export default function FoundationsPage() {
         </Callout>
 
         <Callout variant="deeper" title="Where this goes next">
-          From here the Codex descends: how the app is built in layers (Part 3), how the backend keeps secrets safe (Part 4), how the admin controls everything live (Part 5) — and eventually how this whole thing survives a million users a day (Part 9). Each chapter answers the same four questions: <strong>what</strong> we do, <strong>why</strong> this way, <strong>how</strong> it works, and <strong>when it breaks</strong>.
+          From here the Codex descends: how the app is built in <Link href="/codex/layers-and-separation" style={{ color: "var(--brand-2)", fontWeight: 600 }}>layers</Link>, how the <Link href="/codex/backend" style={{ color: "var(--brand-2)", fontWeight: 600 }}>backend</Link> keeps secrets safe, how the <Link href="/codex/admin-panel" style={{ color: "var(--brand-2)", fontWeight: 600 }}>admin</Link> controls everything live — and eventually how this whole thing survives <Link href="/codex/scale" style={{ color: "var(--brand-2)", fontWeight: 600 }}>a million users a day</Link>. Each chapter answers the same four questions: <strong>what</strong> we do, <strong>why</strong> this way, <strong>how</strong> it works, and <strong>when it breaks</strong>. And every new word gets the underline treatment, so you’re never left guessing.
         </Callout>
       </div>
 
       <div style={{ marginTop: 30, paddingTop: 22, borderTop: "1px solid var(--hairline)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
         <span className="muted" style={{ fontSize: 14 }}>Part 01 of 10 · Foundations</span>
-        <span style={{ fontSize: 14, color: "var(--faint)" }}>Part 02 — the thinking tools · coming soon</span>
+        <Link href="/codex/layers-and-separation" className="muted" style={{ fontSize: 14 }}>Part 02 — Layers & separation →</Link>
       </div>
     </main>
   );
 }
-
