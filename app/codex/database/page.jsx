@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Callout from "@/components/Callout";
+import Term from "@/components/Term";
+import Aside from "@/components/Aside";
 
 const COLS = ["id", "user_id", "store_id", "status", "total", "created_at"];
 const ROW = ["ord_8f3…", "usr_22a…", "str_01…", "CONFIRMED", "358.00", "12:41:07"];
@@ -27,8 +29,12 @@ export default function DatabasePage() {
 
         <h2>What a database actually is</h2>
         <p>
-          Picture a set of very strict spreadsheets. Each <strong>table</strong> is one sheet; each <strong>row</strong> is one thing (one order, one user); each <strong>column</strong> is one fact about it (its total, its status). Here’s your real <code>Order</code> table — one order is one row:
+          Picture a set of very strict spreadsheets. Each <Term id="table"><strong>table</strong></Term> is one sheet; each <Term id="row"><strong>row</strong></Term> is one thing (one order, one user); each <Term id="column"><strong>column</strong></Term> is one fact about it (its total, its status). Here’s your real <code>Order</code> table — one order is one row:
         </p>
+
+        <Aside q="If it's basically a spreadsheet, why not just use Excel or Google Sheets?">
+          Three reasons a spreadsheet falls apart for this. <strong>It can’t enforce rules</strong> — nothing stops someone typing “banana” into the price cell, whereas a database refuses anything that isn’t a valid amount. <strong>It can’t handle many people at once</strong> — two waiters editing the same sheet at the same instant clobber each other; a database carefully serialises them. And <strong>it has no all-or-nothing safety</strong> — if the power cuts mid-edit you get a half-written mess, while a database undoes the whole thing cleanly. A database is a spreadsheet that’s strict, fast, multi-user, and crash-proof — exactly what money demands.
+        </Aside>
 
         <div style={{ margin: "1.6rem 0", overflowX: "auto" }}>
           <table style={{ borderCollapse: "collapse", fontFamily: "JetBrains Mono", fontSize: 12.5, minWidth: 560 }}>
@@ -51,7 +57,7 @@ export default function DatabasePage() {
 
         <h2>Tables don’t live alone — they’re related</h2>
         <p>
-          An order isn’t a lonely island. It belongs to a <strong>user</strong> and a <strong>store</strong>, and it <em>has</em> a list of items. In your schema, <code>Order</code> holds a <code>user_id</code> and a <code>store_id</code> that point at rows in the <code>User</code> and <code>Store</code> tables — those pointers are called <strong>foreign keys</strong>. And one <code>Order</code> fans out into many <code>OrderItem</code> rows, each pointing at a <code>Product</code>:
+          An order isn’t a lonely island. It belongs to a <strong>user</strong> and a <strong>store</strong>, and it <em>has</em> a list of items. In your schema, <code>Order</code> holds a <code>user_id</code> and a <code>store_id</code> that point at rows in the <code>User</code> and <code>Store</code> tables — those pointers are called <Term id="foreign-key"><strong>foreign keys</strong></Term>. And one <code>Order</code> fans out into many <code>OrderItem</code> rows, each pointing at a <code>Product</code>:
         </p>
 
         <div style={{ margin: "1.6rem 0" }}>
@@ -110,7 +116,7 @@ export default function DatabasePage() {
 
         <h2>Why it stays fast: indexes</h2>
         <p>
-          Your <code>Order</code> table has <code>@@index([store_id, status])</code>. An index is exactly like the index at the back of a book: instead of reading every page to find a topic, you jump straight to it. So “show me every <em>pending</em> order for <em>this store</em>” stays instant even when the table holds ten million orders — the database hops to the right rows instead of scanning them all.
+          Your <code>Order</code> table has <code>@@index([store_id, status])</code>. An <Term id="index">index</Term> is exactly like the index at the back of a book: instead of reading every page to find a topic, you jump straight to it. So “show me every <em>pending</em> order for <em>this store</em>” stays instant even when the table holds ten million orders — the database hops to the right rows instead of scanning them all.
         </p>
 
         <Callout variant="why" title="Why PostgreSQL, and not a simpler store?">

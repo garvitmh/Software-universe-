@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Callout from "@/components/Callout";
+import Term from "@/components/Term";
+import Aside from "@/components/Aside";
 
 export default function FlutterAppPage() {
   return (
@@ -48,8 +50,12 @@ export default function FlutterAppPage() {
 
         <h2>How it talks to the backend</h2>
         <p>
-          Every request to the backend goes through one shared network client (built on a library called <strong>Dio</strong>), provided once as <code>apiClientProvider</code>. It’s configured with the base URL, and with <strong>interceptors</strong> — small bits of code that run on every request and response. They attach the auth cookie, add a request-id for tracing, and can retry on a blip. So no screen writes a raw network call; they ask a repository, the repository uses the shared client, and the interceptors handle the cross-cutting stuff invisibly.
+          Every request to the backend goes through one shared network client (built on a library called <Term id="dio"><strong>Dio</strong></Term>), provided once as <code>apiClientProvider</code>. It’s configured with the base URL, and with <Term id="interceptor"><strong>interceptors</strong></Term> — small bits of code that run on every request and response. They attach the auth cookie, add a <Term id="request-id">request-id</Term> for tracing, and can retry on a blip. So no screen writes a raw network call; they ask a <Term id="repository">repository</Term>, the repository uses the shared client, and the interceptors handle the cross-cutting stuff invisibly.
         </p>
+
+        <Aside q="Wait — what's the difference between a &lsquo;library&rsquo; and a &lsquo;framework&rsquo;? People say both.">
+          A <strong>library</strong> is a toolbox <em>you</em> call when you want it — Dio is a library: your code decides when to make a request and calls Dio to do it. A <strong>framework</strong> is the opposite: <em>it</em> calls <em>your</em> code, within a structure it controls — Flutter is a framework, because it runs the show and calls your widgets’ <code>build</code> methods when it decides to redraw. The rule of thumb: you call a library; a framework calls you. (A <strong>package</strong> is just the bundle either one ships in.)
+        </Aside>
 
         <Callout variant="why" title="Why feature-first, not folder-by-type?">
           The other common layout groups by <em>type</em>: all screens in one giant <code>screens/</code> folder, all models in <code>models/</code>, and so on. It looks tidy at first but ages badly — to work on “the menu” you’re hopping across five distant folders, and two features’ files sit jumbled together. Feature-first keeps everything for one feature in one place, so you can understand, change, or even delete a whole feature without spelunking the codebase. The tradeoff is a little repetition of structure across features — a price well worth paying.

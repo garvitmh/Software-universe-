@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Callout from "@/components/Callout";
+import Term from "@/components/Term";
+import Aside from "@/components/Aside";
 
 const FLOW = [
   { name: "Request", sub: "from the app", tint: "var(--blue-soft)", ink: "var(--blue)" },
@@ -27,8 +29,12 @@ export default function BackendPage() {
 
         <h2>What the backend actually is</h2>
         <p>
-          It’s a program that sits on a server, <strong>listens for requests, and answers them</strong>. When your app says “here’s an order,” the backend is what checks the store is open, the price is right, and the payment is real — then writes it down. The golden rule: <strong>never trust the client.</strong> The phone can be tampered with; the backend is the referee that can’t be.
+          It’s a program that sits on a <Term id="server">server</Term>, <strong>listens for requests, and answers them</strong>. When your app says “here’s an order,” the backend is what checks the store is open, the price is right, and the payment is real — then writes it down. The golden rule: <strong>never trust the <Term id="client">client</Term>.</strong> The phone can be tampered with; the backend is the referee that can’t be.
         </p>
+
+        <Aside q="If the app already shows the price, why does the backend check it again? Isn't that wasteful?">
+          Because the app runs on a stranger’s phone, and anything on a phone can be edited. Imagine the app sends “1 burger, ₹40” when the real price is ₹400 — if the backend just trusted that number, it would happily charge ₹40. So the backend ignores the price the app <em>sends</em> and looks up the real one itself. The app’s copy of the price is only there to <em>show</em> you; the backend’s copy is the one that <em>counts</em>. The tiny bit of “wasteful” re-checking is what stops anyone paying themselves a 90% discount.
+        </Aside>
 
         <h2>A request’s path through the brain</h2>
         <p>
@@ -62,12 +68,12 @@ export default function BackendPage() {
 
         <h2>Middleware — the guards at the door</h2>
         <p>
-          <strong>Middleware</strong> is code that runs <em>before</em> the handler, on every matching request. Your backend has two important guards: <code>requireAdmin</code> (is this person actually a logged-in admin?) and <code>requireCsrf</code> (is this state-changing request genuine, not forged?). A request that fails a guard never reaches the handler at all.
+          <Term id="middleware"><strong>Middleware</strong></Term> is code that runs <em>before</em> the handler, on every matching request. Your backend has two important guards: <code>requireAdmin</code> (is this person actually a logged-in admin?) and <code>requireCsrf</code> (is this state-changing request genuine, not forged?). A request that fails a guard never reaches the handler at all.
         </p>
 
         <h2>Auth done right</h2>
         <p>
-          When an admin logs in, the backend sets an <strong>httpOnly cookie</strong> holding a signed token (a <strong>JWT</strong> — basically a tamper-proof “this is who I am” badge). “httpOnly” means JavaScript on the page <em>cannot read it</em> — so even if an attacker sneaks a script onto the page, they can’t steal the login. That was a deliberate choice over the popular habit of stashing the token in the browser’s <code>localStorage</code>, which JavaScript <em>can</em> read (and therefore steal). The tradeoff cookies bring is a different attack — request forgery — which the <code>requireCsrf</code> guard closes.
+          When an admin logs in, the backend sets an <Term id="httponly"><strong>httpOnly cookie</strong></Term> holding a signed token (a <Term id="jwt"><strong>JWT</strong></Term> — basically a tamper-proof “this is who I am” badge). “httpOnly” means JavaScript on the page <em>cannot read it</em> — so even if an attacker sneaks a script onto the page, they can’t steal the login. That was a deliberate choice over the popular habit of stashing the token in the browser’s <code>localStorage</code>, which JavaScript <em>can</em> read (and therefore steal). The tradeoff cookies bring is a different attack — request forgery — which the <code>requireCsrf</code> guard closes.
         </p>
 
         <Callout variant="why" title="Why a cookie, not a token in localStorage?">
