@@ -1,5 +1,6 @@
 import Link from "next/link";
 import FlowMap from "@/components/FlowMap";
+import Callout from "@/components/Callout";
 
 export default function FoundationsPage() {
   return (
@@ -79,20 +80,3 @@ export default function FoundationsPage() {
   );
 }
 
-function Callout({ variant, title, children }) {
-  const map = {
-    why: { bg: "var(--blue-soft)", border: "#CFE3F7", ink: "var(--blue)", label: "Why" },
-    breaks: { bg: "var(--pink-soft)", border: "#F3D3DF", ink: "var(--pink)", label: "What breaks" },
-    deeper: { bg: "var(--amber-soft)", border: "#F1DEB6", ink: "var(--amber)", label: "Go deeper" },
-  };
-  const c = map[variant];
-  return (
-    <div style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 16, padding: "18px 20px", margin: "1.8rem 0" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-        <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: ".08em", textTransform: "uppercase", color: c.ink }}>{c.label}</span>
-      </div>
-      <h3 style={{ fontFamily: "Inter", fontSize: 17, fontWeight: 600, letterSpacing: 0, marginBottom: 6 }}>{title}</h3>
-      <p style={{ color: "var(--ink-2)", fontSize: 15.5, lineHeight: 1.6, margin: 0 }}>{children}</p>
-    </div>
-  );
-}
