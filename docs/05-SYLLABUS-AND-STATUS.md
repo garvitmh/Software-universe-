@@ -1,61 +1,65 @@
 # 05 · Syllabus & Status
 
-Legend: ✅ built · ◐ partial · ⬜ not started. Each topic = a Codex chapter (`/codex/<slug>`) + (usually) a Simulator interactive (`/simulator/<slug>`).
+Legend: ✅ built · ◐ partial · ⬜ not started. Each topic = a Codex chapter (`/codex/<slug>`) and most have a Simulator interactive (`/simulator/<slug>`).
 
 ## Status at a glance
-- ✅ **Shell & engine:** Next.js app, Warm Farm design system, `SiteNav`, home/campus, `FlowMap`, the `OrderJourney` interactive pattern.
-- ✅ **Phase 1 content:** Part 1 Foundations (Codex) + the order-journey (Simulator).
-- ⬜ **Everything below Part 1**, plus the cross-cutting features (knowledge graph, sequence diagrams, 3D, scaling sliders, deploy).
+- ✅ **Shell & engine:** Next.js app, Warm Farm design system, `SiteNav`, home/campus, `FlowMap`, shared `Callout`, the `OrderJourney` interactive pattern.
+- ✅ **World 1 — The Codex: COMPLETE.** All 10 parts written and live, every chapter grounded in the real Burger Farm code (verified against `apps/backend/prisma/schema.prisma`, the menu feature, motion engine, render.yaml, etc.).
+- ✅ **World 2 — The Simulator: hub + 4 interactives** (order-journey, scaling, cart-drift, loyalty-ledger).
+- ⬜ **Cross-cutting upgrades** (knowledge graph, Mermaid, 3D, progress tracking) — optional polish, not started.
+- ⬜ **Deploy to Vercel** — owner will do this; site builds clean.
 
-## The curriculum
-> Anchors = the real Burger Farm files/features to read in `~/Desktop/zone-trial` before writing.
+## The curriculum — all Codex chapters built ✅
+> Anchors = the real Burger Farm files the chapter is grounded in.
 
-**Part 1 — Foundations** ✅
-- `foundations` — the four characters + the journey of a tap. *(Codex ✅ + Simulator `order-journey` ✅.)*
+**Part 01 — Foundations** ✅ `/codex/foundations`
+- The four characters + the journey of a tap. *(Simulator: `order-journey` ✅.)*
 
-**Part 2 — The thinking tools (principles)** ⬜
-- `layers-and-separation` — UI→Controller→Service→Repository→DB; Separation of Concerns. *Anchor: `apps/mobile-app/lib/features/menu/*`.*
-- `repository-pattern`, `dependency-injection`, `solid-dry-kiss-yagni`, `state-management` (why Riverpod).
+**Part 02 — The thinking tools** ✅
+- `/codex/layers-and-separation` — layers, SoC, Repository pattern, Dependency Injection. *Anchor: `menu_repository.dart`, `menu_provider.dart`.*
+- `/codex/state-management` — single source of truth, derived/reactive state, Riverpod. *Anchor: `menu_cart_provider.dart`, `menu_provider.dart`.* *(Simulator: `cart-drift` ✅.)*
 
-**Part 3 — Your Flutter app, layer by layer** ⬜
-- `flutter-app` — widgets, providers, controllers, repositories, models, networking. *Anchor: `apps/mobile-app/lib/features/{menu,home}`.*
+**Part 03 — Your Flutter app, layer by layer** ✅ `/codex/flutter-app`
+- Feature-first folders, navigation/router, Dio client + interceptors (`apiClientProvider`). *Anchor: `apps/mobile-app/lib/features/*`.*
 
-**Part 4 — Backend & database** ⬜
-- `backend` — Express routes/services/middleware; auth (cookies/JWT/CSRF). *Anchor: `apps/backend/src/{routes,services,middleware}`.*
-- `database` — Postgres tables, relationships, indexes, transactions, migrations. *Anchor: `apps/backend/prisma/schema.prisma`.*
+**Part 04 — The backend** ✅ `/codex/backend`
+- Request path: middleware → route → service; cookie+JWT+CSRF auth; statelessness. *Anchor: `apps/backend/src/{app.ts,routes,services,middleware}`.*
 
-**Part 5 — The admin panel** ⬜
-- `admin-panel` — how one screen controls the whole app; roles; live sync (SSE `MENU_SYNC`/`CONFIG_SYNC`). *Anchor: `apps/admin-panel`.*
+**Part 05 — The database** ✅ `/codex/database`
+- Tables/rows/relations, foreign keys, `Decimal(10,2)` money, `idempotency_key @unique`, transactions, indexes, Prisma. *Anchor: `schema.prisma` (Order/OrderItem/OrderPayment).*
 
-**Part 6 — Feature deep-dives** ⬜
-- `burger-builder` — the motion engine: layered assets, presets, app↔backend↔admin sync. *Anchor: `apps/mobile-app/lib/features/menu/motion/*` + the admin Presentation Studio.*  ← high-value, the owner is proud of this one.
-- `cart-and-orders`, `dynamic-content`.
+**Part 06 — The admin panel** ✅ `/codex/admin-panel`
+- Content-as-data (`ContentBlock`/`ContentItem`), per-store overrides (`StoreProduct`/`StoreAssetOverride`), Refine CRUD, `AuditLog`, reused cookie+CSRF auth. *Anchor: `apps/admin-panel`, schema.*
 
-**Part 7 — Big systems (taught as design space, since being built)** ⬜
-- `loyalty` (points vs coupons vs tiers vs hybrid) · `payments` (Razorpay: webhooks, signature verification, idempotency, refunds) · `delivery` (Dunzo/Zomato) · `pos` (Flamboyant: sync, offline).
+**Part 07 — The burger builder & motion engine** ✅ `/codex/burger-builder`
+- Immutable state + `copyWith` (`BurgerCustomization`), derived geometry (`burger_stack.dart`), motion design tokens (`app_motion.dart`), dynamic add-on prices. *Anchor: `features/menu/presentation/builder/*`, `core/theme/app_motion.dart`.*
 
-**Part 8 — Enterprise plumbing** ⬜
-- `caching` · `queues` · `rate-limiting-load-balancing` · `security` · `observability` · `testing`. *(Simulator gold here: crash Redis, drop the queue, watch it break.)*
+**Part 08 — Big systems** ✅ `/codex/big-systems`
+- Payment gateway/webhooks, `OrderStatus` state machine, `OrderEvent` audit log, loyalty **ledger** (`LoyaltyTransaction`) with idempotency + optimistic-concurrency `version`, serviceability (`UserAddress` lat/lng). *Anchor: schema loyalty + order models.* *(Simulator: `loyalty-ledger` ✅.)*
 
-**Part 9 — Scale & evolution** ⬜
-- `scaling` — 10 → 1,000,000 users; how the architecture morphs; how the giants do it. *(Simulator: a users slider that re-renders the architecture.)*
+**Part 09 — Enterprise plumbing & scale** ✅ `/codex/scale`
+- Caching + invalidation, load-balancing/horizontal scaling, queues, read replicas, observability (request-id), `/api/v1` versioning. *(Simulator: `scaling` ✅.)*
 
-**Part 10 — Deployment & ops** ⬜
-- `deployment` — what containers / Docker / Kubernetes are; CI/CD; the current Render setup; monitoring.
+**Part 10 — Deployment & ops** ✅ `/codex/deployment`
+- Release pipeline, env-var secrets (`.env.example`), build-vs-run (`prisma generate && tsc` → `dist/`), infra-as-code (`render.yaml`), migrations on deploy, containers/Kubernetes. *Anchor: `render.yaml`, backend `package.json` scripts, `.env.example`.*
 
-## Cross-cutting features still to build
-- ⬜ **Knowledge graph** navigation (React Flow) — clickable rabbit-hole map instead of a flat list.
+## World 2 — Simulator interactives
+- ✅ `order-journey` — 8-stage pipeline with the POS-offline → queued rescue. (`components/OrderJourney.jsx`)
+- ✅ `scaling` — drag users 10→1M, toggle infra, watch health/latency. (`components/ScalingSim.jsx`)
+- ✅ `cart-drift` — scattered copies vs one source of truth; the live overcharge bug. (`components/CartDriftSim.jsx`)
+- ✅ `loyalty-ledger` — append-only ledger, earn/redeem, idempotent retry block. (`components/LoyaltyLedgerSim.jsx`)
+- Hub at `/simulator` lists all four.
+
+## Cross-cutting features still to build (optional polish)
+- ⬜ **Knowledge graph** navigation (React Flow) — clickable map instead of the flat home list.
 - ⬜ **Mermaid sequence diagrams** per topic.
-- ⬜ **3D order-journey** (react-three-fiber + GSAP) — upgrade the current smooth-2D journey.
-- ⬜ **Scaling sliders** as a reusable interactive.
-- ⬜ **Progress tracking** (localStorage) — quiet, no quizzes.
-- ⬜ **Promote `Callout` to `components/Callout.jsx`** once a 2nd chapter needs it.
+- ⬜ **3D order-journey** (react-three-fiber + GSAP).
+- ⬜ **Progress tracking** (localStorage) — quiet, no quizzes (owner rejected quizzes).
+- ⬜ A `layers`/repository "swap the backend" simulator.
 - ⬜ **Deploy** to Vercel.
 
-## Roadmap (phases)
-1. ✅ **Phase 1** — shell + Foundations + order-journey (DONE).
-2. **Phase 2** — build all Codex chapters + Simulator interactives for Parts 2–6 (the owner's real, existing system).
-3. **Phase 3** — Parts 7–10 (the big systems + enterprise + scale + deploy), taught partly as design space.
-4. **Phase 4** — cross-cutting upgrades (knowledge graph, sequence diagrams, 3D, scaling sliders) + **deploy to Vercel**.
-
-> The owner wants the **whole thing built before they review it**, so work through Phases 2→4 systematically, keeping each topic consistent with `02`–`04`, and verify each route runs before moving on.
+## How to continue
+- The pattern for a Codex chapter: see any file in `app/codex/*/page.jsx` — `.wrap-narrow`, back-link, category `.pill`, Fraunces `<h1>`, `.prose` body, `Callout` variants (why/breaks/deeper/scale/giants), prev/next footer. Server components (no `"use client"`).
+- The pattern for a Simulator: a `"use client"` component in `components/` + a thin page in `app/simulator/<slug>/page.jsx`; register it in the `SIMS` array in `app/simulator/page.jsx`.
+- **Always ground content in the real repo** (`~/Desktop/Burger Farm Dev`), and verify each route returns 200 before committing. Run `npm run build` before deploy.
+- Four questions every topic answers: **what · why (+alternatives/tradeoffs) · how · when it breaks.** No quizzes. Plain language, not childish.
