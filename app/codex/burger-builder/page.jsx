@@ -114,7 +114,7 @@ export default function BurgerBuilderPage() {
 
       <div style={{ marginTop: 30, paddingTop: 22, borderTop: "1px solid var(--hairline)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
         <Link href="/codex/admin-panel" className="muted" style={{ fontSize: 14 }}>← Part 06 — The admin panel</Link>
-        <span style={{ fontSize: 14, color: "var(--faint)" }}>Next — Big systems: loyalty, payments, delivery, POS · coming soon</span>
+        <Link href="/codex/big-systems" className="muted" style={{ fontSize: 14 }}>Part 08 — Big systems →</Link>
       </div>
     </main>
   );

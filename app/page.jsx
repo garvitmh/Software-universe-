@@ -9,7 +9,7 @@ const PARTS = [
   { n: "05", title: "The database — the memory", status: "open", href: "/codex/database" },
   { n: "06", title: "The admin panel — the control room", status: "open", href: "/codex/admin-panel" },
   { n: "07", title: "The burger builder & motion engine", status: "open", href: "/codex/burger-builder" },
-  { n: "08", title: "Big systems — loyalty, payments, delivery, POS", status: "soon" },
+  { n: "08", title: "Big systems — payments, orders, loyalty, delivery", status: "open", href: "/codex/big-systems" },
   { n: "09", title: "Enterprise plumbing & scale — caching, queues, a million users", status: "soon" },
   { n: "10", title: "Deployment & ops — Docker, Kubernetes, the lot", status: "soon" },
 ];
