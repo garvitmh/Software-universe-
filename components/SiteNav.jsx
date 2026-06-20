@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ThemeToggle from "./ThemeToggle";
 
 export default function SiteNav() {
   return (
@@ -7,8 +8,8 @@ export default function SiteNav() {
         position: "sticky",
         top: 0,
         zIndex: 50,
-        backdropFilter: "saturate(140%) blur(10px)",
-        background: "rgba(251,247,238,.82)",
+        backdropFilter: "saturate(140%) blur(12px)",
+        background: "color-mix(in srgb, var(--bg) 80%, transparent)",
         borderBottom: "1px solid var(--hairline)",
       }}
     >
@@ -27,8 +28,8 @@ export default function SiteNav() {
               width: 32,
               height: 32,
               borderRadius: 9,
-              background: "#2A1B0E",
-              color: "#F6924E",
+              background: "var(--ink)",
+              color: "var(--bg)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -47,6 +48,8 @@ export default function SiteNav() {
           <NavLink href="/codex/foundations" label="The Codex" />
           <NavLink href="/roadmap" label="The Roadmap" />
           <NavLink href="/simulator" label="The Simulator" />
+          <div style={{ width: 1, height: 16, background: "var(--hairline-2)", margin: "0 4px" }} />
+          <ThemeToggle />
         </div>
       </div>
     </nav>
