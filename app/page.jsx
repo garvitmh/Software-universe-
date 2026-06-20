@@ -10,8 +10,8 @@ const PARTS = [
   { n: "06", title: "The admin panel — the control room", status: "open", href: "/codex/admin-panel" },
   { n: "07", title: "The burger builder & motion engine", status: "open", href: "/codex/burger-builder" },
   { n: "08", title: "Big systems — payments, orders, loyalty, delivery", status: "open", href: "/codex/big-systems" },
-  { n: "09", title: "Enterprise plumbing & scale — caching, queues, a million users", status: "soon" },
-  { n: "10", title: "Deployment & ops — Docker, Kubernetes, the lot", status: "soon" },
+  { n: "09", title: "Enterprise plumbing & scale — caching, queues, a million users", status: "open", href: "/codex/scale" },
+  { n: "10", title: "Deployment & ops — Render, Docker, Kubernetes, the lot", status: "open", href: "/codex/deployment" },
 ];
 
 export default function Home() {

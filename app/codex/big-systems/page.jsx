@@ -120,7 +120,7 @@ export default function BigSystemsPage() {
 
       <div style={{ marginTop: 30, paddingTop: 22, borderTop: "1px solid var(--hairline)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
         <Link href="/codex/burger-builder" className="muted" style={{ fontSize: 14 }}>← Part 07 — The burger builder</Link>
-        <span style={{ fontSize: 14, color: "var(--faint)" }}>Next — Enterprise plumbing & scale · coming soon</span>
+        <Link href="/codex/scale" className="muted" style={{ fontSize: 14 }}>Part 09 — Enterprise plumbing & scale →</Link>
       </div>
     </main>
   );
