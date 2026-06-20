@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Callout from "@/components/Callout";
+import Term from "@/components/Term";
+import Aside from "@/components/Aside";
 
 const READERS = [
   { name: "Floating cart bar", sub: "“2 items · ₹358”" },
@@ -62,10 +64,14 @@ export default function StatePage() {
 
         <h2>How it works in your code</h2>
         <p>
-          In your app, that “one place” is a <strong>provider</strong> (from a library called <strong>Riverpod</strong>). <code>menu_cart_provider.dart</code> holds the cart; the floating cart bar and the cart screen both <em>watch</em> it, so they’re always in lock-step.
+          In your app, that “one place” is a <Term id="provider"><strong>provider</strong></Term> (from a library called <Term id="riverpod"><strong>Riverpod</strong></Term>). <code>menu_cart_provider.dart</code> holds the cart; the floating cart bar and the cart screen both <em>watch</em> it, so they’re always in lock-step.
         </p>
+
+        <Aside q="Isn't &lsquo;one source of truth&rsquo; just a global variable I could make myself?">
+          Close — and that instinct is right! The difference is the <em>reacting</em>. A plain global variable holds the cart, but when you change it, nothing else notices — you’d have to manually go and tell the icon, the bill, and the cart screen to redraw, and the day you forget one, the bug is back. A provider is a global value that also <strong>announces its own changes</strong>: everyone watching is redrawn automatically, every time, with no manual telling. So it’s a global variable with the one superpower that actually matters here.
+        </Aside>
         <p>
-          It gets cleverer. In <code>menu_provider.dart</code>, the active filter and the active category are their own little providers, and <code>menuVisibleProductsProvider</code> <strong>derives</strong> the on-screen product list from three things: the full catalogue, the chosen filter, and the chosen category. Tap “Veg” and you change <em>one</em> value — the visible list recomputes itself and the screen redraws, with you never manually syncing anything. That automatic recompute-on-change is what people mean by <strong>reactive</strong>.
+          It gets cleverer. In <code>menu_provider.dart</code>, the active filter and the active category are their own little providers, and <code>menuVisibleProductsProvider</code> <strong>derives</strong> the on-screen product list from three things: the full catalogue, the chosen filter, and the chosen category. Tap “Veg” and you change <em>one</em> value — the visible list recomputes itself and the screen redraws, with you never manually syncing anything. That automatic recompute-on-change is what people mean by <Term id="reactive"><strong>reactive</strong></Term>.
         </p>
 
         <Callout variant="why" title="Why Riverpod, and not just a quick variable?">

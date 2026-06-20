@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Callout from "@/components/Callout";
+import Term from "@/components/Term";
+import Aside from "@/components/Aside";
 
 const LAYERS = [
   { name: "UI — the screen", sub: "shows things, captures taps", tint: "var(--blue-soft)", ink: "var(--blue)" },
@@ -51,7 +53,7 @@ export default function LayersPage() {
 
         <h2>Follow it in your real code</h2>
         <p>
-          This isn’t a textbook diagram — it’s literally how your menu loads. The screen <strong>watches</strong> a provider called <code>menuVisibleProductsProvider</code>, which is fed by <code>menuCatalogProvider</code> (<code>apps/mobile-app/lib/features/menu/presentation/providers/menu_provider.dart</code>). That provider doesn’t know any URLs — it just asks a <strong>repository</strong>:
+          This isn’t a textbook diagram — it’s literally how your menu loads. The screen <strong>watches</strong> a <Term id="provider">provider</Term> called <code>menuVisibleProductsProvider</code>, which is fed by <code>menuCatalogProvider</code> (<code>apps/mobile-app/lib/features/menu/presentation/providers/menu_provider.dart</code>). That provider doesn’t know any URLs — it just asks a <strong>repository</strong>:
         </p>
         <p>
           <code>apps/mobile-app/lib/features/menu/data/menu_repository.dart</code> is the only place in the entire app that knows the menu lives at <code>GET /api/v1/menu</code>. It fetches, turns the raw response into clean <code>MenuProduct</code> objects, and hands them up. <strong>The screen never builds a URL, and never touches the database.</strong> It just asks for “the menu” and trusts what comes back.
@@ -59,11 +61,15 @@ export default function LayersPage() {
 
         <h2>Two patterns are hiding in there</h2>
         <p>
-          <strong>The Repository pattern.</strong> The screen says “give me the menu,” not “make an HTTP GET to this address and parse this JSON.” The <em>how</em> is sealed inside the repository. That one wall is what lets you change the <em>how</em> without touching the screen.
+          <strong>The <Term id="repository">Repository pattern</Term>.</strong> The screen says “give me the menu,” not “make an HTTP GET to this address and parse this JSON.” The <em>how</em> is sealed inside the repository. That one wall is what lets you change the <em>how</em> without touching the screen.
         </p>
         <p>
-          <strong>Dependency injection.</strong> Notice the repository doesn’t <em>create</em> its own network client — it’s <strong>handed</strong> one: <code>MenuRepository(ref.watch(apiClientProvider))</code>. “Don’t reach for your tools — have them handed to you.” That tiny inversion is what makes the repository swappable and testable: you can hand it a fake client in a test and it never knows the difference.
+          <strong><Term id="dependency-injection">Dependency injection</Term>.</strong> Notice the repository doesn’t <em>create</em> its own network client — it’s <strong>handed</strong> one: <code>MenuRepository(ref.watch(apiClientProvider))</code>. “Don’t reach for your tools — have them handed to you.” That tiny inversion is what makes the repository swappable and testable: you can hand it a fake client in a test and it never knows the difference.
         </p>
+
+        <Aside q="So what does &lsquo;inject&rsquo; actually mean? It sounds intimidating.">
+          It’s a fancy word for a simple thing: instead of a piece of code <em>building</em> the tools it needs, those tools are <strong>handed in from outside</strong>. Compare two kitchens: in one, the chef mines the ore and forges his own knife before cooking (he <em>creates</em> his tools); in the other, the knife is simply placed on the counter for him (it’s <em>injected</em>). The second chef is easier to test — hand him a rubber knife and watch what he does — and easy to upgrade, because you swap the knife without retraining the chef. That’s all dependency injection is: <strong>have your tools handed to you, don’t reach for them yourself.</strong>
+        </Aside>
         <p>
           And the umbrella idea over all of this — keeping the screen’s job (showing) apart from the data’s job (fetching) apart from the truth (the database) — has a name you’ll meet everywhere: <strong>Separation of Concerns</strong>. You just understood it from the inside, before the jargon.
         </p>
