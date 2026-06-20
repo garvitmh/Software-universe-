@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Callout from "@/components/Callout";
 import { ALL_TECH } from "@/lib/curriculum";
+import { fmt } from "@/lib/fmt";
 
 const TINTS = {
   blue: { soft: "var(--blue-soft)", ink: "var(--blue)" },
@@ -10,16 +11,6 @@ const TINTS = {
   pink: { soft: "var(--pink-soft)", ink: "var(--pink)" },
   brand: { soft: "var(--brand-soft)", ink: "var(--brand-2)" },
 };
-
-// tiny inline formatter: `code` and **bold**
-function fmt(str) {
-  const parts = String(str).split(/(`[^`]+`|\*\*[^*]+\*\*)/g);
-  return parts.map((p, i) => {
-    if (p.startsWith("`") && p.endsWith("`")) return <code key={i}>{p.slice(1, -1)}</code>;
-    if (p.startsWith("**") && p.endsWith("**")) return <strong key={i}>{p.slice(2, -2)}</strong>;
-    return <span key={i}>{p}</span>;
-  });
-}
 
 function Paras({ items }) {
   return (items || []).map((p, i) => <p key={i}>{fmt(p)}</p>);
