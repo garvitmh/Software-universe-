@@ -85,7 +85,7 @@ export default function AdminPanelPage() {
 
       <div style={{ marginTop: 30, paddingTop: 22, borderTop: "1px solid var(--hairline)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
         <Link href="/codex/database" className="muted" style={{ fontSize: 14 }}>← Part 05 — The database</Link>
-        <span style={{ fontSize: 14, color: "var(--faint)" }}>Next — The Burger Builder, the motion engine · coming soon</span>
+        <Link href="/codex/burger-builder" className="muted" style={{ fontSize: 14 }}>Part 07 — The burger builder →</Link>
       </div>
     </main>
   );

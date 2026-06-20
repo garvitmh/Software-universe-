@@ -3,14 +3,14 @@ import FlowMap from "@/components/FlowMap";
 
 const PARTS = [
   { n: "01", title: "Foundations — how it all fits together", status: "open", href: "/codex/foundations" },
-  { n: "02", title: "The thinking tools — engineering principles", status: "soon" },
-  { n: "03", title: "Your Flutter app, layer by layer", status: "soon" },
-  { n: "04", title: "The backend & the database", status: "soon" },
-  { n: "05", title: "The admin panel — controlling the whole app", status: "soon" },
-  { n: "06", title: "The burger builder & motion engine", status: "soon" },
-  { n: "07", title: "Big systems — loyalty, payments, delivery, POS", status: "soon" },
-  { n: "08", title: "Enterprise plumbing — caching, queues, security", status: "soon" },
-  { n: "09", title: "Scale — from 10 to 1,000,000 users", status: "soon" },
+  { n: "02", title: "The thinking tools — layers & state", status: "open", href: "/codex/layers-and-separation" },
+  { n: "03", title: "Your Flutter app, layer by layer", status: "open", href: "/codex/flutter-app" },
+  { n: "04", title: "The backend — the brain", status: "open", href: "/codex/backend" },
+  { n: "05", title: "The database — the memory", status: "open", href: "/codex/database" },
+  { n: "06", title: "The admin panel — the control room", status: "open", href: "/codex/admin-panel" },
+  { n: "07", title: "The burger builder & motion engine", status: "open", href: "/codex/burger-builder" },
+  { n: "08", title: "Big systems — loyalty, payments, delivery, POS", status: "soon" },
+  { n: "09", title: "Enterprise plumbing & scale — caching, queues, a million users", status: "soon" },
   { n: "10", title: "Deployment & ops — Docker, Kubernetes, the lot", status: "soon" },
 ];
 
