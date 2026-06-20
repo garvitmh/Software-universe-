@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Callout from "@/components/Callout";
+import Term from "@/components/Term";
+import Aside from "@/components/Aside";
 
 const STATES = [
   { s: "PENDING_PAYMENT", t: "var(--amber)" },
@@ -34,8 +36,12 @@ export default function BigSystemsPage() {
 
         <h2>Payments — talking to a bank you don’t control</h2>
         <p>
-          Payment is its own record in your schema (<code>OrderPayment</code>), separate from the order, because it’s a conversation with an external <strong>gateway</strong> that answers on its own schedule. The order starts at <code>PENDING_PAYMENT</code>; only once the gateway truly confirms does it move on. The iron rule: <strong>never trust the phone’s word that payment succeeded</strong> — a tampered app could just claim it did. The backend confirms with the gateway directly (often via a <strong>webhook</strong> — the gateway calling your backend back to say “this one’s paid”). And the <code>idempotency_key</code> from Part 05 means a retried payment request can’t charge twice.
+          Payment is its own record in your schema (<code>OrderPayment</code>), separate from the order, because it’s a conversation with an external <strong>gateway</strong> that answers on its own schedule. The order starts at <code>PENDING_PAYMENT</code>; only once the gateway truly confirms does it move on. The iron rule: <strong>never trust the phone’s word that payment succeeded</strong> — a tampered app could just claim it did. The backend confirms with the gateway directly (often via a <Term id="webhook"><strong>webhook</strong></Term> — the gateway calling your backend back to say “this one’s paid”). And the <code>idempotency_key</code> from Part 05 means a retried payment request can’t charge twice.
         </p>
+
+        <Aside q="Why does the payment gateway &lsquo;call us back&rsquo;? Why not just wait for its answer?">
+          Because taking a payment is slow and uncertain — it may bounce between your gateway, the customer’s bank, and a fraud check, taking seconds and sometimes needing the customer to approve on their banking app. If your backend just <em>froze</em> waiting for all that, it would tie up resources and might time out. So instead the backend says “let me know when it’s done” and moves on; when the gateway finishes, it sends a fresh request <em>to</em> your backend — the webhook — saying “order #123 is paid.” It’s the difference between standing at the door waiting for a delivery versus getting a text when it arrives.
+        </Aside>
 
         <h2>The order’s whole life is a state machine</h2>
         <p>

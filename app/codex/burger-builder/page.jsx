@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Callout from "@/components/Callout";
+import Term from "@/components/Term";
+import Aside from "@/components/Aside";
 
 const TOKENS = [
   { name: "spring", val: "cubic(0.16, 1, 0.3, 1)", use: "page transitions, hero scale, panels" },
@@ -37,6 +39,10 @@ export default function BurgerBuilderPage() {
         <p>
           Why never edit in place? Because immutable state is <strong>predictable</strong>. Every change produces a brand-new value, so nothing can be altered behind another widget’s back — the drift bug from Part 02 is impossible by construction. And because each tap is a clean new state, “undo” is trivial: just keep the previous object. This is the same single-source-of-truth idea you already met, made even stricter.
         </p>
+
+        <Aside q="Making a whole new copy on every tap — isn't that wasteful and slow?">
+          It feels like it should be, but no — and here’s the clever part. The copy isn’t a deep duplicate of everything; the new object <em>reuses</em> all the unchanged pieces and only swaps the one field you changed. Picking “wheat bun” doesn’t rebuild the cheese, the add-ons, and the removals from scratch — they’re shared with the old object untouched. So you get all the safety of “never edit in place” for almost none of the cost. Modern apps make millions of these cheap copies a second without breaking a sweat.
+        </Aside>
 
         <h2>Idea 2 — the picture is derived, never stored</h2>
         <p>

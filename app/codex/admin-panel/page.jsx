@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Callout from "@/components/Callout";
+import Term from "@/components/Term";
+import Aside from "@/components/Aside";
 
 export default function AdminPanelPage() {
   return (
@@ -19,8 +21,12 @@ export default function AdminPanelPage() {
 
         <h2>The trick: the app reads, the admin writes, the database is in the middle</h2>
         <p>
-          The customer’s app holds almost nothing of its own. It <em>asks</em> the backend for everything — the menu, the prices, the banners — and simply draws whatever it’s handed. The admin panel writes those same things into the same database. So the two apps never talk to each other, yet they’re perfectly connected through the data:
+          The customer’s app holds almost nothing of its own. It <em>asks</em> the backend for everything — the menu, the prices, the banners — and simply draws whatever it’s handed. The admin panel writes those same things into the same <Term id="database">database</Term>. So the two apps never talk to each other, yet they’re perfectly connected through the data:
         </p>
+
+        <Aside q="So the two apps just&hellip; share one database? How does a change here reach a phone?">
+          Exactly — and that sharing is the whole trick. There’s <strong>one</strong> database, sitting behind the backend. The admin app <em>writes</em> to it; the customer app <em>reads</em> from it. They never message each other directly — the database in the middle is the shared truth. So when an admin saves a new price, it lands in that one database, and the very next time a phone asks for the menu, it gets the new price. No signal is sent to the phones; they simply read fresh truth every time they ask. (For instant updates without waiting for the next ask, there’s also a live nudge — that’s <Term id="sse">SSE</Term>, covered later.)
+        </Aside>
 
         <div style={{ margin: "1.8rem 0" }}>
           <div style={{ display: "flex", alignItems: "stretch", justifyContent: "center", gap: 0, flexWrap: "wrap" }}>
@@ -62,7 +68,7 @@ export default function AdminPanelPage() {
 
         <h2>It didn’t build every screen by hand: Refine</h2>
         <p>
-          An admin console is mostly the same four screens for every kind of thing: a <strong>list</strong>, a <strong>create</strong> form, an <strong>edit</strong> form, and a <strong>detail</strong> view (developers call this “CRUD” — create, read, update, delete). The panel uses a framework called <strong>Refine</strong> that generates this scaffolding over each backend resource, so staff get a real, consistent console without someone hand-coding hundreds of nearly-identical forms.
+          An admin console is mostly the same four screens for every kind of thing: a <strong>list</strong>, a <strong>create</strong> form, an <strong>edit</strong> form, and a <strong>detail</strong> view (developers call this “<Term id="crud">CRUD</Term>” — create, read, update, delete). The panel uses a framework called <Term id="refine"><strong>Refine</strong></Term> that generates this scaffolding over each backend resource, so staff get a real, consistent console without someone hand-coding hundreds of nearly-identical forms.
         </p>
 
         <h2>And it’s locked down</h2>

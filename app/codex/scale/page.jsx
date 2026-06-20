@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Callout from "@/components/Callout";
+import Term from "@/components/Term";
+import Aside from "@/components/Aside";
 
 const RUNGS = [
   { users: "10", add: "One backend, one database. That’s genuinely enough.", tint: "var(--teal-soft)", ink: "var(--teal)" },
@@ -50,8 +52,12 @@ export default function ScalePage() {
 
         <h2>Horizontal scaling — many copies, one door</h2>
         <p>
-          Remember the backend is <strong>stateless</strong> (Part 04) — it keeps no session in its own memory. That single property is what lets you run twenty identical copies and put a <strong>load balancer</strong> in front: one public door that spreads requests across them. Traffic doubles? Add more copies. Because no copy is “the one that remembers you,” it doesn’t matter which answers your request. Statelessness, decided way back in Part 4, is the thing that cashes out here.
+          Remember the backend is <Term id="stateless"><strong>stateless</strong></Term> (Part 04) — it keeps no session in its own memory. That single property is what lets you run twenty identical copies and put a <Term id="load-balancer"><strong>load balancer</strong></Term> in front: one public door that spreads requests across them. Traffic doubles? Add more copies. Because no copy is “the one that remembers you,” it doesn’t matter which answers your request. Statelessness, decided way back in Part 4, is the thing that cashes out here.
         </p>
+
+        <Aside q="What's the difference between a bigger server and more servers?">
+          Two ways to handle more customers. <strong>Vertical scaling</strong> is buying a bigger machine — more memory, faster chip — for the one server you have. It’s simple, but there’s a ceiling (the biggest machine money can buy) and it’s a single point of failure. <strong>Horizontal scaling</strong> is running <em>many</em> ordinary machines side by side and sharing the load between them. It scales almost without limit and survives one machine dying — but it only works if the thing you’re copying is stateless, so any copy can handle any request. That’s why “stateless” mattered so much: it’s the key that unlocks the better kind of scaling.
+        </Aside>
 
         <h2>Queues — get the slow stuff off the critical path</h2>
         <p>

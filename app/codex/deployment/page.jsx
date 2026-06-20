@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Callout from "@/components/Callout";
+import Term from "@/components/Term";
+import Aside from "@/components/Aside";
 
 const PIPE = [
   { name: "Push", sub: "you commit code", tint: "var(--blue-soft)", ink: "var(--blue)" },
@@ -48,8 +50,12 @@ export default function DeploymentPage() {
 
         <h2>Config lives in the environment, never in the code</h2>
         <p>
-          The backend needs secrets and settings: the database address (<code>DATABASE_URL</code>), the token-signing key (<code>JWT_SECRET</code>), the port, the frontend URL. None of these are written in the code — they’re read from <strong>environment variables</strong>, supplied separately wherever the app runs. Your repo ships an <code>.env.example</code> that lists the <em>names</em> with blank values, so the shape is documented, while the real values stay out of the codebase entirely. This is the golden rule of ops: <strong>never commit a secret.</strong> The same code runs in development and production; only the environment around it differs.
+          The backend needs secrets and settings: the database address (<code>DATABASE_URL</code>), the token-signing key (<code>JWT_SECRET</code>), the port, the frontend URL. None of these are written in the code — they’re read from <Term id="environment-variable"><strong>environment variables</strong></Term>, supplied separately wherever the app runs. Your repo ships an <code>.env.example</code> that lists the <em>names</em> with blank values, so the shape is documented, while the real values stay out of the codebase entirely. This is the golden rule of ops: <strong>never commit a secret.</strong> The same code runs in development and production; only the environment around it differs.
         </p>
+
+        <Aside q="Why is committing a secret such a disaster — it's our own private repo?">
+          Three reasons it bites. First, repos rarely stay private — they get shared, forked, made public, or a laptop gets stolen, and the secret leaks with the code. Second, git <strong>never forgets</strong>: even if you delete the secret in the next commit, it’s still sitting in the history forever, one command away. Third, a leaked <code>DATABASE_URL</code> or <code>JWT_SECRET</code> isn’t a small thing — it’s the literal keys to read your whole database or forge any login. Keeping secrets in the environment means the code can be as public as you like, while the keys stay separate and rotatable.
+        </Aside>
 
         <h2>Build vs run — source becomes an artifact</h2>
         <p>
