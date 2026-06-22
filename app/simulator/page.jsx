@@ -36,6 +36,27 @@ const SIMS = [
     tag: "Resilience", emoji: "🐒",
     grad: "linear-gradient(120deg, #F43F5E 0%, #BE123C 100%)",
   },
+  {
+    href: "/simulator/raft",
+    title: "Raft Distributed Consensus",
+    desc: "Watch leader election heartbeats and split-brain scenarios in a visual cluster, then ask Socratic AI how it guarantees consistency across replicas.",
+    tag: "Consensus", emoji: "🗳️",
+    grad: "linear-gradient(120deg, #7C5CFC 0%, #FF4D8D 100%)",
+  },
+  {
+    href: "/simulator/llm",
+    title: "LLM Transformer internals",
+    desc: "Visualize real-time matrix multiplications, query self-attention states, and understand how modern transformers generate tokens.",
+    tag: "AI Engine", emoji: "🤖",
+    grad: "linear-gradient(120deg, #2D7DF6 0%, #7C5CFC 100%)",
+  },
+  {
+    href: "/simulator/visualgo",
+    title: "B-Tree Database Indexing",
+    desc: "Insert database index values, watch nodes split and balance in real-time, and see why disk-bound indexes use balanced multi-way B-trees.",
+    tag: "Database", emoji: "🗄️",
+    grad: "linear-gradient(120deg, #2FBF71 0%, #2D7DF6 100%)",
+  },
 ];
 
 export default function SimulatorHub() {

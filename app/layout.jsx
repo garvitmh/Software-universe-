@@ -1,6 +1,7 @@
 import "./globals.css";
 import SiteNav from "@/components/SiteNav";
 import CodexSidebar from "@/components/CodexSidebar";
+import InlineRAGDrawer from "@/components/InlineRAGDrawer";
 import { TECH_CONTENT } from "@/lib/tech-content";
 
 export const metadata = {
@@ -69,7 +70,9 @@ export default function RootLayout({ children }) {
             </footer>
           </div>
         </div>
+        <InlineRAGDrawer />
       </body>
     </html>
   );
 }
+

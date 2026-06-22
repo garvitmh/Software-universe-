@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
 
@@ -50,6 +52,31 @@ export default function SiteNav() {
           <NavLink href="/roadmap" label="The Roadmap" />
           <NavLink href="/simulator" label="The Simulator" />
           <div style={{ width: 1, height: 16, background: "var(--hairline-2)", margin: "0 4px" }} />
+          
+          {/* Socratic RAG Search Button */}
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent("toggle-rag-drawer"))}
+            style={{
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              padding: "8px",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "var(--ink-2)",
+              transition: "background 0.15s ease, color 0.15s ease",
+            }}
+            className="btn-search-trigger"
+            title="Ask Socratic RAG (Ctrl+K)"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+          </button>
+          
           <ThemeToggle />
         </div>
       </div>

@@ -33,6 +33,64 @@ export default function HomeHero() {
             <p style={{ fontSize: 16, color: "var(--ink-2)", maxWidth: 480, marginTop: 16, lineHeight: 1.55 }}>
               A complete map of your Burger Farm architecture. Explore the Codex, step through the interactive Roadmap, or safely break things in the Simulator.
             </p>
+            
+            {/* Interactive Socratic Search Input */}
+            <div style={{ marginTop: 20, maxWidth: 480 }}>
+              <div 
+                style={{ 
+                  display: "flex", 
+                  background: "var(--surface-warm)", 
+                  border: "1px solid var(--hairline-2)", 
+                  borderRadius: 14, 
+                  padding: "8px 8px 8px 14px", 
+                  alignItems: "center", 
+                  gap: 10,
+                  boxShadow: "0 2px 8px -2px rgba(60,40,15,0.05)"
+                }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ color: "var(--muted)" }}>
+                  <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input 
+                  type="text" 
+                  placeholder="Ask Socratic RAG: What is backpressure?" 
+                  style={{ 
+                    border: "none", 
+                    background: "transparent", 
+                    outline: "none", 
+                    fontSize: "14px", 
+                    color: "var(--ink)", 
+                    flex: 1 
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && e.target.value.trim()) {
+                      const queryText = e.target.value.trim();
+                      window.dispatchEvent(new CustomEvent("toggle-rag-drawer"));
+                      setTimeout(() => {
+                        const drawerInput = document.querySelector('input[placeholder^="Ask the Universe"]');
+                        if (drawerInput) {
+                          // Change value programmatically and trigger event
+                          const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
+                          nativeInputValueSetter.call(drawerInput, queryText);
+                          
+                          const event = new Event('input', { bubbles: true });
+                          drawerInput.dispatchEvent(event);
+                          
+                          const form = drawerInput.closest('form');
+                          if (form) {
+                            const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+                            form.dispatchEvent(submitEvent);
+                          }
+                        }
+                      }, 350);
+                      e.target.value = '';
+                    }
+                  }}
+                />
+                <span style={{ fontSize: "10.5px", color: "var(--muted)", background: "var(--bg-2)", padding: "4px 8px", borderRadius: 6, fontWeight: 600 }}>Enter</span>
+              </div>
+            </div>
+
             <div style={{ display: "flex", gap: 14, marginTop: 24, flexWrap: "wrap" }}>
               <Link href="/simulator" className="btn btn-pop" style={{ fontSize: 15, padding: "12px 20px", borderRadius: 12 }}>
                 Enter the Simulator
