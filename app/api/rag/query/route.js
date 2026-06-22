@@ -64,7 +64,7 @@ function callOpenAI(apiKey, prompt, systemContext) {
 function callOpenRouter(apiKey, prompt, systemContext) {
   return new Promise((resolve, reject) => {
     const postData = JSON.stringify({
-      model: 'nvidia/llama-3.1-nemotron-70b-instruct',
+      model: 'nvidia/llama-3.3-nemotron-super-49b-v1.5',
       messages: [
         {
           role: 'system',
