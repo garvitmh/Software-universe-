@@ -16,3 +16,8 @@ next-env.d.ts
 *.fbx
 *.obj
 
+# RAG Data Lake
+data/raw/*
+!data/raw/placeholder.txt
+data/processed/*
+!data/processed/placeholder.txt
