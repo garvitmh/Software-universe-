@@ -1,0 +1,133 @@
+/* Premium Glassmorphism Design System for Observatory */
+
+:root {
+  --obs-bg: #0D0E15;
+  --obs-surface: rgba(20, 22, 37, 0.7);
+  --obs-surface-hover: rgba(30, 33, 56, 0.85);
+  --obs-border: rgba(255, 255, 255, 0.08);
+  --obs-border-hover: rgba(255, 255, 255, 0.16);
+  --obs-text: #F8F9FC;
+  --obs-muted: #8E92B2;
+  
+  /* Gradients */
+  --grad-brand: linear-gradient(135deg, #FAB387 0%, #F38BA8 100%);
+  --grad-teal: linear-gradient(135deg, #94E2D5 0%, #89DCEB 100%);
+  --grad-blue: linear-gradient(135deg, #89B4FA 0%, #3B82F6 100%);
+  --grad-violet: linear-gradient(135deg, #CBA6F7 0%, #A6E3A1 100%);
+}
+
+.obs-wrapper {
+  background: var(--obs-bg);
+  color: var(--obs-text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.obs-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--obs-border);
+  padding-bottom: 20px;
+}
+
+.obs-header-title h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: var(--grad-brand);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.obs-header-title p {
+  margin: 4px 0 0 0;
+  color: var(--obs-muted);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.obs-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 20px;
+}
+
+.obs-card {
+  background: var(--obs-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--obs-border);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.obs-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--obs-border-hover);
+  background: var(--obs-surface-hover);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+}
+
+.obs-card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--obs-muted);
+}
+
+.obs-badge {
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #11111B;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.obs-badge-critical { background: #F38BA8; color: #11111B; }
+.obs-badge-high { background: #FAB387; color: #11111B; }
+.obs-badge-medium { background: #F9E2AF; color: #11111B; }
+.obs-badge-low { background: #A6E3A1; color: #11111B; }
+
+/* Micro-animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Custom Scrollbar for Terminals & Playbacks */
+.obs-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.obs-scroll::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+.obs-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+.obs-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}

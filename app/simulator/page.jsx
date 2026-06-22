@@ -29,6 +29,13 @@ const SIMS = [
     tag: "Money", emoji: "🎟️",
     grad: "var(--grad-sunset)",
   },
+  {
+    href: "/simulator/dependency-explorer",
+    title: "Dependency Explorer & Chaos Monkey",
+    desc: "A living topological map of system service nodes. Inject failures with the Chaos Monkey, toggle retries and circuit breakers, and observe cascading blast radius failures and MTTR recovery timelines.",
+    tag: "Resilience", emoji: "🐒",
+    grad: "linear-gradient(120deg, #F43F5E 0%, #BE123C 100%)",
+  },
 ];
 
 export default function SimulatorHub() {
