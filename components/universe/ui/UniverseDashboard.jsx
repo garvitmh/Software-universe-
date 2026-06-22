@@ -27,6 +27,7 @@ import PatternAtlas from "../../patterns/PatternAtlas";
 import CaseStudyMuseum from "../../case-studies/CaseStudyMuseum";
 import PlanetScaleSimulator from "../../planet-scale/PlanetScaleSimulator";
 import ReplaySystem from "../../replay/ReplaySystem";
+import AIProfessor from "../../professor-ai/AIProfessor";
 
 
 
@@ -433,6 +434,23 @@ export default function UniverseDashboard() {
         >
           📊 Replay System
         </button>
+        <button
+          onClick={() => setActiveTab("professor")}
+          style={{
+            background: "none",
+            border: "none",
+            borderBottom: activeTab === "professor" ? "3px solid var(--brand)" : "3px solid transparent",
+            color: activeTab === "professor" ? "var(--brand)" : "var(--muted)",
+            fontSize: "16px",
+            fontWeight: "700",
+            padding: "10px 4px",
+            cursor: "pointer",
+            outline: "none",
+            transition: "all 0.2s ease"
+          }}
+        >
+          🧙‍♂️ AI Professor
+        </button>
       </div>
 
       {/* ── TAB CONTENT ── */}
@@ -544,6 +562,11 @@ export default function UniverseDashboard() {
         {activeTab === "replay" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
             <ReplaySystem />
+          </div>
+        )}
+        {activeTab === "professor" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+            <AIProfessor />
           </div>
         )}
       </div>
