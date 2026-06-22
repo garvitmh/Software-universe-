@@ -26,6 +26,8 @@ import EvolutionPlayer from "../../evolution/EvolutionPlayer";
 import PatternAtlas from "../../patterns/PatternAtlas";
 import CaseStudyMuseum from "../../case-studies/CaseStudyMuseum";
 import PlanetScaleSimulator from "../../planet-scale/PlanetScaleSimulator";
+import ReplaySystem from "../../replay/ReplaySystem";
+
 
 
 const LEARNER_STAGES = [
@@ -414,6 +416,23 @@ export default function UniverseDashboard() {
         >
           🌍 Planet Scale Simulator
         </button>
+        <button
+          onClick={() => setActiveTab("replay")}
+          style={{
+            background: "none",
+            border: "none",
+            borderBottom: activeTab === "replay" ? "3px solid var(--brand)" : "3px solid transparent",
+            color: activeTab === "replay" ? "var(--brand)" : "var(--muted)",
+            fontSize: "16px",
+            fontWeight: "700",
+            padding: "10px 4px",
+            cursor: "pointer",
+            outline: "none",
+            transition: "all 0.2s ease"
+          }}
+        >
+          📊 Replay System
+        </button>
       </div>
 
       {/* ── TAB CONTENT ── */}
@@ -520,6 +539,11 @@ export default function UniverseDashboard() {
         {activeTab === "planetscale" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
             <PlanetScaleSimulator />
+          </div>
+        )}
+        {activeTab === "replay" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+            <ReplaySystem />
           </div>
         )}
       </div>
