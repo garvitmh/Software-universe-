@@ -23,6 +23,8 @@ import JourneyMode from "../../journey/JourneyMode";
 import FlowPlayer from "../../runtime/ui/FlowPlayer";
 import WarRoom from "../../incidents/ui/WarRoom";
 import EvolutionPlayer from "../../evolution/EvolutionPlayer";
+import PatternAtlas from "../../patterns/PatternAtlas";
+import CaseStudyMuseum from "../../case-studies/CaseStudyMuseum";
 
 const LEARNER_STAGES = [
   { id: "BEGINNER", label: "Beginner" },
@@ -359,6 +361,40 @@ export default function UniverseDashboard() {
         >
           📈 Evolution Player
         </button>
+        <button
+          onClick={() => setActiveTab("patterns")}
+          style={{
+            background: "none",
+            border: "none",
+            borderBottom: activeTab === "patterns" ? "3px solid var(--brand)" : "3px solid transparent",
+            color: activeTab === "patterns" ? "var(--brand)" : "var(--muted)",
+            fontSize: "16px",
+            fontWeight: "700",
+            padding: "10px 4px",
+            cursor: "pointer",
+            outline: "none",
+            transition: "all 0.2s ease"
+          }}
+        >
+          🗺️ Pattern Atlas
+        </button>
+        <button
+          onClick={() => setActiveTab("museum")}
+          style={{
+            background: "none",
+            border: "none",
+            borderBottom: activeTab === "museum" ? "3px solid var(--brand)" : "3px solid transparent",
+            color: activeTab === "museum" ? "var(--brand)" : "var(--muted)",
+            fontSize: "16px",
+            fontWeight: "700",
+            padding: "10px 4px",
+            cursor: "pointer",
+            outline: "none",
+            transition: "all 0.2s ease"
+          }}
+        >
+          🏛️ Case Study Museum
+        </button>
       </div>
 
       {/* ── TAB CONTENT ── */}
@@ -448,6 +484,18 @@ export default function UniverseDashboard() {
         {activeTab === "evolution" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
             <EvolutionPlayer />
+          </div>
+        )}
+
+        {activeTab === "patterns" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+            <PatternAtlas />
+          </div>
+        )}
+
+        {activeTab === "museum" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+            <CaseStudyMuseum />
           </div>
         )}
       </div>
