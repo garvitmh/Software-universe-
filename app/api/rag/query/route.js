@@ -61,6 +61,67 @@ function callOpenAI(apiKey, prompt, systemContext) {
   });
 }
 
+function callOpenRouter(apiKey, prompt, systemContext) {
+  return new Promise((resolve, reject) => {
+    const postData = JSON.stringify({
+      model: 'nvidia/llama-3.1-nemotron-70b-instruct',
+      messages: [
+        {
+          role: 'system',
+          content: systemContext
+        },
+        {
+          role: 'user',
+          content: prompt
+        }
+      ],
+      temperature: 0.3
+    });
+
+    const options = {
+      hostname: 'openrouter.ai',
+      port: 443,
+      path: '/api/v1/chat/completions',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'HTTP-Referer': 'http://localhost:3001',
+        'X-Title': 'Software Universe',
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    };
+
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+      res.on('end', () => {
+        try {
+          const json = JSON.parse(data);
+          if (json.error) {
+            reject(new Error(json.error.message || 'OpenRouter API Error'));
+          } else if (!json.choices || json.choices.length === 0) {
+            reject(new Error('Unexpected response format from OpenRouter API'));
+          } else {
+            resolve(json.choices[0].message.content);
+          }
+        } catch (e) {
+          reject(new Error('Failed to parse OpenRouter response: ' + e.message));
+        }
+      });
+    });
+
+    req.on('error', (e) => {
+      reject(e);
+    });
+
+    req.write(postData);
+    req.end();
+  });
+}
+
 export async function POST(request) {
   try {
     const body = await request.json();
@@ -80,7 +141,7 @@ export async function POST(request) {
     const apiKey = clientApiKey || process.env.OPENAI_API_KEY;
 
     if (apiKey && apiKey.trim()) {
-      // 3. Call OpenAI RAG
+      // 3. Call RAG
       const contextString = references
         .map((res, i) => `[Source ${i + 1}]: Title: "${res.title}" | Path: "${res.source}" | Text:\n${res.text}\n`)
         .join('\n');
@@ -99,13 +160,18 @@ ${contextString}
 Answer the user's query grounding yourself strictly in the provided context documents. If the context does not contain enough information, use your broader architectural knowledge but specify that it is general knowledge. Always write in a warm, premium, encouraging tone. Avoid childish analogies.`;
 
       try {
-        const responseText = await callOpenAI(apiKey, query, systemPrompt);
+        let responseText;
+        if (apiKey.startsWith('sk-or-')) {
+          responseText = await callOpenRouter(apiKey, query, systemPrompt);
+        } else {
+          responseText = await callOpenAI(apiKey, query, systemPrompt);
+        }
         return new Response(JSON.stringify({ answer: responseText, references, isMock: false }), {
           status: 200,
           headers: { 'Content-Type': 'application/json' }
         });
       } catch (apiErr) {
-        console.error('OpenAI API call failed, falling back to local synthesis:', apiErr.message);
+        console.error('API call failed, falling back to local synthesis:', apiErr.message);
         // Fallback to local synthesis on API error
       }
     }
