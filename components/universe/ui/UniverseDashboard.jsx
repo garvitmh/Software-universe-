@@ -21,6 +21,7 @@ import WeaknessPanel from "./WeaknessPanel";
 import NextBreakthroughPanel from "./NextBreakthroughPanel";
 import JourneyMode from "../../journey/JourneyMode";
 import FlowPlayer from "../../runtime/ui/FlowPlayer";
+import WarRoom from "../../incidents/ui/WarRoom";
 
 const LEARNER_STAGES = [
   { id: "BEGINNER", label: "Beginner" },
@@ -323,6 +324,23 @@ export default function UniverseDashboard() {
         >
           🎮 Flow Player
         </button>
+        <button
+          onClick={() => setActiveTab("warroom")}
+          style={{
+            background: "none",
+            border: "none",
+            borderBottom: activeTab === "warroom" ? "3px solid var(--brand)" : "3px solid transparent",
+            color: activeTab === "warroom" ? "var(--brand)" : "var(--muted)",
+            fontSize: "16px",
+            fontWeight: "700",
+            padding: "10px 4px",
+            cursor: "pointer",
+            outline: "none",
+            transition: "all 0.2s ease"
+          }}
+        >
+          ⚔️ Incident War Room
+        </button>
       </div>
 
       {/* ── TAB CONTENT ── */}
@@ -400,6 +418,12 @@ export default function UniverseDashboard() {
         {activeTab === "flowplayer" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
             <FlowPlayer />
+          </div>
+        )}
+
+        {activeTab === "warroom" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+            <WarRoom />
           </div>
         )}
       </div>

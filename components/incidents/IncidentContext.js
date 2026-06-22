@@ -32,7 +32,7 @@ export function IncidentProvider({ children }) {
 
   // Reset postmortem when changing incident type or resetting simulation
   const selectIncident = (type) => {
-    if (SUPPORTED_INCIDENTS.includes(type)) {
+    if (type === null || SUPPORTED_INCIDENTS.includes(type)) {
       setIncidentType(type);
       setActiveStep(0);
       setIsPlaying(false);
@@ -343,10 +343,18 @@ export function IncidentProvider({ children }) {
     selectIncident,
     setPlaybackStep: setActiveStep,
     togglePlay: () => setIsPlaying(!isPlaying),
+    play: () => setIsPlaying(true),
+    pause: () => setIsPlaying(false),
     stepForward,
+    nextStep: stepForward,
     stepBack,
+    prevStep: stepBack,
     resetSimulation,
+    reset: resetSimulation,
     setSpeed,
+    setPlaybackSpeed: setSpeed,
+    playbackSpeed: speed,
+    totalSteps: TIMELINE_STEPS.length,
     submitPostmortem: setPostmortem,
     ...getSimulatedData()
   };

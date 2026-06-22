@@ -9,3 +9,10 @@ npm-debug.log*
 .vercel
 *.tsbuildinfo
 next-env.d.ts
+
+# 3D assets / binary formats (Git LFS / Github size limits)
+*.glb
+*.gltf
+*.fbx
+*.obj
+
