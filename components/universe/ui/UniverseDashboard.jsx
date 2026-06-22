@@ -22,6 +22,7 @@ import NextBreakthroughPanel from "./NextBreakthroughPanel";
 import JourneyMode from "../../journey/JourneyMode";
 import FlowPlayer from "../../runtime/ui/FlowPlayer";
 import WarRoom from "../../incidents/ui/WarRoom";
+import EvolutionPlayer from "../../evolution/EvolutionPlayer";
 
 const LEARNER_STAGES = [
   { id: "BEGINNER", label: "Beginner" },
@@ -341,6 +342,23 @@ export default function UniverseDashboard() {
         >
           ⚔️ Incident War Room
         </button>
+        <button
+          onClick={() => setActiveTab("evolution")}
+          style={{
+            background: "none",
+            border: "none",
+            borderBottom: activeTab === "evolution" ? "3px solid var(--brand)" : "3px solid transparent",
+            color: activeTab === "evolution" ? "var(--brand)" : "var(--muted)",
+            fontSize: "16px",
+            fontWeight: "700",
+            padding: "10px 4px",
+            cursor: "pointer",
+            outline: "none",
+            transition: "all 0.2s ease"
+          }}
+        >
+          📈 Evolution Player
+        </button>
       </div>
 
       {/* ── TAB CONTENT ── */}
@@ -424,6 +442,12 @@ export default function UniverseDashboard() {
         {activeTab === "warroom" && (
           <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
             <WarRoom />
+          </div>
+        )}
+
+        {activeTab === "evolution" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+            <EvolutionPlayer />
           </div>
         )}
       </div>
