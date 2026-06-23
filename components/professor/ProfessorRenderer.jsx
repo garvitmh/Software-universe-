@@ -13,6 +13,19 @@ import ShowBurgerFarmCode from "./ShowBurgerFarmCode";
 import QuestionEngine from "./QuestionEngine";
 import EvolutionStory from "./EvolutionStory";
 import { motion, AnimatePresence } from "framer-motion";
+import { 
+  SparklesIcon, 
+  BrainIcon, 
+  CpuIcon, 
+  AlertCircleIcon, 
+  GitBranchIcon, 
+  LineChartIcon, 
+  BuildingIcon, 
+  TerminalIcon, 
+  FlameIcon, 
+  ActivityIcon,
+  GraduationCapIcon 
+} from "@/components/ui/Icons";
 
 function ProfessorDrawerContent() {
   const { selectedTab, setSelectedTab, currentConcept, currentWorld } = useProfessor();
@@ -32,16 +45,16 @@ function ProfessorDrawerContent() {
   const colors = tintColors[currentWorld] || tintColors.brand;
 
   const tabsList = [
-    { key: "mentalModel", label: "Mental Model", emoji: "🔮" },
-    { key: "simple", label: "Explain Simple", emoji: "🧠" },
-    { key: "deep", label: "Explain Deep", emoji: "🔬" },
-    { key: "failures", label: "Show Failures", emoji: "💥" },
-    { key: "alternatives", label: "Alternatives", emoji: "⚖️" },
-    { key: "tradeoffs", label: "Tradeoffs", emoji: "📈" },
-    { key: "giants", label: "Show Giants", emoji: "🏢" },
-    { key: "code", label: "Burger Code", emoji: "🛠️" },
-    { key: "questions", label: "Grill Me", emoji: "🔥" },
-    { key: "evolution", label: "Evolution Story", emoji: "📈" }
+    { key: "mentalModel", label: "Mental Model", icon: SparklesIcon },
+    { key: "simple", label: "Explain Simple", icon: BrainIcon },
+    { key: "deep", label: "Explain Deep", icon: CpuIcon },
+    { key: "failures", label: "Show Failures", icon: AlertCircleIcon },
+    { key: "alternatives", label: "Alternatives", icon: GitBranchIcon },
+    { key: "tradeoffs", label: "Tradeoffs", icon: LineChartIcon },
+    { key: "giants", label: "Show Giants", icon: BuildingIcon },
+    { key: "code", label: "Burger Code", icon: TerminalIcon },
+    { key: "questions", label: "Grill Me", icon: FlameIcon },
+    { key: "evolution", label: "Evolution Story", icon: ActivityIcon }
   ];
 
   const renderActiveTab = () => {
@@ -83,7 +96,7 @@ function ProfessorDrawerContent() {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ fontSize: 18 }}>🎓</span>
+        <GraduationCapIcon size={20} style={{ color: colors.main }} />
         <h4 style={{ fontSize: 13.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--ink)", margin: 0 }}>
           Software Universe AI Professor
         </h4>
@@ -103,6 +116,7 @@ function ProfessorDrawerContent() {
       >
         {tabsList.map((tb) => {
           const isActive = selectedTab === tb.key;
+          const IconComponent = tb.icon;
           return (
             <button
               key={tb.key}
@@ -136,7 +150,7 @@ function ProfessorDrawerContent() {
                 }
               }}
             >
-              <span>{tb.emoji}</span>
+              <IconComponent size={14} />
               <span>{tb.label}</span>
             </button>
           );

@@ -1,5 +1,6 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
+import { AlertCircleIcon, PlayIcon, ZapIcon, ActivityIcon } from "@/components/ui/Icons";
 
 const TINTS = {
   blue: { ink: "var(--blue)", soft: "var(--blue-soft)" },
@@ -53,29 +54,33 @@ export default function WorldNode({ data }) {
       <Handle type="source" position={Position.Bottom} id="b" style={HANDLE_STYLE} />
 
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <div style={{ display: "flex", alignItems: "center", justifycontent: "space-between", gap: 8, width: "100%" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, flex: 1, minWidth: 0 }}>
             <span style={{ width: 10, height: 10, borderRadius: "50%", background: isFailuresMode ? "var(--pop-pink)" : tint.ink, flexShrink: 0 }} />
-            <div style={{ fontFamily: "Fraunces", fontSize: 17, fontWeight: 700, color: "var(--ink)", letterSpacing: "-.01em" }}>
+            <div style={{ fontFamily: "Fraunces", fontSize: 17, fontWeight: 700, color: "var(--ink)", letterSpacing: "-.01em", textOverflow: "ellipsis", overflow: "hidden", whiteSpace: "nowrap" }}>
               {data.title}
             </div>
           </div>
           {isFailuresMode ? (
-            <span style={{ fontSize: 12 }}>⚠️</span>
+            <AlertCircleIcon size={15} style={{ color: "var(--pop-pink)", flexShrink: 0 }} />
           ) : data.simSlug ? (
             <span 
               style={{ 
-                fontSize: 9.5, 
+                fontSize: 9, 
                 fontWeight: 700, 
                 background: "var(--brand-soft)", 
                 color: "var(--brand)", 
                 padding: "2px 6px", 
                 borderRadius: 99,
                 textTransform: "uppercase",
-                letterSpacing: "0.04em"
+                letterSpacing: "0.04em",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 3,
+                flexShrink: 0
               }}
             >
-              Sim 🎮
+              Sim <PlayIcon size={8} />
             </span>
           ) : null}
         </div>
@@ -86,15 +91,17 @@ export default function WorldNode({ data }) {
 
         {/* Dynamic Mode Footer */}
         {isFailuresMode && (
-          <div style={{ fontSize: 11, fontWeight: 700, color: "var(--pop-pink)", marginTop: 6, display: "flex", alignItems: "center", gap: 4 }}>
-            <span>🔥 Risk: Disaster scenario active</span>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "var(--pop-pink)", marginTop: 6, display: "flex", alignItems: "center", gap: 5 }}>
+            <ZapIcon size={12} />
+            <span>Risk: Disaster scenario active</span>
           </div>
         )}
 
         {isScalingMode && (
-          <div style={{ fontSize: 11, fontWeight: 700, color: data.scaleLoad === "1M" ? "var(--pop-yellow)" : "var(--pop-lime)", marginTop: 6, display: "flex", alignItems: "center", gap: 4 }}>
-            <span>📈 Load: {data.scaleLoad} Users</span>
-            {data.scaleLoad === "1M" ? <span>⚡ Bottleneck</span> : <span>🟢 Healthy</span>}
+          <div style={{ fontSize: 11, fontWeight: 700, color: data.scaleLoad === "1M" ? "var(--pop-yellow)" : "var(--pop-lime)", marginTop: 6, display: "flex", alignItems: "center", gap: 5 }}>
+            <ActivityIcon size={12} />
+            <span>Load: {data.scaleLoad} Users</span>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: data.scaleLoad === "1M" ? "var(--pop-yellow)" : "var(--pop-lime)", display: "inline-block" }} />
           </div>
         )}
 

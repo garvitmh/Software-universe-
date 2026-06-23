@@ -1,6 +1,7 @@
 import React from "react";
 import { Handle, Position } from "@xyflow/react";
 import Link from "next/link";
+import { BookOpenIcon, PlayIcon, CpuIcon, ZapIcon } from "@/components/ui/Icons";
 
 const TINTS = {
   blue: "var(--blue)",
@@ -9,6 +10,13 @@ const TINTS = {
   amber: "var(--amber)",
   teal: "var(--teal)",
   purple: "var(--purple)",
+};
+
+const ICON_MAP = {
+  codex: BookOpenIcon,
+  simulator: PlayIcon,
+  tech: CpuIcon,
+  failure: ZapIcon,
 };
 
 const HANDLE_STYLE = { opacity: 0, pointerEvents: "none" };
@@ -64,7 +72,10 @@ export default function ChildNode({ data }) {
       <Handle type="target" position={Position.Top} id="t" style={HANDLE_STYLE} />
       <Handle type="source" position={Position.Bottom} id="b" style={HANDLE_STYLE} />
 
-      <span style={{ fontSize: 13 }}>{isFailureMode ? "🚨" : data.emoji}</span>
+      {(() => {
+        const IconComp = isFailureMode ? ZapIcon : (ICON_MAP[data.iconType] || CpuIcon);
+        return <IconComp size={14} style={{ color: isFailureMode ? "var(--pop-pink)" : tintColor }} />;
+      })()}
       <div style={{ display: "flex", flexDirection: "column" }}>
         <span style={{ fontSize: 10, fontWeight: 700, color: isFailureMode ? "var(--pop-pink)" : "var(--muted)", textTransform: "uppercase", letterSpacing: "0.04em" }}>
           {isFailureMode ? "Disaster Risk" : data.typeLabel}

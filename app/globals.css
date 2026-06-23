@@ -341,3 +341,25 @@ p { margin: 0; }
   .hero-3d { height: 320px !important; order: -1; }
   .stats-grid { grid-template-columns: 1fr 1fr !important; }
 }
+
+/* Premium Dot Grid Background & Spotlight Utilities */
+.grid-bg {
+  background-image: radial-gradient(circle at 1px 1px, var(--hairline-2) 1.5px, transparent 0);
+  background-size: 24px 24px;
+}
+[data-theme="dark"] .grid-bg {
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1.5px, transparent 0);
+}
+
+.glass-card {
+  background: color-mix(in srgb, var(--surface) 60%, transparent);
+  backdrop-filter: saturate(140%) blur(16px);
+  border: 1px solid var(--hairline);
+  box-shadow: var(--shadow-lg);
+}
+
+.glow-spotlight-hover:hover {
+  border-color: var(--brand) !important;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.1) !important;
+}
+

@@ -19,11 +19,11 @@ export const WORLDS = [
     },
     curiosityQuestion: "What happens if a customer's phone disconnects right after they tap pay?",
     children: [
-      { id: "pos-codex", typeLabel: "Codex", label: "Foundations", emoji: "📖", href: "/codex/foundations" },
-      { id: "pos-sim", typeLabel: "Simulator", label: "Tap Journey", emoji: "🎮", href: "/simulator/order-journey" },
-      { id: "pos-tech-flutter", typeLabel: "Tech", label: "Flutter", emoji: "🛠️", href: "/codex/tech/flutter" },
-      { id: "pos-tech-dart", typeLabel: "Tech", label: "Dart", emoji: "🛠️", href: "/codex/tech/dart" },
-      { id: "pos-failure", typeLabel: "Failure", label: "Offline Sync", emoji: "💥" }
+      { id: "pos-codex", typeLabel: "Codex", label: "Foundations", iconType: "codex", href: "/codex/foundations" },
+      { id: "pos-sim", typeLabel: "Simulator", label: "Tap Journey", iconType: "simulator", href: "/simulator/order-journey" },
+      { id: "pos-tech-flutter", typeLabel: "Tech", label: "Flutter", iconType: "tech", href: "/codex/tech/flutter" },
+      { id: "pos-tech-dart", typeLabel: "Tech", label: "Dart", iconType: "tech", href: "/codex/tech/dart" },
+      { id: "pos-failure", typeLabel: "Failure", label: "Offline Sync", iconType: "failure" }
     ]
   },
   {
@@ -46,9 +46,9 @@ export const WORLDS = [
     },
     curiosityQuestion: "How do we prevent malicious sites from placing orders on a user's behalf?",
     children: [
-      { id: "sec-codex", typeLabel: "Codex", label: "The Backend Brain", emoji: "📖", href: "/codex/backend" },
-      { id: "sec-tech-auth", typeLabel: "Tech", label: "JWT & Cookies", emoji: "🛠️", href: "/codex/tech/auth" },
-      { id: "sec-failure", typeLabel: "Failure", label: "Session Hijack", emoji: "💥" }
+      { id: "sec-codex", typeLabel: "Codex", label: "The Backend Brain", iconType: "codex", href: "/codex/backend" },
+      { id: "sec-tech-auth", typeLabel: "Tech", label: "JWT & Cookies", iconType: "tech", href: "/codex/tech/auth" },
+      { id: "sec-failure", typeLabel: "Failure", label: "Session Hijack", iconType: "failure" }
     ]
   },
   {
@@ -71,10 +71,10 @@ export const WORLDS = [
     },
     curiosityQuestion: "What breaks if the admin changes a product price while a customer is checking out?",
     children: [
-      { id: "ord-codex-1", typeLabel: "Codex", label: "Layers & Separation", emoji: "📖", href: "/worlds/order" },
-      { id: "ord-codex-2", typeLabel: "Codex", label: "State Management", emoji: "📖", href: "/worlds/order" },
-      { id: "ord-tech-node", typeLabel: "Tech", label: "Node.js & Express", emoji: "🛠️", href: "/codex/tech/express" },
-      { id: "ord-failure", typeLabel: "Failure", label: "Race Conditions", emoji: "💥" }
+      { id: "ord-codex-1", typeLabel: "Codex", label: "Layers & Separation", iconType: "codex", href: "/worlds/order" },
+      { id: "ord-codex-2", typeLabel: "Codex", label: "State Management", iconType: "codex", href: "/worlds/order" },
+      { id: "ord-tech-node", typeLabel: "Tech", label: "Node.js & Express", iconType: "tech", href: "/codex/tech/express" },
+      { id: "ord-failure", typeLabel: "Failure", label: "Race Conditions", iconType: "failure" }
     ]
   },
   {
@@ -97,10 +97,10 @@ export const WORLDS = [
     },
     curiosityQuestion: "How do we prevent double-charging a customer on network retries?",
     children: [
-      { id: "pay-codex", typeLabel: "Codex", label: "Big Systems", emoji: "📖", href: "/worlds/payment" },
-      { id: "pay-tech-idemp", typeLabel: "Tech", label: "Idempotency", emoji: "🛠️", href: "/codex/tech/idempotency" },
-      { id: "pay-tech-trans", typeLabel: "Tech", label: "Transactions", emoji: "🛠️", href: "/codex/tech/transactions" },
-      { id: "pay-failure", typeLabel: "Failure", label: "Double Charge", emoji: "💥" }
+      { id: "pay-codex", typeLabel: "Codex", label: "Big Systems", iconType: "codex", href: "/worlds/payment" },
+      { id: "pay-tech-idemp", typeLabel: "Tech", label: "Idempotency", iconType: "tech", href: "/codex/tech/idempotency" },
+      { id: "pay-tech-trans", typeLabel: "Tech", label: "Transactions", iconType: "tech", href: "/codex/tech/transactions" },
+      { id: "pay-failure", typeLabel: "Failure", label: "Double Charge", iconType: "failure" }
     ]
   },
   {
@@ -122,9 +122,9 @@ export const WORLDS = [
     },
     curiosityQuestion: "Can we check delivery serviceability without paying for the Google Maps API every time?",
     children: [
-      { id: "del-codex", typeLabel: "Codex", label: "Delivery Logic", emoji: "📖", href: "/worlds/delivery" },
-      { id: "del-tech-http", typeLabel: "Tech", label: "HTTP & REST", emoji: "🛠️", href: "/codex/tech/http-rest" },
-      { id: "del-failure", typeLabel: "Failure", label: "Geofence Mismatch", emoji: "💥" }
+      { id: "del-codex", typeLabel: "Codex", label: "Delivery Logic", iconType: "codex", href: "/worlds/delivery" },
+      { id: "del-tech-http", typeLabel: "Tech", label: "HTTP & REST", iconType: "tech", href: "/codex/tech/http-rest" },
+      { id: "del-failure", typeLabel: "Failure", label: "Geofence Mismatch", iconType: "failure" }
     ]
   },
   {
@@ -142,15 +142,15 @@ export const WORLDS = [
     recovery: "Model points as an append-only ledger of transactions rather than a single mutable balance column, combined with a unique composite key on `idempotency_key`.",
     scalingStats: {
       "10": "SUM calculations on ledger rows return immediately.",
-      "100k": "Summing millions of rows slows down database queries. Must store cached customer balances in a Redis cache, updating it on ledger writes.",
-      "1M": "Frequent writes to the ledger cause database serialization bottlenecks. Must batch loyalty writes asynchronously using a broker (Kafka)."
+      "100k": "Summing millions of rows on every page load slows down. We cache the running balance in Redis, updating it alongside the database ledger write.",
+      "1M": "High transaction throughput locks the database. We write transactions to a fast stream (Kafka/Redis Stream) and commit them to the database in micro-batches."
     },
     curiosityQuestion: "Can points double-spend if a customer redeems them on two devices simultaneously?",
     children: [
-      { id: "loy-codex", typeLabel: "Codex", label: "Ledgers & Loyalty", emoji: "📖", href: "/worlds/loyalty" },
-      { id: "loy-sim", typeLabel: "Simulator", label: "Loyalty Ledger", emoji: "🎮", href: "/simulator/loyalty-ledger" },
-      { id: "loy-tech-ledger", typeLabel: "Tech", label: "Ledger Concept", emoji: "🛠️", href: "/codex/tech/ledgers" },
-      { id: "loy-failure", typeLabel: "Failure", label: "Double Spend", emoji: "💥" }
+      { id: "loy-codex", typeLabel: "Codex", label: "Ledgers & Loyalty", iconType: "codex", href: "/worlds/loyalty" },
+      { id: "loy-sim", typeLabel: "Simulator", label: "Loyalty Ledger", iconType: "simulator", href: "/simulator/loyalty-ledger" },
+      { id: "loy-tech-ledger", typeLabel: "Tech", label: "Ledger Concept", iconType: "tech", href: "/codex/tech/ledgers" },
+      { id: "loy-failure", typeLabel: "Failure", label: "Double Spend", iconType: "failure" }
     ]
   },
   {
@@ -172,10 +172,10 @@ export const WORLDS = [
     },
     curiosityQuestion: "How do we make sure tracking customer clicks doesn't crash the checkout database?",
     children: [
-      { id: "ana-codex", typeLabel: "Codex", label: "Admin Panel CRUD", emoji: "📖", href: "/codex/admin-panel" },
-      { id: "ana-tech-next", typeLabel: "Tech", label: "Next.js & React", emoji: "🛠️", href: "/codex/tech/nextjs" },
-      { id: "ana-tech-refine", typeLabel: "Tech", label: "Refine CRUD", emoji: "🛠️", href: "/codex/tech/refine" },
-      { id: "ana-failure", typeLabel: "Failure", label: "Write Lockup", emoji: "💥" }
+      { id: "ana-codex", typeLabel: "Codex", label: "Admin Panel CRUD", iconType: "codex", href: "/codex/admin-panel" },
+      { id: "ana-tech-next", typeLabel: "Tech", label: "Next.js & React", iconType: "tech", href: "/codex/tech/nextjs" },
+      { id: "ana-tech-refine", typeLabel: "Tech", label: "Refine CRUD", iconType: "tech", href: "/codex/tech/refine" },
+      { id: "ana-failure", typeLabel: "Failure", label: "Write Lockup", iconType: "failure" }
     ]
   },
   {
@@ -198,11 +198,11 @@ export const WORLDS = [
     },
     curiosityQuestion: "How do we update the database schema without causing downtime for active customers?",
     children: [
-      { id: "dep-codex", typeLabel: "Codex", label: "Ops & Deployment", emoji: "📖", href: "/codex/deployment" },
-      { id: "dep-sim", typeLabel: "Simulator", label: "Scale Simulator", emoji: "🎮", href: "/simulator/scaling" },
-      { id: "dep-tech-cache", typeLabel: "Tech", label: "Caching & Replicas", emoji: "🛠️", href: "/codex/tech/caching" },
-      { id: "dep-tech-db", typeLabel: "Tech", label: "Postgres & SQL", emoji: "🛠️", href: "/codex/tech/postgresql" },
-      { id: "dep-failure", typeLabel: "Failure", label: "OOM Crash", emoji: "💥" }
+      { id: "dep-codex", typeLabel: "Codex", label: "Ops & Deployment", iconType: "codex", href: "/codex/deployment" },
+      { id: "dep-sim", typeLabel: "Simulator", label: "Scale Simulator", iconType: "simulator", href: "/simulator/scaling" },
+      { id: "dep-tech-cache", typeLabel: "Tech", label: "Caching & Replicas", iconType: "tech", href: "/codex/tech/caching" },
+      { id: "dep-tech-db", typeLabel: "Tech", label: "Postgres & SQL", iconType: "tech", href: "/codex/tech/postgresql" },
+      { id: "dep-failure", typeLabel: "Failure", label: "OOM Crash", iconType: "failure" }
     ]
   }
 ];

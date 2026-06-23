@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { SettingsIcon, BookOpenIcon } from "@/components/ui/Icons";
 
 export default function InlineRAGDrawer() {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,14 +39,25 @@ export default function InlineRAGDrawer() {
       setIsOpen((prev) => !prev);
     };
 
+    const handleSearchTermEvent = (e) => {
+      const term = e.detail?.term;
+      if (term) {
+        setQuery(term);
+        setIsOpen(true);
+        executeSearch(term);
+      }
+    };
+
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("toggle-rag-drawer", handleToggleEvent);
+    window.addEventListener("search-rag-term", handleSearchTermEvent);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("toggle-rag-drawer", handleToggleEvent);
+      window.removeEventListener("search-rag-term", handleSearchTermEvent);
     };
-  }, []);
+  }, [apiKey]);
 
   // Focus input when drawer opens
   useEffect(() => {
@@ -62,10 +74,7 @@ export default function InlineRAGDrawer() {
     setShowKeyConfig(false);
   };
 
-  const handleSearch = async (e) => {
-    if (e) e.preventDefault();
-    if (!query.trim()) return;
-
+  const executeSearch = async (searchTerm) => {
     setIsLoading(true);
     setError("");
     setAnswer("");
@@ -78,7 +87,7 @@ export default function InlineRAGDrawer() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          query: query.trim(),
+          query: searchTerm,
           apiKey: apiKey.trim(),
         }),
       });
@@ -98,6 +107,12 @@ export default function InlineRAGDrawer() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSearch = async (e) => {
+    if (e) e.preventDefault();
+    if (!query.trim()) return;
+    await executeSearch(query.trim());
   };
 
   // Helper to parse LLM answer into WHAT, WHY, HOW, WHEN IT BREAKS sections
@@ -268,8 +283,8 @@ export default function InlineRAGDrawer() {
                 borderRadius: "10px",
               }}
             >
-              <h3 style={{ fontSize: "14px", marginBottom: "8px" }}>
-                ⚙️ OpenAI API Settings
+              <h3 style={{ fontSize: "14px", marginBottom: "8px", display: "flex", alignItems: "center", gap: 6 }}>
+                <SettingsIcon size={16} /> OpenAI API Settings
               </h3>
               <p style={{ fontSize: "12px", color: "var(--ink-2)", marginBottom: "12px", lineHeight: "1.4" }}>
                 Enter your OpenAI API key to enable dynamic synthesis of retrieved SRE knowledge. 
@@ -460,9 +475,12 @@ export default function InlineRAGDrawer() {
                       letterSpacing: "0.06em",
                       color: "var(--muted)",
                       marginBottom: "10px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6
                     }}
                   >
-                    📚 Referenced Documents
+                    <BookOpenIcon size={15} /> Referenced Documents
                   </h3>
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     {references.map((ref, idx) => (

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 export default function SplitPaneViewer({
   concept,
@@ -17,6 +17,10 @@ export default function SplitPaneViewer({
   const [iframeLoading, setIframeLoading] = useState(true);
   const [apiKey, setApiKey] = useState("");
   const [error, setError] = useState("");
+
+  const [selectedText, setSelectedText] = useState("");
+  const [bubbleCoords, setBubbleCoords] = useState({ top: 0, left: 0 });
+  const leftPaneRef = useRef(null);
 
   // Load API Key and initial RAG context
   useEffect(() => {
@@ -108,6 +112,78 @@ export default function SplitPaneViewer({
     }
   };
 
+  // Listen for text selection change events
+  useEffect(() => {
+    const handleSelection = () => {
+      const selection = window.getSelection();
+      if (!selection || selection.isCollapsed) {
+        setSelectedText("");
+        return;
+      }
+      const text = selection.toString().trim();
+      if (text.length > 1 && text.length < 120) {
+        if (leftPaneRef.current && leftPaneRef.current.contains(selection.anchorNode)) {
+          const range = selection.getRangeAt(0);
+          const rect = range.getBoundingClientRect();
+          setBubbleCoords({
+            top: rect.top - 40,
+            left: rect.left + rect.width / 2,
+          });
+          setSelectedText(text);
+        }
+      } else {
+        setSelectedText("");
+      }
+    };
+
+    document.addEventListener("selectionchange", handleSelection);
+    return () => {
+      document.removeEventListener("selectionchange", handleSelection);
+    };
+  }, [title]);
+
+  const handleAskSelectedText = async (textToAsk) => {
+    setSelectedText("");
+    setActiveSection("chat");
+    setChatQuery("");
+    
+    setChatHistory((prev) => [...prev, { sender: "Apprentice", text: `Professor, explain: "${textToAsk}"` }]);
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/rag/query", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: `Explain the concept: "${textToAsk}" in the context of "${title}"`,
+          apiKey: apiKey.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to consult Socratic database");
+      }
+
+      const data = await response.json();
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          sender: "Professor",
+          text: data.answer,
+          references: data.references || []
+        }
+      ]);
+    } catch (err) {
+      console.error("Selection Chat Error:", err);
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   // Helper to parse LLM answer into WHAT, WHY, HOW, WHEN IT BREAKS sections
   const getParsedSections = () => {
     const sections = {
@@ -159,11 +235,50 @@ export default function SplitPaneViewer({
         width: "100%",
         height: "calc(100vh - 62px)", // Subtract SiteNav height
         overflow: "hidden",
+        position: "relative"
       }}
       className="split-pane-layout"
     >
+      {/* Floating Selection AI Popover */}
+      {selectedText && (
+        <div
+          style={{
+            position: "fixed",
+            top: bubbleCoords.top,
+            left: bubbleCoords.left,
+            transform: "translateX(-50%)",
+            zIndex: 9999,
+            pointerEvents: "auto"
+          }}
+        >
+          <button
+            onClick={() => handleAskSelectedText(selectedText)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "6px 12px",
+              fontSize: "12px",
+              fontWeight: "600",
+              backgroundColor: "var(--ink)",
+              color: "var(--bg)",
+              border: "1px solid var(--hairline)",
+              borderRadius: "20px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+              cursor: "pointer",
+              whiteSpace: "nowrap",
+              transition: "all 0.2s"
+            }}
+            className="floating-ai-button"
+          >
+            ✨ Ask Professor
+          </button>
+        </div>
+      )}
+
       {/* Left Pane: Visualizer */}
       <div
+        ref={leftPaneRef}
         style={{
           flex: "1 1 60%",
           height: "100%",

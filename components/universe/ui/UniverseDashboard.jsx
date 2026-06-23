@@ -28,6 +28,21 @@ import CaseStudyMuseum from "../../case-studies/CaseStudyMuseum";
 import PlanetScaleSimulator from "../../planet-scale/PlanetScaleSimulator";
 import ReplaySystem from "../../replay/ReplaySystem";
 import AIProfessor from "../../professor-ai/AIProfessor";
+import {
+  ShieldIcon,
+  MapIcon,
+  CpuIcon,
+  LibraryIcon,
+  GitBranchIcon,
+  PlayIcon,
+  AlertCircleIcon,
+  LineChartIcon,
+  LayersIcon,
+  BuildingIcon,
+  ServerIcon,
+  ActivityIcon,
+  GraduationCapIcon
+} from "@/components/ui/Icons";
 
 
 
@@ -229,7 +244,7 @@ export default function UniverseDashboard() {
       </motion.div>
 
       {/* ── TABS NAVIGATION ── */}
-      <div style={{ display: "flex", borderBottom: "2px solid var(--hairline)", gap: "24px" }}>
+      <div style={{ display: "flex", borderBottom: "2px solid var(--hairline)", gap: "16px", overflowX: "auto", paddingBottom: "2px", scrollbarWidth: "none" }} className="no-scrollbar">
         <button
           onClick={() => setActiveTab("overview")}
           style={{
@@ -237,15 +252,19 @@ export default function UniverseDashboard() {
             border: "none",
             borderBottom: activeTab === "overview" ? "3px solid var(--brand)" : "3px solid transparent",
             color: activeTab === "overview" ? "var(--brand)" : "var(--muted)",
-            fontSize: "16px",
+            fontSize: "14.5px",
             fontWeight: "700",
             padding: "10px 4px",
             cursor: "pointer",
             outline: "none",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s ease",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            whiteSpace: "nowrap"
           }}
         >
-          ⚔️ Command Center
+          <ShieldIcon size={16} /> Command Center
         </button>
         <button
           onClick={() => setActiveTab("constellation")}
@@ -254,15 +273,19 @@ export default function UniverseDashboard() {
             border: "none",
             borderBottom: activeTab === "constellation" ? "3px solid var(--brand)" : "3px solid transparent",
             color: activeTab === "constellation" ? "var(--brand)" : "var(--muted)",
-            fontSize: "16px",
+            fontSize: "14.5px",
             fontWeight: "700",
             padding: "10px 4px",
             cursor: "pointer",
             outline: "none",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s ease",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            whiteSpace: "nowrap"
           }}
         >
-          🌌 Constellation Map
+          <MapIcon size={16} /> Constellation Map
         </button>
         <button
           onClick={() => setActiveTab("labs")}
@@ -271,15 +294,19 @@ export default function UniverseDashboard() {
             border: "none",
             borderBottom: activeTab === "labs" ? "3px solid var(--brand)" : "3px solid transparent",
             color: activeTab === "labs" ? "var(--brand)" : "var(--muted)",
-            fontSize: "16px",
+            fontSize: "14.5px",
             fontWeight: "700",
             padding: "10px 4px",
             cursor: "pointer",
             outline: "none",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s ease",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            whiteSpace: "nowrap"
           }}
         >
-          🧪 Active Laboratories
+          <CpuIcon size={16} /> Active Laboratories
         </button>
         <button
           onClick={() => setActiveTab("achievements")}
@@ -288,15 +315,19 @@ export default function UniverseDashboard() {
             border: "none",
             borderBottom: activeTab === "achievements" ? "3px solid var(--brand)" : "3px solid transparent",
             color: activeTab === "achievements" ? "var(--brand)" : "var(--muted)",
-            fontSize: "16px",
+            fontSize: "14.5px",
             fontWeight: "700",
             padding: "10px 4px",
             cursor: "pointer",
             outline: "none",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s ease",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            whiteSpace: "nowrap"
           }}
         >
-          🛡️ Hall of Realizations
+          <LibraryIcon size={16} /> Hall of Realizations
         </button>
         <button
           onClick={() => setActiveTab("journey")}
@@ -305,15 +336,19 @@ export default function UniverseDashboard() {
             border: "none",
             borderBottom: activeTab === "journey" ? "3px solid var(--brand)" : "3px solid transparent",
             color: activeTab === "journey" ? "var(--brand)" : "var(--muted)",
-            fontSize: "16px",
+            fontSize: "14.5px",
             fontWeight: "700",
             padding: "10px 4px",
             cursor: "pointer",
             outline: "none",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s ease",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            whiteSpace: "nowrap"
           }}
         >
-          🌱 Guided Journeys
+          <GitBranchIcon size={16} /> Guided Journeys
         </button>
         <button
           onClick={() => setActiveTab("flowplayer")}
@@ -322,15 +357,19 @@ export default function UniverseDashboard() {
             border: "none",
             borderBottom: activeTab === "flowplayer" ? "3px solid var(--brand)" : "3px solid transparent",
             color: activeTab === "flowplayer" ? "var(--brand)" : "var(--muted)",
-            fontSize: "16px",
+            fontSize: "14.5px",
             fontWeight: "700",
             padding: "10px 4px",
             cursor: "pointer",
             outline: "none",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s ease",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            whiteSpace: "nowrap"
           }}
         >
-          🎮 Flow Player
+          <PlayIcon size={16} /> Flow Player
         </button>
         <button
           onClick={() => setActiveTab("warroom")}
@@ -339,15 +378,19 @@ export default function UniverseDashboard() {
             border: "none",
             borderBottom: activeTab === "warroom" ? "3px solid var(--brand)" : "3px solid transparent",
             color: activeTab === "warroom" ? "var(--brand)" : "var(--muted)",
-            fontSize: "16px",
+            fontSize: "14.5px",
             fontWeight: "700",
             padding: "10px 4px",
             cursor: "pointer",
             outline: "none",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s ease",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            whiteSpace: "nowrap"
           }}
         >
-          ⚔️ Incident War Room
+          <AlertCircleIcon size={16} /> Incident War Room
         </button>
         <button
           onClick={() => setActiveTab("evolution")}
@@ -356,15 +399,19 @@ export default function UniverseDashboard() {
             border: "none",
             borderBottom: activeTab === "evolution" ? "3px solid var(--brand)" : "3px solid transparent",
             color: activeTab === "evolution" ? "var(--brand)" : "var(--muted)",
-            fontSize: "16px",
+            fontSize: "14.5px",
             fontWeight: "700",
             padding: "10px 4px",
             cursor: "pointer",
             outline: "none",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s ease",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            whiteSpace: "nowrap"
           }}
         >
-          📈 Evolution Player
+          <LineChartIcon size={16} /> Evolution Player
         </button>
         <button
           onClick={() => setActiveTab("patterns")}
@@ -373,15 +420,19 @@ export default function UniverseDashboard() {
             border: "none",
             borderBottom: activeTab === "patterns" ? "3px solid var(--brand)" : "3px solid transparent",
             color: activeTab === "patterns" ? "var(--brand)" : "var(--muted)",
-            fontSize: "16px",
+            fontSize: "14.5px",
             fontWeight: "700",
             padding: "10px 4px",
             cursor: "pointer",
             outline: "none",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s ease",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            whiteSpace: "nowrap"
           }}
         >
-          🗺️ Pattern Atlas
+          <LayersIcon size={16} /> Pattern Atlas
         </button>
         <button
           onClick={() => setActiveTab("museum")}
@@ -390,15 +441,19 @@ export default function UniverseDashboard() {
             border: "none",
             borderBottom: activeTab === "museum" ? "3px solid var(--brand)" : "3px solid transparent",
             color: activeTab === "museum" ? "var(--brand)" : "var(--muted)",
-            fontSize: "16px",
+            fontSize: "14.5px",
             fontWeight: "700",
             padding: "10px 4px",
             cursor: "pointer",
             outline: "none",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s ease",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            whiteSpace: "nowrap"
           }}
         >
-          🏛️ Case Study Museum
+          <BuildingIcon size={16} /> Case Study Museum
         </button>
         <button
           onClick={() => setActiveTab("planetscale")}
@@ -407,15 +462,19 @@ export default function UniverseDashboard() {
             border: "none",
             borderBottom: activeTab === "planetscale" ? "3px solid var(--brand)" : "3px solid transparent",
             color: activeTab === "planetscale" ? "var(--brand)" : "var(--muted)",
-            fontSize: "16px",
+            fontSize: "14.5px",
             fontWeight: "700",
             padding: "10px 4px",
             cursor: "pointer",
             outline: "none",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s ease",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            whiteSpace: "nowrap"
           }}
         >
-          🌍 Planet Scale Simulator
+          <ServerIcon size={16} /> Planet Scale Simulator
         </button>
         <button
           onClick={() => setActiveTab("replay")}
@@ -424,15 +483,19 @@ export default function UniverseDashboard() {
             border: "none",
             borderBottom: activeTab === "replay" ? "3px solid var(--brand)" : "3px solid transparent",
             color: activeTab === "replay" ? "var(--brand)" : "var(--muted)",
-            fontSize: "16px",
+            fontSize: "14.5px",
             fontWeight: "700",
             padding: "10px 4px",
             cursor: "pointer",
             outline: "none",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s ease",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            whiteSpace: "nowrap"
           }}
         >
-          📊 Replay System
+          <ActivityIcon size={16} /> Replay System
         </button>
         <button
           onClick={() => setActiveTab("professor")}
@@ -441,15 +504,19 @@ export default function UniverseDashboard() {
             border: "none",
             borderBottom: activeTab === "professor" ? "3px solid var(--brand)" : "3px solid transparent",
             color: activeTab === "professor" ? "var(--brand)" : "var(--muted)",
-            fontSize: "16px",
+            fontSize: "14.5px",
             fontWeight: "700",
             padding: "10px 4px",
             cursor: "pointer",
             outline: "none",
-            transition: "all 0.2s ease"
+            transition: "all 0.2s ease",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            whiteSpace: "nowrap"
           }}
         >
-          🧙‍♂️ AI Professor
+          <GraduationCapIcon size={16} /> AI Professor
         </button>
       </div>
 

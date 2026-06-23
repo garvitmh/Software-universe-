@@ -65,6 +65,9 @@ export default function CodexSidebar({ readyTech = [] }) {
         ))}
 
         <div style={{ marginTop: 26, padding: "0 10px" }}>
+          <Link href="/codex/library" className="side-link" onClick={close} style={{ color: "var(--purple)", fontWeight: 600 }}>
+            → The engineering library
+          </Link>
           <Link href="/roadmap" className="side-link" onClick={close} style={{ color: "var(--brand-2)", fontWeight: 600 }}>
             → The interactive roadmap
           </Link>

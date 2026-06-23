@@ -40,27 +40,27 @@ export const WORLD_CONTENT = {
     professorHooks: {
       simpler: {
         title: "Explain Simpler",
-        emoji: "🧠",
+        iconType: "simple",
         content: "Imagine ordering food at a physical restaurant counter. The clerk writes down your order on a ticket pad, stamps it 'Paid', hands it to the kitchen, and gives you a receipt. The state of your food is clear. If the clerk just wrote it on a whiteboard and wiped it off, the kitchen wouldn't know what to cook or who to refund!"
       },
       deeper: {
         title: "Explain Deeper",
-        emoji: "🔬",
+        iconType: "deep",
         content: "Order states are managed as a strict Finite State Machine (FSM). We use Postgres 'SELECT ... FOR UPDATE' inside Prisma transactions to acquire an exclusive row-level write lock. This blocks concurrent processes from reading or writing the same order until the active status change commits, preventing split-brain database anomalies."
       },
       alternatives: {
         title: "Show Alternatives",
-        emoji: "⚖️",
+        iconType: "alternatives",
         content: "We compared a simple mutable status field with an append-only event ledger. While a mutable column saves storage, it destroys audit history. We opted for a hybrid approach: a current status column in the Order table for quick querying, backed by a detailed OrderEvent relation table containing every status change timestamp, initiator, and metadata."
       },
       failures: {
         title: "Show Failures",
-        emoji: "💥",
+        iconType: "failures",
         content: "If a user attempts to cancel an order at the exact millisecond the chef hits 'Accept Kitchen Ticket', a double-update race occurs. Without row locking, both threads read the status as 'PLACED', both write their status updates, and the database commits both. The customer gets refunded, but the kitchen wastefully prepares the food."
       },
       code: {
         title: "Show Burger Farm Code",
-        emoji: "🛠️",
+        iconType: "code",
         content: "Look at order.service.ts. The validateTransition() helper checks the incoming state against a predefined transition matrix: PLACED -> PREPARING (Valid), CANCELLED -> PREPARING (Invalid). If validation passes, a transaction writes both the new status and the audit event."
       }
     }
@@ -119,27 +119,27 @@ export const WORLD_CONTENT = {
     professorHooks: {
       simpler: {
         title: "Explain Simpler",
-        emoji: "🧠",
+        iconType: "simple",
         content: "Think of buying movie tickets. You hand your card to the cashier. If the card machine freezes, you don't keep swiping unless you want to buy 5 tickets! Instead, the system uses a unique transaction ID. If the machine sees the exact same ID, it says 'I already processed this ticket, here you go!' without charging you again."
       },
       deeper: {
         title: "Explain Deeper",
-        emoji: "🔬",
+        iconType: "deep",
         content: "When a payment request hits the server, we calculate a SHA-256 checksum of the cart. This serves as the idempotency key. We store this key in Redis with a 24-hour TTL using SETNX to guarantee atomicity. If Stripe sends a webhook, we verify the signature by taking the request body, prepending the Stripe-Signature timestamp, hashing it using HMAC SHA-256 with the webhook secret, and doing a constant-time comparison."
       },
       alternatives: {
         title: "Show Alternatives",
-        emoji: "⚖️",
+        iconType: "alternatives",
         content: "We rejected direct client-side callbacks to mark orders paid. While client callbacks feel faster (no webhook lag), they are easily intercepted and spoofed using tools like Postman or Charles Proxy. Webhooks are server-to-server, and signature verification guarantees they originated from Stripe, not a clever user's terminal."
       },
       failures: {
         title: "Show Failures",
-        emoji: "💥",
+        iconType: "failures",
         content: "A webhook could be lost due to network issues or our backend being temporarily down. If we didn't have webhook retries, the customer's order would remain 'PENDING' indefinitely while Stripe has taken their money. To fix this, we store the Stripe PaymentIntent ID and configure Stripe to retry webhook delivery with exponential backoff."
       },
       code: {
         title: "Show Burger Farm Code",
-        emoji: "🛠️",
+        iconType: "code",
         content: "Inspect payment.service.ts. It uses stripe.webhooks.constructEvent(body, signature, secret) to mathematically verify signatures. In mobile-app/lib/core/providers/api_client.dart, the client interceptor injects the X-Idempotency-Key UUID header in all payment requests."
       }
     }
@@ -181,27 +181,27 @@ export const WORLD_CONTENT = {
     professorHooks: {
       simpler: {
         title: "Explain Simpler",
-        emoji: "🧠",
+        iconType: "simple",
         content: "Imagine drawing a delivery boundary circle on a map with a crayon. When a customer orders, we check if their home pin falls inside the crayon circle. Instead of using a crayon, the computer does math (checks if the coordinate coordinates match the boundary boundary coordinates) to verify serviceability instantly."
       },
       deeper: {
         title: "Explain Deeper",
-        emoji: "🔬",
+        iconType: "deep",
         content: "We use the Ray-Casting algorithm (Jordan Curve Theorem). We draw an infinite horizontal line starting from the user's coordinate and count how many times it intersects the store's boundary polygon edges. If the number of intersections is odd, the coordinate is inside the geofence; if even, it is outside."
       },
       alternatives: {
         title: "Show Alternatives",
-        emoji: "⚖️",
+        iconType: "alternatives",
         content: "We rejected calling Google Maps Distance Matrix API on every click. A single call costs money and takes 500ms+. By running ray-casting locally, we filter 95% of invalid requests in 0.2ms for free, only calling Google Maps for exact courier routes after order confirmation."
       },
       failures: {
         title: "Show Failures",
-        emoji: "💥",
+        iconType: "failures",
         content: "If a user lives exactly on the geofence border, floating point precision discrepancies between the client's GPS and server math can cause their address to toggle between serviceable and unserviceable. We solve this by applying a 50-meter buffer zone around our polygons."
       },
       code: {
         title: "Show Burger Farm Code",
-        emoji: "🛠️",
+        iconType: "code",
         content: "Look at delivery.service.ts. It loads the store's geofence polygon coordinate array from PostgreSQL and executes the rayCastCheck(userLocation, polygon) math function in the service logic."
       }
     }
@@ -244,27 +244,27 @@ export const WORLD_CONTENT = {
     professorHooks: {
       simpler: {
         title: "Explain Simpler",
-        emoji: "🧠",
+        iconType: "simple",
         content: "Imagine a savings book. You don't rub out the old balance and write the new one when you get money. You write a line: '+10 points', and compute the total. If we just overwrote a single number in the database, we couldn't prove where your points came from or find out why they disappeared!"
       },
       deeper: {
         title: "Explain Deeper",
-        emoji: "🔬",
+        iconType: "deep",
         content: "To prevent double-spending reward points during concurrent calls, we use Optimistic Concurrency Control (OCC). Every user record has a version column. When redeeming points, the transaction does: UPDATE User SET balance = balance - 50, version = version + 1 WHERE id = ? AND version = ?. If the version changed in between, the query returns 0 rows updated, and we roll back the transaction."
       },
       alternatives: {
         title: "Show Alternatives",
-        emoji: "⚖️",
+        iconType: "alternatives",
         content: "We rejected storing points as a mutable field in the User record because it is vulnerable to write skew and provides zero audit trace. We opted for a double-entry ledger where every point is either a credit (earned) or a debit (redeemed), making auditing simple and transaction logs immutable."
       },
       failures: {
         title: "Show Failures",
-        emoji: "💥",
+        iconType: "failures",
         content: "If a user logs into two devices and clicks 'Redeem 100 Points' at the exact same millisecond, without OCC or locking, both API threads would read their balance as 150 points. Both check constraints pass, both write redemption logs, and the user gets 200 points worth of discounts, leaving them with -50 points."
       },
       code: {
         title: "Show Burger Farm Code",
-        emoji: "🛠️",
+        iconType: "code",
         content: "Look at loyalty.service.ts. It performs database-level transactions that write the LoyaltyTransaction log and updates the User's balance, checking for optimistic lock version conflicts before committing."
       }
     }
@@ -307,27 +307,27 @@ export const WORLD_CONTENT = {
     professorHooks: {
       simpler: {
         title: "Explain Simpler",
-        emoji: "🧠",
+        iconType: "simple",
         content: "Think of a ticket window at a train station. If the printer jams, the clerk doesn't stop selling tickets. They write them down on a clipboard. Once the paper is fixed, they print all the buffered tickets in order. This is how our print queue operates."
       },
       deeper: {
         title: "Explain Deeper",
-        emoji: "🔬",
+        iconType: "deep",
         content: "When checkout succeeds, the server appends a job to a Redis list using RPUSH. A POS worker runs a continuous BRPOP loop, taking jobs from the queue and sending them via a persistent WebSocket connection to the kitchen printer. This decouples the client checkout HTTP request from local hardware availability."
       },
       alternatives: {
         title: "Show Alternatives",
-        emoji: "⚖️",
+        iconType: "alternatives",
         content: "We rejected synchronous HTTP POST requests from backend to printer endpoints. While simpler, any printer outage would freeze the checkout transaction, causing checkout timeouts for customers if a printer in Bangalore goes offline."
       },
       failures: {
         title: "Show Failures",
-        emoji: "💥",
+        iconType: "failures",
         content: "If a network packet drops during print confirmation, the backend assumes the ticket was lost and triggers a retry. Without client-side deduplication, the printer outputs the same ticket twice. We prevent this by checking a local SQLite list of processed order IDs on the print controller."
       },
       code: {
         title: "Show Burger Farm Code",
-        emoji: "🛠️",
+        iconType: "code",
         content: "Look at pos.service.ts. The enqueuePrintJob() pushes payloads into Redis. The printer_controller.dart implements the WebSocket client that processes incoming JSON messages, logs completion to local storage, and handles reconnection retry loops."
       }
     }
@@ -370,27 +370,27 @@ export const WORLD_CONTENT = {
     professorHooks: {
       simpler: {
         title: "Explain Simpler",
-        emoji: "🧠",
+        iconType: "simple",
         content: "Think of a movie ticket with a holographic stamp. The ticket inspector doesn't call the theater office to verify your ticket; they just look at the hologram. If someone tries to write 'VIP' on the ticket, the hologram doesn't match, and they are kicked out."
       },
       deeper: {
         title: "Explain Deeper",
-        emoji: "🔬",
+        iconType: "deep",
         content: "JWTs consist of three parts: Header, Payload, and Signature. The signature is created by base64-encoding the header and payload, joining them with a dot, and hashing it with HMAC SHA-256 using a server-side secret key. The auth middleware splits the incoming token, hashes the payload, and compares it to the signature in constant-time."
       },
       alternatives: {
         title: "Show Alternatives",
-        emoji: "⚖️",
+        iconType: "alternatives",
         content: "We compared database-backed sessions (Redis) with stateless JWTs. Database sessions can be revoked instantly but require a network call on every request. JWTs are stateless and require zero DB calls, but revocation requires blacklist tracking. We chose stateless JWTs with short expiries and refresh token rotation."
       },
       failures: {
         title: "Show Failures",
-        emoji: "💥",
+        iconType: "failures",
         content: "If the private signing secret is leaked, attackers can forge admin tokens at will. We secure secrets in AWS Secrets Manager and implement automated secret rotation to mitigate leakage risk."
       },
       code: {
         title: "Show Burger Farm Code",
-        emoji: "🛠️",
+        iconType: "code",
         content: "Inspect auth.middleware.ts. It uses jwt.verify() to check signatures and validates claims. Admin controllers check req.user.role === 'ADMIN' before executing updates."
       }
     }
@@ -432,27 +432,27 @@ export const WORLD_CONTENT = {
     professorHooks: {
       simpler: {
         title: "Explain Simpler",
-        emoji: "🧠",
+        iconType: "simple",
         content: "Imagine a restaurant where the accountant stops the chefs to count all the plates in the middle of dinner service! The customers wait, and the food gets cold. Instead, the accountant should copy the receipts at the end of the day and do their calculations separately."
       },
       deeper: {
         title: "Explain Deeper",
-        emoji: "🔬",
+        iconType: "deep",
         content: "We separate transactional (OLTP) write pools from reporting (OLAP) read pools. Postgres replication stream copies data asynchronously from primary to replica. Our database connection manager routes read operations to the replica port, ensuring checkout connection pools are never exhausted by long-running aggregates."
       },
       alternatives: {
         title: "Show Alternatives",
-        emoji: "⚖️",
+        iconType: "alternatives",
         content: "We weighed real-time aggregates in Postgres against pre-aggregated tables (Materialized Views). Pre-aggregates load instantly but are stale. Real-time replica queries are fresh but cost hardware resource overhead. We chose read-only replicas for reporting to get fresh data safely."
       },
       failures: {
         title: "Show Failures",
-        emoji: "💥",
+        iconType: "failures",
         content: "Asynchronous replication introduces replication lag (e.g. reports show transactions 5 seconds after they occur). If the replica lags too far behind, reports look outdated. We monitor replica lag metrics and trigger alarms if lag exceeds 60 seconds."
       },
       code: {
         title: "Show Burger Farm Code",
-        emoji: "🛠️",
+        iconType: "code",
         content: "Look at dashboard.tsx. It queries replica endpoints to load sales totals and item popularity charts, keeping the checkout server free of heavy reporting SQL load."
       }
     }
@@ -496,27 +496,27 @@ export const WORLD_CONTENT = {
     professorHooks: {
       simpler: {
         title: "Explain Simpler",
-        emoji: "🧠",
+        iconType: "simple",
         content: "Imagine a restaurant with food trucks. A container is a fully-equipped food truck. If a truck breaks down, you don't repair it on the street; you just tow a brand-new truck to the site. The ingredients storage (volume) is kept separate, so when the truck changes, the food is still there! The load balancer is a host directing customers to the truck with the shortest line."
       },
       deeper: {
         title: "Explain Deeper",
-        emoji: "🔬",
+        iconType: "deep",
         content: "Kubernetes orchestrates containers using Pods (the smallest deployable unit) and Deployments (which declare the desired state, like '4 replicas of image v2'). A rolling update scales up the new ReplicaSet (v2) while scaling down the old one (v1). Readiness probes check if the container's /health endpoint returns 200 before routing traffic via the Service (load balancer) proxy."
       },
       alternatives: {
         title: "Show Alternatives",
-        emoji: "⚖️",
+        iconType: "alternatives",
         content: "We weighed Blue-Green deployments against Rolling updates. Blue-Green spins up a duplicate production environment (Green), switches all traffic via the router, and keeps the old (Blue) for quick rollback. This requires double the server resources. Rolling updates update containers gradually on the same cluster, saving resources but risking mixed-version traffic API compatibilities."
       },
       failures: {
         title: "Show Failures",
-        emoji: "💥",
+        iconType: "failures",
         content: "Without a readiness probe, a newly started container is marked healthy instantly. If the container crashes after 2 seconds due to an unhandled exception or missing environment secret, it creates a black hole: requests are routed to it and fail. Readiness probes verify stable operation before exposure."
       },
       code: {
         title: "Show Burger Farm Code",
-        emoji: "🛠️",
+        iconType: "code",
         content: "Check k8s-deployment.yaml. It specifies replica counts, environment variables mapped to Kubernetes Secrets, and readinessProbe/livenessProbe configurations with initialDelaySeconds and periodSeconds."
       }
     }

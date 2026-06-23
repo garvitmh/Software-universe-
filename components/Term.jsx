@@ -55,6 +55,37 @@ export default function Term({ id, def, children }) {
             >
               {title && <span className="term-pop-title">{title}</span>}
               <span className="term-pop-body">{body}</span>
+              <button
+                onClick={() => {
+                  const termToSearch = title || (typeof children === 'string' ? children : '');
+                  if (termToSearch) {
+                    window.dispatchEvent(
+                      new CustomEvent("search-rag-term", {
+                        detail: { term: termToSearch }
+                      })
+                    );
+                  }
+                  setOpen(false);
+                }}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  marginTop: "10px",
+                  padding: "6px 8px",
+                  fontSize: "11px",
+                  fontWeight: "600",
+                  backgroundColor: "var(--brand-soft)",
+                  color: "var(--brand-2)",
+                  border: "1px solid var(--hairline)",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  textAlign: "center",
+                  transition: "background 0.2s"
+                }}
+                className="term-pop-action"
+              >
+                ✨ Consult Professor
+              </button>
             </motion.span>
           </FloatingPortal>
         )}
