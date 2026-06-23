@@ -47,6 +47,7 @@ export default function SiteNav() {
         </Link>
 
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <NavLink href="/learn" label="Learn" />
           <NavLink href="/universe" label="Command Center" />
           <NavLink href="/codex/foundations" label="The Codex" />
           <NavLink href="/roadmap" label="The Roadmap" />
