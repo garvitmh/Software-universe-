@@ -72,28 +72,19 @@ export default function Home() {
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                   <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--pop-lime)", display: "inline-block", boxShadow: "0 0 8px var(--pop-lime)" }} />
-                  <span style={{ fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Telemetry Live</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>13 live tools</span>
                 </div>
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 <p style={{ fontSize: 13.5, color: "var(--ink-2)", lineHeight: 1.5, margin: 0 }}>
-                  Inspect real-time service metrics, latency spikes, and client connections in the telemetry monitoring control room.
+                  Drive a live traffic simulation, run incident war-rooms, and explore 13 interactive system-design labs — all in one control room.
                 </p>
-                {/* Micro telemetry widgets */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginTop: 4, background: "var(--surface-warm)", padding: "10px 14px", borderRadius: 10, border: "1px solid var(--hairline-2)" }}>
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <span style={{ fontSize: 10, color: "var(--muted)", textTransform: "uppercase", fontWeight: 700 }}>Latency</span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: "var(--ink)" }}>14 ms</span>
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <span style={{ fontSize: 10, color: "var(--muted)", textTransform: "uppercase", fontWeight: 700 }}>Error Rate</span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: "var(--pop-lime)" }}>0.01%</span>
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <span style={{ fontSize: 10, color: "var(--muted)", textTransform: "uppercase", fontWeight: 700 }}>Active Scale</span>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: "var(--ink)" }}>100 req/s</span>
-                  </div>
+                {/* What's inside the control room (honest, not fake telemetry) */}
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
+                  {["Traffic simulator", "Incident War Room", "Pattern Atlas", "Case Studies", "AI Professor"].map((t) => (
+                    <span key={t} style={{ fontSize: 10.5, fontWeight: 600, color: "var(--ink-2)", background: "var(--surface-warm)", border: "1px solid var(--hairline-2)", padding: "4px 9px", borderRadius: 6 }}>{t}</span>
+                  ))}
                 </div>
               </div>
 

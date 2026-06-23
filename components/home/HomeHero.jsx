@@ -24,14 +24,14 @@ export default function HomeHero() {
           {/* Left — copy */}
           <div>
             <span className="eyebrow" style={{ marginBottom: 12, display: "inline-block" }}>
-              Welcome to the System
+              Learn software — from one machine to a million users
             </span>
             <h1 style={{ fontSize: "clamp(32px, 5vw, 48px)", lineHeight: 1.1, fontWeight: 600, letterSpacing: "-.02em" }}>
-              Your codebase, <br />
-              <span className="grad-text" style={{ fontStyle: "italic" }}>finally explained.</span>
+              Software, <br />
+              <span className="grad-text" style={{ fontStyle: "italic" }}>finally understood.</span>
             </h1>
             <p style={{ fontSize: 16, color: "var(--ink-2)", maxWidth: 480, marginTop: 16, lineHeight: 1.55 }}>
-              A complete map of your Burger Farm architecture. Explore the Codex, step through the interactive Roadmap, or safely break things in the Simulator.
+              A visual, AI-guided way to learn how real systems work — across every domain, from your first line of code to planet-scale. Read it, watch it run, and break it on purpose. Stuck on a word? Ask the assistant, anywhere.
             </p>
             
             {/* Interactive Socratic Search Input */}
@@ -92,12 +92,12 @@ export default function HomeHero() {
             </div>
 
             <div style={{ display: "flex", gap: 14, marginTop: 24, flexWrap: "wrap" }}>
-              <Link href="/simulator" className="btn btn-pop" style={{ fontSize: 15, padding: "12px 20px", borderRadius: 12 }}>
-                Enter the Simulator
+              <Link href="/learn" className="btn btn-pop" style={{ fontSize: 15, padding: "12px 20px", borderRadius: 12 }}>
+                Start with the map
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
               </Link>
-              <Link href="/roadmap" className="btn btn-ghost" style={{ fontSize: 15, padding: "12px 20px", borderRadius: 12, borderWidth: 1.5 }}>
-                View the Roadmap
+              <Link href="/simulator" className="btn btn-ghost" style={{ fontSize: 15, padding: "12px 20px", borderRadius: 12, borderWidth: 1.5 }}>
+                Enter the Simulator
               </Link>
             </div>
           </div>
