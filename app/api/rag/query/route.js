@@ -64,7 +64,7 @@ function callOpenAI(apiKey, prompt, systemContext) {
 function callOpenRouter(apiKey, prompt, systemContext) {
   return new Promise((resolve, reject) => {
     const postData = JSON.stringify({
-      model: 'nvidia/nemotron-3-ultra-550b-a55b:free',
+      model: process.env.OPENROUTER_MODEL || 'meta-llama/llama-3.3-70b-instruct:free',
       messages: [
         {
           role: 'system',
@@ -134,13 +134,29 @@ export async function POST(request) {
       });
     }
 
-    // 1. Search local RAG data lake
-    const references = searchRAG(query, 4);
+    // 1. Search local knowledge index (degrades to [] if no corpus — never throws)
+    let references = [];
+    try {
+      references = searchRAG(query, 4);
+    } catch (searchErr) {
+      console.warn('RAG search unavailable:', searchErr.message);
+    }
 
-    // 2. Determine API Key
-    const apiKey = clientApiKey || process.env.OPENAI_API_KEY;
+    // 2. Determine provider + key. Priority: client-supplied key →
+    //    server OpenRouter key (free model, works for everyone) → server OpenAI key.
+    let apiKey = (clientApiKey && clientApiKey.trim()) || '';
+    let provider = '';
+    if (apiKey) {
+      provider = apiKey.startsWith('sk-or-') ? 'openrouter' : 'openai';
+    } else if (process.env.OPENROUTER_API_KEY) {
+      apiKey = process.env.OPENROUTER_API_KEY;
+      provider = 'openrouter';
+    } else if (process.env.OPENAI_API_KEY) {
+      apiKey = process.env.OPENAI_API_KEY;
+      provider = 'openai';
+    }
 
-    if (apiKey && apiKey.trim()) {
+    if (apiKey && provider) {
       // 3. Call RAG
       const contextString = references
         .map((res, i) => `[Source ${i + 1}]: Title: "${res.title}" | Path: "${res.source}" | Text:\n${res.text}\n`)
@@ -161,7 +177,7 @@ Answer the user's query grounding yourself strictly in the provided context docu
 
       try {
         let responseText;
-        if (apiKey.startsWith('sk-or-')) {
+        if (provider === 'openrouter') {
           responseText = await callOpenRouter(apiKey, query, systemPrompt);
         } else {
           responseText = await callOpenAI(apiKey, query, systemPrompt);

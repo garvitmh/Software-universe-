@@ -1,6 +1,8 @@
 // app/api/rag/search/route.js
 import { searchRAG } from '@/lib/rag_search';
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);

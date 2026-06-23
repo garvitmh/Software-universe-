@@ -6,6 +6,7 @@
 *.pem
 npm-debug.log*
 .env*
+!.env.example
 .vercel
 *.tsbuildinfo
 next-env.d.ts
@@ -15,6 +16,8 @@ next-env.d.ts
 *.gltf
 *.fbx
 *.obj
+# …but DO ship the hero model so the 3D hero renders on deploy (16 MB, under limits)
+!public/models/retro_computer.glb
 
 # RAG Data Lake
 data/raw/*
