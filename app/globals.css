@@ -204,6 +204,24 @@ p { margin: 0; }
 .inside-card h4 { font-family: "Inter"; font-size: 14px; font-weight: 600; letter-spacing: 0; margin-bottom: 3px; }
 .inside-card p { font-size: 13px; color: var(--muted); margin: 0; }
 
+/* Rendered markdown plan docs (/plan) */
+.plan-doc h1 { font-size: 34px; line-height: 1.1; margin: 0 0 1rem; }
+.plan-doc h2 { font-size: 24px; margin: 2rem 0 .7rem; }
+.plan-doc h3 { font-size: 18px; margin: 1.5rem 0 .5rem; font-family: "Inter"; font-weight: 600; letter-spacing: 0; }
+.plan-doc p { font-size: 16px; color: var(--ink-2); margin: 0 0 1rem; line-height: 1.7; }
+.plan-doc ul, .plan-doc ol { padding-left: 22px; margin: 0 0 1rem; }
+.plan-doc li { font-size: 15.5px; color: var(--ink-2); margin: .35rem 0; line-height: 1.6; }
+.plan-doc a { color: var(--brand-2); font-weight: 500; }
+.plan-doc strong { color: var(--ink); font-weight: 600; }
+.plan-doc code { background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 6px; padding: 1px 6px; font-size: 13.5px; font-family: "JetBrains Mono", ui-monospace, monospace; color: var(--brand-2); }
+.plan-doc pre { background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 10px; padding: 14px 16px; overflow-x: auto; margin: 1rem 0; }
+.plan-doc pre code { background: none; border: none; padding: 0; color: var(--ink-2); font-size: 13px; line-height: 1.6; }
+.plan-doc blockquote { border-left: 3px solid var(--brand); padding: 2px 0 2px 16px; margin: 1.1rem 0; color: var(--muted); font-style: italic; }
+.plan-doc table { width: 100%; border-collapse: collapse; margin: 1.3rem 0; font-size: 14px; display: block; overflow-x: auto; }
+.plan-doc th, .plan-doc td { border: 1px solid var(--hairline); padding: 8px 12px; text-align: left; vertical-align: top; }
+.plan-doc th { background: var(--bg-2); font-weight: 600; color: var(--ink); }
+.plan-doc hr { border: none; border-top: 1px solid var(--hairline); margin: 2rem 0; }
+
 /* Inline interactive widgets embedded in prose */
 .inline-widget { margin: 1.8rem 0; border: 1px solid var(--hairline-2); border-radius: 18px; background: linear-gradient(180deg, var(--surface-warm), var(--surface)); padding: 18px 20px 20px; box-shadow: var(--shadow); }
 .inline-widget-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
