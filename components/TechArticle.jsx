@@ -3,6 +3,25 @@ import Callout from "@/components/Callout";
 import { ALL_TECH } from "@/lib/curriculum";
 import { fmt } from "@/lib/fmt";
 
+// Rough "N min read" from the article's prose (~200 words/min).
+function readingMinutes(c) {
+  const parts = [
+    c.tagline,
+    c.oneLiner,
+    ...(c.what || []),
+    c.analogy?.body,
+    ...(c.inside || []).map((i) => `${i.name} ${i.desc}`),
+    ...(c.how || []),
+    ...(c.why || []),
+    ...(c.alternatives || []).map((a) => `${a.name} ${a.note}`),
+    ...(c.howWeUse?.body || []),
+    c.breaks,
+    c.scale,
+  ].filter(Boolean);
+  const words = parts.join(" ").split(/\s+/).length;
+  return Math.max(1, Math.round(words / 200));
+}
+
 function Paras({ items, dropFirst }) {
   return (items || []).map((p, i) => (
     <p key={i} className={dropFirst && i === 0 ? "ed-dropcap" : undefined}>
@@ -30,11 +49,15 @@ export default function TechArticle({ content: c }) {
     .map((slug) => ALL_TECH.find((t) => t.slug === slug))
     .filter(Boolean);
 
+  const idx = ALL_TECH.findIndex((t) => t.slug === c.slug);
+  const prev = idx > 0 ? ALL_TECH[idx - 1] : null;
+  const next = idx >= 0 && idx < ALL_TECH.length - 1 ? ALL_TECH[idx + 1] : null;
+
   let n = 0;
 
   return (
     <main className="wrap-narrow" style={{ paddingTop: 40, paddingBottom: 60 }}>
-      <div className="ed-label" style={{ marginBottom: 16 }}>Tech reference · {c.category}</div>
+      <div className="ed-label" style={{ marginBottom: 16 }}>Tech reference · {c.category} · {readingMinutes(c)} min read</div>
       <h1 style={{ fontFamily: "var(--font-display)", fontSize: 48, lineHeight: 1.04, fontWeight: 500, letterSpacing: "-.02em" }}>{c.title}</h1>
       {c.tagline && (
         <p style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontSize: 23, color: "var(--ink-2)", marginTop: 12, lineHeight: 1.4 }}>
@@ -161,6 +184,27 @@ export default function TechArticle({ content: c }) {
           </>
         )}
       </div>
+
+      {(prev || next) && (
+        <nav style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 44, borderTop: "1px solid var(--border)", paddingTop: 24 }}>
+          {prev ? (
+            <Link href={prev.href} style={{ textAlign: "left" }}>
+              <div className="ed-label" style={{ marginBottom: 5 }}>← Previous</div>
+              <div style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 18, color: "var(--ink)" }}>{prev.title}</div>
+            </Link>
+          ) : (
+            <span />
+          )}
+          {next ? (
+            <Link href={next.href} style={{ textAlign: "right" }}>
+              <div className="ed-label" style={{ marginBottom: 5 }}>Next →</div>
+              <div style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 18, color: "var(--ink)" }}>{next.title}</div>
+            </Link>
+          ) : (
+            <span />
+          )}
+        </nav>
+      )}
     </main>
   );
 }
