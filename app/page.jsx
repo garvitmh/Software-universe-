@@ -111,7 +111,7 @@ export default function Home() {
               Begin the curriculum →
             </Link>
             <Link
-              href="/codex/foundations"
+              href="/codex/tech/what-is-a-program"
               style={{
                 border: "1px solid var(--border-2)",
                 background: "var(--surface)",
