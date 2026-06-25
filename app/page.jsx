@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Armillary from "@/components/home/Armillary";
+import ContinueReading from "@/components/home/ContinueReading";
 
 const FOUR_Q = [
   { tag: "What", text: "What it actually is, in plain language.", color: "var(--primary)" },
@@ -155,6 +156,9 @@ export default function Home() {
           </figcaption>
         </figure>
       </div>
+
+      {/* Continue reading — only for returning learners */}
+      <ContinueReading />
 
       {/* Four questions */}
       <div style={{ ...WRAP, marginTop: 30 }}>
