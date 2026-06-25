@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Armillary from "@/components/home/Armillary";
 import ContinueReading from "@/components/home/ContinueReading";
+import { PATHS } from "@/lib/paths";
 
 const FOUR_Q = [
   { tag: "What", text: "What it actually is, in plain language.", color: "var(--primary)" },
@@ -244,6 +245,29 @@ export default function Home() {
               </Link>
             );
           })}
+        </div>
+      </div>
+
+      {/* Guided paths */}
+      <div style={{ ...WRAP, marginTop: 44 }}>
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 16, marginBottom: 18, flexWrap: "wrap" }}>
+          <h2 style={{ fontFamily: "var(--font-mono)", fontWeight: 600, fontSize: 11, letterSpacing: ".16em", textTransform: "uppercase", color: "var(--ink-3)", margin: 0 }}>
+            Guided paths — a rope through the maze
+          </h2>
+          <Link href="/paths" style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontSize: 18, color: "var(--primary)" }}>
+            See all paths →
+          </Link>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", borderTop: "1px solid var(--border)", borderLeft: "1px solid var(--border)" }}>
+          {PATHS.map((p) => (
+            <Link key={p.id} href={`/paths/${p.id}`} className="ed-mode" style={{ padding: "18px 20px", borderBottom: "1px solid var(--border)", borderRight: "1px solid var(--border)", display: "block" }}>
+              <div style={{ fontFamily: "var(--font-mono)", fontWeight: 600, fontSize: 9.5, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--primary)", marginBottom: 6 }}>
+                {p.subtitle}
+              </div>
+              <div style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 20, letterSpacing: "-.01em", marginBottom: 6 }}>{p.title}</div>
+              <div style={{ fontFamily: "var(--font-mono)", fontSize: 10.5, color: "var(--ink-3)" }}>{p.steps.length} stops</div>
+            </Link>
+          ))}
         </div>
       </div>
 
