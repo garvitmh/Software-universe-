@@ -61,6 +61,7 @@ export default function RootLayout({ children }) {
                 ["Paths", "/paths"],
                 ["Codex", "/codex"],
                 ["Simulator", "/simulator"],
+                ["Playground", "/playground"],
                 ["Glossary", "/glossary"],
                 ["The Plan", "/plan"],
               ].map(([label, href]) => (
