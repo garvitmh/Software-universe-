@@ -33,6 +33,24 @@ export default function PathSteps({ steps }) {
         </span>
       </div>
 
+      {mounted && doneCount === steps.length && (
+        <div
+          style={{
+            border: "1px solid var(--teal)",
+            background: "color-mix(in srgb, var(--teal) 7%, transparent)",
+            borderRadius: 6,
+            padding: "12px 16px",
+            marginBottom: 18,
+            fontFamily: "var(--font-display)",
+            fontStyle: "italic",
+            fontSize: 18,
+            color: "var(--teal)",
+          }}
+        >
+          Path complete — every stop read. ✓
+        </div>
+      )}
+
       {/* Rope */}
       <div style={{ borderTop: "1px solid var(--border)" }}>
         {steps.map((s, i) => {

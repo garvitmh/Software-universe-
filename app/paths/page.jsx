@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PATHS } from "@/lib/paths";
+import PathBadge from "@/components/paths/PathBadge";
 
 export const metadata = {
   title: "Guided paths · Software Universe",
@@ -32,7 +33,10 @@ export default function PathsIndex() {
               <div style={{ fontFamily: "var(--font-mono)", fontWeight: 600, fontSize: 10.5, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--primary)" }}>
                 {p.subtitle}
               </div>
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--ink-3)", whiteSpace: "nowrap" }}>{p.steps.length} stops</span>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+                <PathBadge hrefs={p.steps.map((s) => s.href)} />
+                <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--ink-3)", whiteSpace: "nowrap" }}>{p.steps.length} stops</span>
+              </div>
             </div>
             <div style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 26, letterSpacing: "-.01em", marginBottom: 8 }}>{p.title}</div>
             <p style={{ fontSize: 15, lineHeight: 1.55, color: "var(--ink-2)", margin: "0 0 14px" }}>{p.blurb}</p>
