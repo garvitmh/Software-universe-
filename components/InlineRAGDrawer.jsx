@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { searchNav } from "@/lib/searchIndex";
 
 // Starter questions shown in the empty state — onboarding for the Professor.
 const SUGGESTIONS = [
@@ -39,6 +41,7 @@ export default function InlineRAGDrawer() {
   const [error, setError] = useState("");
 
   const inputRef = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
     const savedKey = localStorage.getItem("openai_api_key");
@@ -143,6 +146,7 @@ export default function InlineRAGDrawer() {
 
   const parsed = getParsedSections();
   const hasLenses = LENSES.some((l) => parsed[l.key]) && (parsed.why || parsed.how || parsed.breaks);
+  const matches = searchNav(query);
 
   const monoLabel = {
     fontFamily: "var(--font-mono)",
@@ -353,36 +357,90 @@ export default function InlineRAGDrawer() {
             </div>
           )}
 
-          {/* Empty state — suggestions */}
-          {!answer && !isLoading && !error && (
-            <div>
-              <div style={{ ...monoLabel, marginBottom: 12 }}>Try asking</div>
-              {SUGGESTIONS.map((s) => (
+          {/* Empty state — jump-to navigation while typing, else suggestions */}
+          {!answer && !isLoading && !error &&
+            (query.trim().length >= 2 ? (
+              <div>
+                {matches.length > 0 && (
+                  <div style={{ marginBottom: 22 }}>
+                    <div style={{ ...monoLabel, marginBottom: 10 }}>Jump to</div>
+                    {matches.map((m) => (
+                      <button
+                        key={m.kind + m.href + m.title}
+                        onClick={() => {
+                          router.push(m.href);
+                          setIsOpen(false);
+                        }}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
+                          width: "100%",
+                          textAlign: "left",
+                          background: "transparent",
+                          border: "none",
+                          borderBottom: "1px solid var(--border)",
+                          padding: "10px 0",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <span style={{ fontFamily: "var(--font-mono)", fontWeight: 600, fontSize: 9, letterSpacing: ".1em", textTransform: "uppercase", color: "var(--ink-3)", minWidth: 44 }}>
+                          {m.kind}
+                        </span>
+                        <span style={{ fontFamily: "var(--font-display)", fontSize: 17, color: "var(--ink)" }}>{m.title}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <button
-                  key={s}
-                  onClick={() => {
-                    setQuery(s);
-                    executeSearch(s);
-                  }}
+                  onClick={handleSearch}
                   style={{
                     display: "block",
                     width: "100%",
                     textAlign: "left",
-                    fontFamily: "var(--font-display)",
-                    fontSize: 17,
-                    color: "var(--primary)",
-                    background: "transparent",
+                    background: "var(--ink)",
+                    color: "var(--bg)",
                     border: "none",
-                    borderBottom: "1px solid var(--border)",
-                    padding: "11px 0",
+                    borderRadius: 6,
+                    fontFamily: "var(--font-body)",
+                    fontWeight: 600,
+                    fontSize: 14,
+                    padding: "12px 16px",
                     cursor: "pointer",
                   }}
                 >
-                  {s} →
+                  Ask the Professor about “{query.trim()}” →
                 </button>
-              ))}
-            </div>
-          )}
+              </div>
+            ) : (
+              <div>
+                <div style={{ ...monoLabel, marginBottom: 12 }}>Try asking</div>
+                {SUGGESTIONS.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => {
+                      setQuery(s);
+                      executeSearch(s);
+                    }}
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      textAlign: "left",
+                      fontFamily: "var(--font-display)",
+                      fontSize: 17,
+                      color: "var(--primary)",
+                      background: "transparent",
+                      border: "none",
+                      borderBottom: "1px solid var(--border)",
+                      padding: "11px 0",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {s} →
+                  </button>
+                ))}
+              </div>
+            ))}
 
           {/* Answer */}
           {answer && !isLoading && (
