@@ -58,7 +58,7 @@ export default function RootLayout({ children }) {
             <nav style={{ display: "flex", gap: 18, flexWrap: "wrap" }}>
               {[
                 ["Curriculum", "/learn"],
-                ["Codex", "/codex/foundations"],
+                ["Codex", "/codex"],
                 ["Simulator", "/simulator"],
                 ["Glossary", "/glossary"],
                 ["The Plan", "/plan"],

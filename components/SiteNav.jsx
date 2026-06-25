@@ -8,7 +8,7 @@ import ThemeToggle from "./ThemeToggle";
 const NAV = [
   { label: "Home", href: "/", match: (p) => p === "/" },
   { label: "Curriculum", href: "/learn", match: (p) => p.startsWith("/learn") },
-  { label: "Codex", href: "/codex/foundations", match: (p) => p.startsWith("/codex") },
+  { label: "Codex", href: "/codex", match: (p) => p.startsWith("/codex") },
   { label: "Simulator", href: "/simulator", match: (p) => p.startsWith("/simulator") },
 ];
 
