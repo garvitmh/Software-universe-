@@ -69,22 +69,21 @@ export default function Term({ id, def, children }) {
                 }}
                 style={{
                   display: "block",
-                  width: "100%",
-                  marginTop: "10px",
-                  padding: "6px 8px",
-                  fontSize: "11px",
-                  fontWeight: "600",
-                  backgroundColor: "var(--brand-soft)",
-                  color: "var(--brand-2)",
-                  border: "1px solid var(--hairline)",
-                  borderRadius: "6px",
+                  marginTop: "13px",
+                  padding: "8px 14px",
+                  fontFamily: "var(--font-body)",
+                  fontSize: "12.5px",
+                  fontWeight: 600,
+                  background: "var(--ink)",
+                  color: "var(--bg)",
+                  border: "none",
+                  borderRadius: "5px",
                   cursor: "pointer",
-                  textAlign: "center",
-                  transition: "background 0.2s"
+                  textAlign: "left",
                 }}
                 className="term-pop-action"
               >
-                ✨ Consult Professor
+                Ask the Professor →
               </button>
             </motion.span>
           </FloatingPortal>

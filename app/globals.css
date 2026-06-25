@@ -267,23 +267,24 @@ p { margin: 0; }
 
 /* Inline jargon-buster <Term> */
 .term {
-  border-bottom: 1.5px dotted var(--brand);
+  border-bottom: 1px solid var(--primary);
   color: inherit; cursor: help;
   text-underline-offset: 3px;
   transition: background .12s ease;
   border-radius: 2px;
 }
-.term:hover, .term:focus-visible { background: var(--brand-soft); outline: none; }
+.term:hover, .term:focus-visible { background: color-mix(in srgb, var(--primary) 8%, transparent); outline: none; }
 .term-pop {
-  z-index: 80; max-width: 304px;
+  z-index: 80; max-width: 296px;
   display: block;
-  background: #2A1B0E; color: #FBEFE0;
-  border-radius: 12px; padding: 11px 14px;
-  box-shadow: 0 10px 34px -10px rgba(36,26,16,.55);
-  font-family: "Inter", sans-serif; line-height: 1.5;
+  background: var(--tip-bg); color: var(--ink);
+  border: 1px solid var(--border-2);
+  border-radius: 7px; padding: 16px 18px;
+  box-shadow: var(--shadow-lg);
+  font-family: var(--font-body); line-height: 1.5;
 }
-.term-pop-title { display: block; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #F6924E; margin-bottom: 3px; }
-.term-pop-body { display: block; font-size: 13.5px; color: #FBEFE0; }
+.term-pop-title { display: block; font-family: var(--font-display); font-weight: 600; font-size: 17px; color: var(--ink); margin-bottom: 5px; }
+.term-pop-body { display: block; font-size: 14.5px; line-height: 1.6; color: var(--ink-2); }
 
 /* Predicted-confusion catcher <Aside> */
 .bf-aside { margin: 1.4rem 0; border: 1px solid var(--hairline-2); border-radius: 14px; background: var(--surface-warm); overflow: hidden; }

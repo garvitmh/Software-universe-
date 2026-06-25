@@ -1,98 +1,117 @@
 import Link from "next/link";
-import { DOMAINS, DEPTH_LADDER, CURRICULUM_STATS } from "@/lib/domains";
+import { DOMAINS, DEPTH_LADDER, DOMAIN_LADDER } from "@/lib/domains";
 
 export const metadata = {
-  title: "Learn — the map · Software Universe",
-  description: "Software engineering, end to end: every domain, each climbing from local to planet-scale.",
+  title: "The Learn Map — the curriculum · Software Universe",
+  description:
+    "Eleven domains, each climbing the same four-tier ladder — local, production, enterprise, planet-scale.",
 };
 
-const TINT = {
-  brand: { soft: "var(--brand-soft)", ink: "var(--brand-2)" },
-  purple: { soft: "var(--purple-soft)", ink: "var(--purple)" },
-  blue: { soft: "var(--blue-soft)", ink: "var(--blue)" },
-  amber: { soft: "var(--amber-soft)", ink: "var(--amber)" },
-  teal: { soft: "var(--teal-soft)", ink: "var(--teal)" },
-  pink: { soft: "var(--pink-soft)", ink: "var(--pink)" },
-};
+const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+const TIERS = DEPTH_LADDER.map((d) => d.label);
 
 export default function LearnMapPage() {
-  const s = CURRICULUM_STATS;
   return (
-    <main className="wrap" style={{ paddingTop: 40, paddingBottom: 64 }}>
+    <div className="ed-rise" style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 32px 80px" }}>
       {/* Header */}
-      <div style={{ maxWidth: 720, marginBottom: 26 }}>
-        <span className="eyebrow" style={{ color: "var(--brand-2)" }}>The map · learn everything</span>
-        <h1 style={{ fontSize: "clamp(34px, 5vw, 52px)", lineHeight: 1.04, fontWeight: 600, letterSpacing: "-.02em", marginTop: 8 }}>
-          Software, end to end — <span className="grad-text" style={{ fontStyle: "italic" }}>from one machine to a million users.</span>
+      <div style={{ borderBottom: "2px solid var(--ink)", paddingBottom: 18, marginBottom: 8 }}>
+        <div
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontWeight: 600,
+            fontSize: 10.5,
+            letterSpacing: ".16em",
+            textTransform: "uppercase",
+            color: "var(--ink-3)",
+            marginBottom: 12,
+          }}
+        >
+          The Curriculum · Contents
+        </div>
+        <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 500, fontSize: 52, letterSpacing: "-.02em", margin: "0 0 10px" }}>
+          The Learn Map
         </h1>
-        <p style={{ fontSize: 18, color: "var(--ink-2)", marginTop: 14, lineHeight: 1.55 }}>
-          Grow <strong>wide</strong> across every field a software engineer touches, and <strong>deep</strong> in each one — climbing the same ladder every time: what it is, why it's built that way, how it works, and exactly when it breaks.
+        <p style={{ fontSize: 18, lineHeight: 1.6, color: "var(--ink-2)", maxWidth: 640, margin: 0 }}>
+          Eleven domains, each climbing the same four-tier ladder — <em>local, production, enterprise, planet-scale</em>.
+          The depth bars show how far each reaches today.
         </p>
-        <div style={{ display: "flex", gap: 18, marginTop: 16, fontSize: 13.5, color: "var(--muted)", flexWrap: "wrap" }}>
-          <span><strong style={{ color: "var(--ink)" }}>{s.domains}</strong> domains</span>
-          <span><strong style={{ color: "var(--teal)" }}>{s.live}</strong> topics live</span>
-          <span><strong style={{ color: "var(--faint)" }}>{s.soon}</strong> on the way</span>
-        </div>
       </div>
 
-      {/* Depth ladder */}
-      <div className="card" style={{ padding: "16px 18px", marginBottom: 30, background: "var(--surface)" }}>
-        <div className="eyebrow" style={{ marginBottom: 12 }}>Every topic climbs this ladder</div>
-        <div style={{ display: "grid", gridTemplateColumns: `repeat(${DEPTH_LADDER.length}, 1fr)`, gap: 10 }} className="path-grid">
-          {DEPTH_LADDER.map((d, i) => (
-            <div key={d.id} style={{ display: "flex", flexDirection: "column", gap: 4, padding: "10px 12px", borderRadius: 12, background: "var(--bg-2)", borderLeft: `3px solid var(--brand)`, opacity: 0.55 + i * 0.15 }}>
-              <span style={{ fontSize: 13.5, fontWeight: 700, color: "var(--ink)" }}>{i + 1}. {d.label}</span>
-              <span style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.4 }}>{d.blurb}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Domains grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))", gap: 18 }}>
-        {DOMAINS.map((dom) => {
-          const tint = TINT[dom.tint] || TINT.brand;
+      {/* Domains ledger grid */}
+      <div className="ed-two" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0 }}>
+        {DOMAINS.map((dom, i) => {
           const live = dom.topics.filter((t) => t.status === "live").length;
+          const ladder = DOMAIN_LADDER[dom.id] || [0, 0, 0, 0];
+          const firstLive = dom.topics.find((t) => t.status === "live" && t.href);
           return (
-            <section key={dom.id} className="card" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
-              <div style={{ padding: "18px 20px 14px", borderBottom: "1px solid var(--hairline)", background: tint.soft }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10 }}>
-                  <h2 style={{ fontFamily: "Fraunces", fontSize: 21, fontWeight: 600, color: "var(--ink)" }}>{dom.title}</h2>
-                  <span style={{ fontSize: 11.5, fontWeight: 700, color: tint.ink, whiteSpace: "nowrap" }}>{live}/{dom.topics.length} live</span>
-                </div>
-                <p style={{ fontSize: 13.5, color: "var(--ink-2)", marginTop: 6, lineHeight: 1.5 }}>{dom.tagline}</p>
-              </div>
-              <div style={{ padding: "14px 18px 18px", display: "flex", flexWrap: "wrap", gap: 7 }}>
-                {dom.topics.map((t, i) =>
-                  t.status === "live" && t.href ? (
-                    <Link
-                      key={i}
-                      href={t.href}
-                      className="pill"
-                      style={{ background: "var(--surface-warm)", border: "1px solid var(--hairline-2)", color: "var(--ink)", fontSize: 12.5, padding: "6px 12px" }}
-                    >
-                      {t.t}
+            <section
+              key={dom.id}
+              className="ed-domain"
+              style={{ padding: "24px 28px", borderBottom: "1px solid var(--border)", borderRight: "1px solid var(--border)" }}
+            >
+              <div style={{ display: "flex", alignItems: "baseline", gap: 14, marginBottom: 8 }}>
+                <span style={{ fontFamily: "var(--font-mono)", fontWeight: 600, fontSize: 13, color: "var(--ink-3)" }}>
+                  {ROMAN[i]}.
+                </span>
+                <div style={{ flex: 1 }}>
+                  {firstLive ? (
+                    <Link href={firstLive.href} style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 24, lineHeight: 1.05, letterSpacing: "-.01em", color: "var(--ink)" }}>
+                      {dom.title}
                     </Link>
                   ) : (
-                    <span
-                      key={i}
-                      className="pill"
-                      style={{ background: "transparent", border: "1px dashed var(--hairline-2)", color: "var(--faint)", fontSize: 12.5, padding: "6px 12px" }}
-                      title="On the way"
-                    >
-                      {t.t}
+                    <span style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 24, lineHeight: 1.05, letterSpacing: "-.01em" }}>
+                      {dom.title}
                     </span>
-                  )
-                )}
+                  )}
+                </div>
+                <span style={{ fontFamily: "var(--font-mono)", fontWeight: 500, fontSize: 12, color: "var(--ink-3)", whiteSpace: "nowrap" }}>
+                  {live}/{dom.topics.length}
+                </span>
+              </div>
+
+              <p style={{ fontSize: 15, lineHeight: 1.55, color: "var(--ink-2)", margin: "0 0 16px 34px" }}>{dom.tagline}</p>
+
+              <div style={{ marginLeft: 34 }}>
+                {/* depth ladder */}
+                <div style={{ display: "flex", gap: 4, marginBottom: 10 }}>
+                  {ladder.map((pct, k) => (
+                    <div key={k} title={`${TIERS[k]} — ${pct}%`} style={{ flex: 1, height: 4, background: "var(--surface-2)", overflow: "hidden" }}>
+                      <div style={{ height: "100%", width: `${pct}%`, background: "var(--primary)" }} />
+                    </div>
+                  ))}
+                </div>
+
+                {/* topic tags */}
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "5px 14px" }}>
+                  {dom.topics.map((t, k) =>
+                    t.status === "live" && t.href ? (
+                      <Link
+                        key={k}
+                        href={t.href}
+                        style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: 13, color: "var(--ink)", borderBottom: "1px solid var(--primary)" }}
+                      >
+                        {t.t}
+                      </Link>
+                    ) : (
+                      <span
+                        key={k}
+                        title="On the way"
+                        style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: 13, color: "var(--ink-3)" }}
+                      >
+                        {t.t}
+                      </span>
+                    )
+                  )}
+                </div>
               </div>
             </section>
           );
         })}
       </div>
 
-      <p style={{ textAlign: "center", color: "var(--faint)", fontSize: 13.5, marginTop: 34 }}>
-        Don't know a word along the way? Hit <kbd style={{ background: "var(--bg-2)", border: "1px solid var(--hairline-2)", borderRadius: 6, padding: "1px 7px", fontSize: 12 }}>Ctrl/⌘ K</kbd> anywhere and ask the assistant.
+      <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: ".06em", color: "var(--ink-3)", marginTop: 30 }}>
+        Don't know a word along the way? Press ⌘/Ctrl&nbsp;K anywhere to ask the Professor.
       </p>
-    </main>
+    </div>
   );
 }
