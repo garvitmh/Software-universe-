@@ -26,17 +26,18 @@ function H2({ n, children }) {
   );
 }
 
+// Resolve a slug to {title, href} — a tech entry OR a Codex chapter.
+function resolveSlug(slug) {
+  const t = ALL_TECH.find((x) => x.slug === slug);
+  if (t) return { title: t.title, href: t.href };
+  const ch = ALL_CODEX_CHAPTERS.find((x) => x.slug === slug);
+  if (ch) return { title: ch.title, href: ch.href };
+  return null;
+}
+
 export default function TechArticle({ content: c }) {
-  // related[] may point at a tech entry OR a Codex chapter — resolve both.
-  const relatedTech = (c.related || [])
-    .map((slug) => {
-      const t = ALL_TECH.find((x) => x.slug === slug);
-      if (t) return { title: t.title, href: t.href };
-      const ch = ALL_CODEX_CHAPTERS.find((x) => x.slug === slug);
-      if (ch) return { title: ch.title, href: ch.href };
-      return null;
-    })
-    .filter(Boolean);
+  const relatedTech = (c.related || []).map(resolveSlug).filter(Boolean);
+  const prereqs = (c.prereqs || []).map(resolveSlug).filter(Boolean);
 
   const idx = ALL_TECH.findIndex((t) => t.slug === c.slug);
   const prev = idx > 0 ? ALL_TECH[idx - 1] : null;
@@ -52,6 +53,20 @@ export default function TechArticle({ content: c }) {
         <p style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontSize: 23, color: "var(--ink-2)", marginTop: 12, lineHeight: 1.4 }}>
           {c.tagline}
         </p>
+      )}
+
+      {prereqs.length > 0 && (
+        <div style={{ marginTop: 16, display: "flex", flexWrap: "wrap", alignItems: "baseline", gap: "4px 6px" }}>
+          <span className="ed-label" style={{ marginRight: 4 }}>Start with</span>
+          {prereqs.map((p, i) => (
+            <span key={p.href} style={{ fontSize: 14, color: "var(--ink-3)" }}>
+              {i > 0 && <span style={{ margin: "0 4px" }}>·</span>}
+              <Link href={p.href} style={{ color: "var(--primary)", borderBottom: "1px solid var(--primary)", fontFamily: "var(--font-body)", fontWeight: 500 }}>
+                {p.title}
+              </Link>
+            </span>
+          ))}
+        </div>
       )}
 
       <div className="prose" style={{ marginTop: 26 }}>
@@ -129,6 +144,20 @@ export default function TechArticle({ content: c }) {
           </div>
         )}
 
+        {c.whoUses && (
+          <div style={{ borderLeft: "3px solid var(--primary)", padding: "6px 0 6px 22px", margin: "1.8rem 0" }}>
+            <div className="ed-label" style={{ color: "var(--primary)", marginBottom: 7 }}>Who uses it</div>
+            <div style={{ fontSize: 18, lineHeight: 1.6, color: "var(--ink)" }}>{fmt(c.whoUses)}</div>
+          </div>
+        )}
+
+        {c.bigPicture && (
+          <>
+            <H2 n={++n}>The bigger picture</H2>
+            {Array.isArray(c.bigPicture) ? <Paras items={c.bigPicture} /> : <p>{fmt(c.bigPicture)}</p>}
+          </>
+        )}
+
         {c.howWeUse && (
           <>
             <H2 n={++n}>How it works in Burger Farm</H2>
@@ -154,6 +183,27 @@ export default function TechArticle({ content: c }) {
           <Callout variant="scale" title={c.scaleTitle || "How it grows"}>
             {fmt(c.scale)}
           </Callout>
+        )}
+
+        {c.projects && c.projects.length > 0 && (
+          <>
+            <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 600, margin: "2.6rem 0 1rem" }}>Build something with it</h2>
+            <div style={{ borderTop: "1px solid var(--border)" }}>
+              {c.projects.map((p, i) => {
+                const name = typeof p === "string" ? p : p.name;
+                const desc = typeof p === "string" ? null : p.desc;
+                return (
+                  <div key={i} style={{ display: "grid", gridTemplateColumns: "28px 1fr", gap: 12, padding: "13px 0", borderBottom: "1px solid var(--border)" }}>
+                    <span style={{ fontFamily: "var(--font-mono)", fontWeight: 600, fontSize: 12, color: "var(--accent)" }}>{String(i + 1).padStart(2, "0")}</span>
+                    <div>
+                      <span style={{ fontSize: 16, lineHeight: 1.55, color: "var(--ink)" }}>{fmt(name)}</span>
+                      {desc && <span style={{ display: "block", fontSize: 14.5, lineHeight: 1.55, color: "var(--ink-2)", marginTop: 3 }}>{fmt(desc)}</span>}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
         )}
 
         {relatedTech.length > 0 && (

@@ -76,10 +76,13 @@ function validRoute(href) {
 const errors = [];
 const warnings = [];
 
-// 1. related[] slugs exist (as a tech entry OR a Codex chapter)
+// 1. related[] and prereqs[] slugs exist (as a tech entry OR a Codex chapter)
 for (const [slug, c] of Object.entries(TECH_CONTENT)) {
   for (const r of c.related || []) {
     if (!techSlugs.has(r) && !chapterSlugs.has(r)) errors.push(`entry "${slug}" → related "${r}" does not exist`);
+  }
+  for (const r of c.prereqs || []) {
+    if (!techSlugs.has(r) && !chapterSlugs.has(r)) errors.push(`entry "${slug}" → prereq "${r}" does not exist`);
   }
   if (!c.title || !c.tagline) warnings.push(`entry "${slug}" missing title/tagline`);
 }
