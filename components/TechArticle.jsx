@@ -2,25 +2,7 @@ import Link from "next/link";
 import Callout from "@/components/Callout";
 import { ALL_TECH } from "@/lib/curriculum";
 import { fmt } from "@/lib/fmt";
-
-// Rough "N min read" from the article's prose (~200 words/min).
-function readingMinutes(c) {
-  const parts = [
-    c.tagline,
-    c.oneLiner,
-    ...(c.what || []),
-    c.analogy?.body,
-    ...(c.inside || []).map((i) => `${i.name} ${i.desc}`),
-    ...(c.how || []),
-    ...(c.why || []),
-    ...(c.alternatives || []).map((a) => `${a.name} ${a.note}`),
-    ...(c.howWeUse?.body || []),
-    c.breaks,
-    c.scale,
-  ].filter(Boolean);
-  const words = parts.join(" ").split(/\s+/).length;
-  return Math.max(1, Math.round(words / 200));
-}
+import { readingMinutes } from "@/lib/readingTime";
 
 function Paras({ items, dropFirst }) {
   return (items || []).map((p, i) => (

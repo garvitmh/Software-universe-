@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CODEX_PARTS, TECH_SECTIONS, codexHref, techHref } from "@/lib/curriculum";
 import { TECH_CONTENT } from "@/lib/tech-content";
+import { stats } from "@/lib/content/repository";
 
 export const metadata = {
   title: "The Codex — contents · Software Universe",
@@ -18,6 +19,13 @@ const underline = {
 
 export default function CodexIndex() {
   const ready = TECH_CONTENT;
+  const s = stats();
+  const byNumbers = [
+    [s.entries, "entries"],
+    [s.terms, "glossary terms"],
+    [s.paths, "guided paths"],
+    [s.topicsLive, "live topics"],
+  ];
   return (
     <main style={{ maxWidth: 760, paddingTop: 40, paddingBottom: 60 }}>
       <div style={{ borderBottom: "2px solid var(--ink)", paddingBottom: 18, marginBottom: 26 }}>
@@ -25,9 +33,16 @@ export default function CodexIndex() {
           Vol. I · The Codex
         </div>
         <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 500, fontSize: 52, letterSpacing: "-.02em", margin: "0 0 10px" }}>Contents</h1>
-        <p style={{ fontSize: 18, lineHeight: 1.6, color: "var(--ink-2)", margin: 0 }}>
+        <p style={{ fontSize: 18, lineHeight: 1.6, color: "var(--ink-2)", margin: "0 0 16px" }}>
           Two ways through: read the system front to back, or look up any one technology. Every term is a link; press ⌘/Ctrl&nbsp;K to ask the Professor anywhere.
         </p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 22px" }}>
+          {byNumbers.map(([num, label]) => (
+            <span key={label} style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: ".04em", color: "var(--ink-3)" }}>
+              <span style={{ color: "var(--primary)", fontWeight: 600 }}>{num}</span> {label}
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* The system, in order */}
