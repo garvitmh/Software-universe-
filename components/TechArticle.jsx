@@ -3,43 +3,64 @@ import Callout from "@/components/Callout";
 import { ALL_TECH } from "@/lib/curriculum";
 import { fmt } from "@/lib/fmt";
 
-const TINTS = {
-  blue: { soft: "var(--blue-soft)", ink: "var(--blue)" },
-  amber: { soft: "var(--amber-soft)", ink: "var(--amber)" },
-  teal: { soft: "var(--teal-soft)", ink: "var(--teal)" },
-  purple: { soft: "var(--purple-soft)", ink: "var(--purple)" },
-  pink: { soft: "var(--pink-soft)", ink: "var(--pink)" },
-  brand: { soft: "var(--brand-soft)", ink: "var(--brand-2)" },
-};
+function Paras({ items, dropFirst }) {
+  return (items || []).map((p, i) => (
+    <p key={i} className={dropFirst && i === 0 ? "ed-dropcap" : undefined}>
+      {fmt(p)}
+    </p>
+  ));
+}
 
-function Paras({ items }) {
-  return (items || []).map((p, i) => <p key={i}>{fmt(p)}</p>);
+// An h2 with a mono §-marker, the Editorial section convention.
+function H2({ n, children }) {
+  return (
+    <h2 style={{ fontSize: 30, margin: "2.6rem 0 1rem", letterSpacing: "-.01em" }}>
+      {n != null && (
+        <span style={{ fontFamily: "var(--font-mono)", fontWeight: 600, fontSize: 13, color: "var(--ink-3)", marginRight: 12, verticalAlign: "middle" }}>
+          §{n}
+        </span>
+      )}
+      {children}
+    </h2>
+  );
 }
 
 export default function TechArticle({ content: c }) {
-  const tint = TINTS[c.color] || TINTS.brand;
   const relatedTech = (c.related || [])
     .map((slug) => ALL_TECH.find((t) => t.slug === slug))
     .filter(Boolean);
 
-  return (
-    <main className="wrap-narrow" style={{ paddingTop: 40, paddingBottom: 52 }}>
-      <span className="pill" style={{ background: tint.soft, color: tint.ink, marginBottom: 14 }}>
-        Tech reference · {c.category}
-      </span>
-      <h1 style={{ fontSize: 40, lineHeight: 1.08 }}>{c.title}</h1>
-      {c.tagline && <p style={{ fontSize: 19, color: "var(--ink-2)", marginTop: 12, lineHeight: 1.5 }}>{c.tagline}</p>}
+  let n = 0;
 
-      <div className="prose" style={{ marginTop: 22 }}>
+  return (
+    <main className="wrap-narrow" style={{ paddingTop: 40, paddingBottom: 60 }}>
+      <div className="ed-label" style={{ marginBottom: 16 }}>Tech reference · {c.category}</div>
+      <h1 style={{ fontFamily: "var(--font-display)", fontSize: 48, lineHeight: 1.04, fontWeight: 500, letterSpacing: "-.02em" }}>{c.title}</h1>
+      {c.tagline && (
+        <p style={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontSize: 23, color: "var(--ink-2)", marginTop: 12, lineHeight: 1.4 }}>
+          {c.tagline}
+        </p>
+      )}
+
+      <div className="prose" style={{ marginTop: 26 }}>
         {c.oneLiner && (
-          <div style={{ background: tint.soft, border: "1px solid var(--hairline)", borderRadius: 14, padding: "14px 18px", margin: "0 0 1.4rem" }}>
-            <div style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", color: tint.ink, marginBottom: 4 }}>In one line</div>
-            <div style={{ fontSize: 16.5, color: "var(--ink)" }}>{fmt(c.oneLiner)}</div>
+          <div
+            style={{
+              border: "1px solid var(--border)",
+              borderLeft: "3px solid var(--primary)",
+              borderRadius: "0 6px 6px 0",
+              padding: "14px 18px",
+              margin: "0 0 1.8rem",
+              background: "var(--surface)",
+            }}
+          >
+            <div className="ed-label" style={{ marginBottom: 5, color: "var(--primary)" }}>In one line</div>
+            <div style={{ fontSize: 18, color: "var(--ink)", lineHeight: 1.5 }}>{fmt(c.oneLiner)}</div>
           </div>
         )}
 
-        <h2>What it is</h2>
-        <Paras items={c.what} />
+        <H2 n={++n}>What it is</H2>
+        <Paras items={c.what} dropFirst />
 
         {c.analogy && (
           <Callout variant="deeper" title={c.analogy.title || "A way to picture it"}>
@@ -49,13 +70,13 @@ export default function TechArticle({ content: c }) {
 
         {c.inside && c.inside.length > 0 && (
           <>
-            <h2>{c.insideTitle || "What's inside it"}</h2>
+            <H2 n={++n}>{c.insideTitle || "What's inside it"}</H2>
             {c.insideIntro && <p>{fmt(c.insideIntro)}</p>}
-            <div className="inside-grid">
+            <div style={{ borderTop: "1px solid var(--border)", margin: "0 0 1.6rem" }}>
               {c.inside.map((it, i) => (
-                <div key={i} className="inside-card">
-                  <h4>{fmt(it.name)}</h4>
-                  <p>{fmt(it.desc)}</p>
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "170px 1fr", gap: 20, padding: "15px 0", borderBottom: "1px solid var(--border)" }}>
+                  <div style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 17, color: "var(--ink)" }}>{fmt(it.name)}</div>
+                  <div style={{ fontSize: 16, lineHeight: 1.6, color: "var(--ink-2)" }}>{fmt(it.desc)}</div>
                 </div>
               ))}
             </div>
@@ -64,17 +85,26 @@ export default function TechArticle({ content: c }) {
 
         {c.why && (
           <>
-            <h2>Why we use it (and what else exists)</h2>
+            <H2 n={++n}>Why we use it (and what else exists)</H2>
             <Paras items={c.why} />
           </>
         )}
 
         {c.alternatives && c.alternatives.length > 0 && (
-          <div style={{ margin: "1.2rem 0", border: "1px solid var(--hairline)", borderRadius: 12, overflow: "hidden" }}>
+          <div style={{ margin: "1.2rem 0", border: "1px solid var(--border)", borderRadius: 8, overflow: "hidden" }}>
             {c.alternatives.map((a, i) => (
-              <div key={i} style={{ display: "flex", gap: 12, padding: "11px 15px", borderBottom: i < c.alternatives.length - 1 ? "1px solid var(--hairline)" : "none", background: i % 2 ? "var(--surface)" : "var(--bg-2)" }}>
-                <span style={{ fontWeight: 600, fontSize: 13.5, minWidth: 120, color: "var(--ink)" }}>{a.name}</span>
-                <span style={{ fontSize: 13.5, color: "var(--muted)" }}>{fmt(a.note)}</span>
+              <div
+                key={i}
+                style={{
+                  display: "flex",
+                  gap: 14,
+                  padding: "12px 16px",
+                  borderBottom: i < c.alternatives.length - 1 ? "1px solid var(--border)" : "none",
+                  background: i % 2 ? "var(--surface)" : "var(--surface-2)",
+                }}
+              >
+                <span style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 15, minWidth: 130, color: "var(--ink)" }}>{a.name}</span>
+                <span style={{ fontSize: 15, color: "var(--ink-2)", lineHeight: 1.5 }}>{fmt(a.note)}</span>
               </div>
             ))}
           </div>
@@ -82,13 +112,13 @@ export default function TechArticle({ content: c }) {
 
         {c.howWeUse && (
           <>
-            <h2>How it works in Burger Farm</h2>
+            <H2 n={++n}>How it works in Burger Farm</H2>
             <Paras items={c.howWeUse.body} />
             {c.howWeUse.refs && c.howWeUse.refs.length > 0 && (
-              <div style={{ margin: "1rem 0", background: "var(--bg-2)", border: "1px solid var(--hairline)", borderRadius: 12, padding: "12px 16px" }}>
-                <div style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: ".06em", textTransform: "uppercase", color: "var(--faint)", marginBottom: 8 }}>In your repo</div>
+              <div style={{ margin: "1rem 0", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 6, padding: "12px 16px" }}>
+                <div className="ed-label" style={{ marginBottom: 8 }}>In your repo</div>
                 {c.howWeUse.refs.map((r, i) => (
-                  <div key={i} style={{ fontFamily: "JetBrains Mono", fontSize: 12.5, color: "var(--ink-2)", padding: "2px 0" }}>{r}</div>
+                  <div key={i} style={{ fontFamily: "var(--font-mono)", fontSize: 12.5, color: "var(--ink-2)", padding: "2px 0" }}>{r}</div>
                 ))}
               </div>
             )}
@@ -109,10 +139,14 @@ export default function TechArticle({ content: c }) {
 
         {relatedTech.length > 0 && (
           <>
-            <h2>Keep pulling the thread</h2>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            <h2 style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 600, margin: "2.6rem 0 1rem" }}>Keep pulling the thread</h2>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 16px" }}>
               {relatedTech.map((t) => (
-                <Link key={t.slug} href={t.href} className="pill" style={{ background: "var(--surface)", border: "1px solid var(--hairline-2)", color: "var(--ink-2)" }}>
+                <Link
+                  key={t.slug}
+                  href={t.href}
+                  style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: 14, color: "var(--ink)", borderBottom: "1px solid var(--primary)" }}
+                >
                   {t.title} →
                 </Link>
               ))}
