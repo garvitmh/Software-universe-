@@ -4,7 +4,7 @@ import { DOMAINS, DEPTH_LADDER, DOMAIN_LADDER } from "@/lib/domains";
 export const metadata = {
   title: "The Learn Map — the curriculum · Software Universe",
   description:
-    "Eleven domains, each climbing the same four-tier ladder — local, production, enterprise, planet-scale.",
+    `${DOMAINS.length} domains, each climbing the same four-tier ladder — local, production, enterprise, planet-scale.`,
 };
 
 const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"];
@@ -32,7 +32,7 @@ export default function LearnMapPage() {
           The Learn Map
         </h1>
         <p style={{ fontSize: 18, lineHeight: 1.6, color: "var(--ink-2)", maxWidth: 640, margin: 0 }}>
-          Eleven domains, each climbing the same four-tier ladder — <em>local, production, enterprise, planet-scale</em>.
+          {DOMAINS.length} domains, each climbing the same four-tier ladder — <em>local, production, enterprise, planet-scale</em>.
           The depth bars show how far each reaches today.
         </p>
       </div>

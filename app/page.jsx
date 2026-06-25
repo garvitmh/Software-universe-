@@ -4,6 +4,7 @@ import Link from "next/link";
 import Armillary from "@/components/home/Armillary";
 import ContinueReading from "@/components/home/ContinueReading";
 import { PATHS } from "@/lib/paths";
+import { DOMAINS } from "@/lib/domains";
 
 const FOUR_Q = [
   { tag: "What", text: "What it actually is, in plain language.", color: "var(--primary)" },
@@ -303,7 +304,7 @@ export default function Home() {
               The curriculum
             </div>
             <div style={{ fontFamily: "var(--font-display)", fontWeight: 500, fontSize: 34, letterSpacing: "-.01em", marginBottom: 6 }}>
-              Eleven domains. One ladder, climbed eleven times.
+              {DOMAINS.length} domains. One ladder, climbed {DOMAINS.length} times.
             </div>
             <div style={{ fontSize: 16, color: "var(--ink-2)" }}>From one machine to a million users — read where you are.</div>
           </div>
