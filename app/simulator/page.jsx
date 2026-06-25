@@ -50,6 +50,12 @@ const SIMS = [
     desc: "Insert index values, watch nodes split and balance in real time, and see why disk-bound indexes use balanced multi-way B-trees.",
     tag: "Database",
   },
+  {
+    href: "/simulator/complexity",
+    title: "Big-O & sorting — visualized",
+    desc: "See why an algorithm's shape beats its raw speed: drag the input size and watch cost explode, then race five sorting algorithms on the same array.",
+    tag: "Algorithms",
+  },
 ];
 
 export default function SimulatorHub() {
