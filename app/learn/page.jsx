@@ -7,7 +7,7 @@ export const metadata = {
     "Eleven domains, each climbing the same four-tier ladder — local, production, enterprise, planet-scale.",
 };
 
-const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX"];
 const TIERS = DEPTH_LADDER.map((d) => d.label);
 
 export default function LearnMapPage() {

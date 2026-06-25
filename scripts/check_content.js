@@ -31,8 +31,35 @@ function loadModule(relFile) {
 const dirHasPage = (dir) =>
   ["page.jsx", "page.js", "page.tsx"].some((f) => fs.existsSync(path.join(ROOT, dir, f)));
 
+// Auto-discover entry maps from lib/content/*.js (each exports a { slug: {...} }
+// map; the roles array is skipped). Lets new content files integrate with zero
+// wiring in the tooling.
+function loadContentEntries() {
+  const dir = path.join(ROOT, "lib", "content");
+  let merged = {};
+  if (!fs.existsSync(dir)) return merged;
+  for (const f of fs.readdirSync(dir).filter((x) => x.endsWith(".js"))) {
+    let sb;
+    try {
+      sb = loadModule(`lib/content/${f}`);
+    } catch (e) {
+      continue;
+    }
+    for (const k of Object.keys(sb)) {
+      const val = sb[k];
+      if (val && typeof val === "object" && !Array.isArray(val)) {
+        const vals = Object.values(val);
+        if (vals.length && vals[0] && typeof vals[0] === "object" && (vals[0].slug || vals[0].what)) {
+          merged = { ...merged, ...val };
+        }
+      }
+    }
+  }
+  return merged;
+}
+
 // ── load data ──
-const { TECH_CONTENT } = loadModule("lib/tech-content.js");
+const TECH_CONTENT = { ...loadModule("lib/tech-content.js").TECH_CONTENT, ...loadContentEntries() };
 const { GLOSSARY } = loadModule("lib/glossary.js");
 const { CODEX_PARTS, TECH_SECTIONS } = loadModule("lib/curriculum.js");
 const { DOMAINS } = loadModule("lib/domains.js");

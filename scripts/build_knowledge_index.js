@@ -58,6 +58,47 @@ function loadExport(relFile, name) {
   return sandbox.__result;
 }
 
+// Loads a pure-data ESM file (strips imports + all export forms) into a sandbox.
+function loadModule(relFile) {
+  let src = fs.readFileSync(path.join(ROOT, relFile), "utf8");
+  src = src
+    .replace(/^\s*import\s[^;\n]*;?\s*$/gm, "")
+    .replace(/export\s+default\s+/g, "var __default = ")
+    .replace(/export\s+const\s+/g, "var ")
+    .replace(/export\s+let\s+/g, "var ")
+    .replace(/export\s+function\s+/g, "function ")
+    .replace(/export\s*\{[^}]*\}\s*;?/g, "");
+  const sandbox = {};
+  vm.createContext(sandbox);
+  vm.runInContext(src, sandbox);
+  return sandbox;
+}
+
+// Auto-discover entry maps from lib/content/*.js (skips non-entry exports like the roles array).
+function loadContentEntries() {
+  const dir = path.join(ROOT, "lib", "content");
+  let merged = {};
+  if (!fs.existsSync(dir)) return merged;
+  for (const f of fs.readdirSync(dir).filter((x) => x.endsWith(".js"))) {
+    let sb;
+    try {
+      sb = loadModule(`lib/content/${f}`);
+    } catch (e) {
+      continue;
+    }
+    for (const k of Object.keys(sb)) {
+      const val = sb[k];
+      if (val && typeof val === "object" && !Array.isArray(val)) {
+        const vals = Object.values(val);
+        if (vals.length && vals[0] && typeof vals[0] === "object" && (vals[0].slug || vals[0].what)) {
+          merged = { ...merged, ...val };
+        }
+      }
+    }
+  }
+  return merged;
+}
+
 const chunks = [];
 
 // ── 1. Glossary → one short chunk per term ──────────────────────────────────
@@ -76,7 +117,7 @@ for (const [id, entry] of Object.entries(GLOSSARY || {})) {
 }
 
 // ── 2. Tech reference → two chunks per tech (what/why · how/breaks) ──────────
-const TECH = loadExport("lib/tech-content.js", "TECH_CONTENT");
+const TECH = { ...loadModule("lib/tech-content.js").TECH_CONTENT, ...loadContentEntries() };
 for (const [slug, c] of Object.entries(TECH || {})) {
   const arr = (x) => (Array.isArray(x) ? x : x ? [x] : []);
   const insideText = arr(c.inside).map((it) => `${it.name}: ${it.desc}`).join(" ");

@@ -59,6 +59,7 @@ export default function RootLayout({ children }) {
               {[
                 ["Curriculum", "/learn"],
                 ["Paths", "/paths"],
+                ["Roles", "/roles"],
                 ["Codex", "/codex"],
                 ["Simulator", "/simulator"],
                 ["Playground", "/playground"],
