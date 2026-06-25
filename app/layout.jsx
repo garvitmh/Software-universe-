@@ -1,25 +1,21 @@
 import "./globals.css";
 import SiteNav from "@/components/SiteNav";
-import CodexSidebar from "@/components/CodexSidebar";
 import InlineRAGDrawer from "@/components/InlineRAGDrawer";
-import { TECH_CONTENT } from "@/lib/tech-content";
 
 export const metadata = {
-  title: "Software Universe — Burger Farm, understood",
+  title: "Software Universe — Software, finally understood.",
   description:
-    "An interactive engineering university built on your real Burger Farm codebase. From zero to architect — what we built, why, what breaks, and how it scales.",
+    "A visual, AI-guided field guide to software engineering — read it, watch it run, and break it on purpose. From your first line of code to planet-scale.",
 };
 
 export default function RootLayout({ children }) {
-  const readyTech = Object.keys(TECH_CONTENT);
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
           rel="stylesheet"
         />
         <script
@@ -41,38 +37,33 @@ export default function RootLayout({ children }) {
       </head>
       <body>
         <SiteNav />
-        <div style={{ display: "flex", alignItems: "flex-start", width: "100%", maxWidth: "100vw" }}>
-          {/* Global Sidebar anchored perfectly to the left */}
-          <CodexSidebar readyTech={readyTech} />
+        <div style={{ minHeight: "calc(100vh - 62px)" }}>{children}</div>
 
-          {/* Main content area */}
-          <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", minHeight: "calc(100vh - 62px)" }}>
-            <div style={{ flex: 1 }}>
-              {children}
-            </div>
-            
-            <footer style={{ borderTop: "1px solid var(--hairline)", marginTop: 60 }}>
-              <div
-                style={{
-                  padding: "24px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  flexWrap: "wrap",
-                  gap: 12,
-                  color: "var(--faint)",
-                  fontSize: 13,
-                }}
-              >
-                <span>Software Universe · built on your real Burger Farm codebase</span>
-                <span>Phase 1 · the campus is just the beginning</span>
-              </div>
-            </footer>
+        <footer style={{ borderTop: "1px solid var(--hairline)", marginTop: 64 }}>
+          <div
+            style={{
+              maxWidth: 1200,
+              margin: "0 auto",
+              padding: "22px 32px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: 12,
+              fontFamily: "var(--font-mono)",
+              fontSize: 10.5,
+              letterSpacing: ".1em",
+              textTransform: "uppercase",
+              color: "var(--ink-3)",
+            }}
+          >
+            <span>Software Universe · Vol. I</span>
+            <span>A visual field guide to software · est. 2026</span>
           </div>
-        </div>
+        </footer>
+
         <InlineRAGDrawer />
       </body>
     </html>
   );
 }
-

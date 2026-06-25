@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0}
+  ::selection{background:color-mix(in srgb,#2E4B73 22%,transparent)}
+  .d2-scroll::-webkit-scrollbar{width:9px;height:9px}
+  .d2-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;border:3px solid transparent;background-clip:padding-box}
+  @keyframes d2spin{to{transform:rotate(360deg)}}
+  @keyframes d2rise{from{transform:translateY(8px)}to{transform:none}}
+  @keyframes d2drawer{from{transform:translateX(28px)}to{transform:none}}
+  .d2-rise{animation:d2rise .5s cubic-bezier(.2,.7,.2,1) both}
+  .d2-drawer{animation:d2drawer .34s cubic-bezier(.2,.7,.2,1) both}
+  input[type=range]{accent-color:var(--primary)}
+  @media (prefers-reduced-motion: reduce){*{animation-duration:.001ms!important}}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" class="d2-scroll" style="--bg:#FBFAF6;--surface:#ffffff;--surface2:#F4F1E8;--ink:#1C1A15;--ink2:#57534A;--ink3:#8B857A;--border:#E6E1D4;--border2:#D6D0C0;--primary:#2E4B73;--accent:#9C4422;--shadow:0 1px 2px rgba(40,36,28,.06);--shadow-lg:0 14px 38px -20px rgba(40,36,28,.28);--code-bg:#F4F1E8;--code-ink:#2A2720;--tip-bg:#ffffff;--bronze:#8a6d3b;min-height:100vh;background:var(--bg);color:var(--ink);font-family:'Source Serif 4',Georgia,serif;transition:background .35s,color .35s">
+
+  <!-- ===== NAV ===== -->
+  <div style="position:sticky;top:0;z-index:40;backdrop-filter:blur(12px);background:color-mix(in srgb,var(--bg) 86%,transparent);border-bottom:1px solid var(--border)">
+    <div style="max-width:1200px;margin:0 auto;padding:15px 32px;display:flex;align-items:center;gap:28px">
+      <div onClick="{{ goHome }}" style="display:flex;align-items:baseline;gap:10px;cursor:pointer">
+        <span style="font-family:'Newsreader';font-style:italic;font-weight:600;font-size:22px;letter-spacing:-.01em">Software Universe</span>
+        <span style="font:600 9.5px 'IBM Plex Mono';letter-spacing:.16em;color:var(--ink3);text-transform:uppercase">est. 2026</span>
+      </div>
+      <div style="display:flex;gap:2px;margin-left:8px">
+        <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="4">
+          <button onClick="{{ n.go }}" style="border:0;background:transparent;color:{{ n.col }};font:600 11px 'IBM Plex Mono';letter-spacing:.12em;text-transform:uppercase;padding:8px 13px;cursor:pointer;border-bottom:2px solid {{ n.bar }}">{{ n.label }}</button>
+        </sc-for>
+      </div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+        <button onClick="{{ openPalette }}" style="display:flex;align-items:center;gap:9px;border:1px solid var(--border2);background:var(--surface);color:var(--ink2);font:500 13px 'Source Serif 4';padding:8px 13px;border-radius:6px;cursor:pointer">
+          <span style="font-style:italic;font-family:'Newsreader';color:var(--primary)">Ask the Professor</span>
+          <span style="font:600 10px 'IBM Plex Mono';background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 6px;color:var(--ink3)">⌘K</span>
+        </button>
+        <button onClick="{{ toggleTheme }}" title="Toggle theme" style="width:36px;height:36px;border-radius:6px;border:1px solid var(--border2);background:var(--surface);color:var(--ink);cursor:pointer;font-size:14px">{{ themeIcon }}</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== LANDING ===== -->
+  <sc-if value="{{ isLanding }}" hint-placeholder-val="{{ true }}">
+  <div class="d2-rise">
+    <div style="max-width:1200px;margin:0 auto;padding:8px 32px">
+      <div style="border-bottom:1px solid var(--border);padding:14px 0 10px;display:flex;justify-content:space-between;align-items:center;font:600 10.5px 'IBM Plex Mono';letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)">
+        <span>Vol. I — The Complete Curriculum</span><span>A visual field guide to software</span>
+      </div>
+    </div>
+    <div style="max-width:1200px;margin:0 auto;padding:46px 32px 26px;display:grid;grid-template-columns:1.08fr .92fr;gap:48px;align-items:center">
+      <div>
+        <h1 style="font-family:'Newsreader';font-weight:500;font-size:72px;line-height:1.0;letter-spacing:-.02em;margin:0 0 22px">Software,<br><span style="font-style:italic;color:var(--primary)">finally understood.</span></h1>
+        <p style="font-size:20px;line-height:1.65;color:var(--ink2);max-width:520px;margin:0 0 30px"><span style="float:left;font-family:'Newsreader';font-size:62px;line-height:.78;font-weight:500;padding:6px 12px 0 0;color:var(--ink)">A</span> visual, AI-guided way to learn how real systems work — across every domain, from your first line of code to planet-scale. Read it, watch it run, and break it on purpose.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <button onClick="{{ goMap }}" style="border:0;background:var(--ink);color:var(--bg);font:600 15px 'Source Serif 4';padding:14px 26px;border-radius:6px;cursor:pointer">Begin the curriculum →</button>
+          <button onClick="{{ goCodex }}" style="border:1px solid var(--border2);background:var(--surface);color:var(--ink);font:600 15px 'Source Serif 4';padding:14px 26px;border-radius:6px;cursor:pointer">Read an entry</button>
+        </div>
+      </div>
+      <figure style="margin:0">
+        <div style="position:relative;height:380px;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow)">
+          <canvas ref="{{ heroRef }}" style="position:absolute;inset:0;width:100%;height:100%;display:block"></canvas>
+        </div>
+        <figcaption style="font:500 11px 'IBM Plex Mono';letter-spacing:.06em;color:var(--ink3);margin-top:10px;text-align:center">Fig. 1 — A system, rendered as an armillary. Every ring a layer.</figcaption>
+      </figure>
+    </div>
+
+    <!-- four questions -->
+    <div style="max-width:1200px;margin:30px auto 0;padding:0 32px">
+      <div style="border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:8px 0">
+        <div style="font:600 10.5px 'IBM Plex Mono';letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);padding:8px 0">Every entry answers four questions</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr)">
+          <sc-for list="{{ fourQ }}" as="q" hint-placeholder-count="4">
+            <div style="padding:16px 22px 18px;border-left:1px solid var(--border)">
+              <div style="font-family:'Newsreader';font-style:italic;font-size:24px;color:{{ q.color }};margin-bottom:6px">{{ q.tag }}</div>
+              <div style="font-size:15px;line-height:1.5;color:var(--ink2)">{{ q.text }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <!-- modes -->
+    <div style="max-width:1200px;margin:42px auto 0;padding:0 32px">
+      <h2 style="font:600 11px 'IBM Plex Mono';letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);margin:0 0 18px">Four ways to study</h2>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--border)">
+        <sc-for list="{{ modes }}" as="m" hint-placeholder-count="4">
+          <div onClick="{{ m.go }}" style="cursor:pointer;padding:22px 24px 26px;border-right:1px solid var(--border);transition:background .2s" style-hover="background:var(--surface2)">
+            <div style="font-family:'Newsreader';font-size:30px;margin-bottom:12px">{{ m.icon }}</div>
+            <div style="font-family:'Newsreader';font-weight:600;font-size:22px;margin-bottom:6px">{{ m.title }}</div>
+            <div style="font-size:14.5px;line-height:1.55;color:var(--ink2)">{{ m.desc }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="max-width:1200px;margin:44px auto 80px;padding:0 32px">
+      <div onClick="{{ goMap }}" style="cursor:pointer;border:1px solid var(--border);border-radius:8px;padding:34px 36px;display:flex;align-items:center;justify-content:space-between;gap:30px;background:var(--surface)">
+        <div>
+          <div style="font:600 10.5px 'IBM Plex Mono';letter-spacing:.14em;text-transform:uppercase;color:var(--primary);margin-bottom:10px">The curriculum</div>
+          <div style="font-family:'Newsreader';font-weight:500;font-size:34px;letter-spacing:-.01em;margin-bottom:6px">Eleven domains. One ladder, climbed eleven times.</div>
+          <div style="font-size:16px;color:var(--ink2)">From one machine to a million users — read where you are.</div>
+        </div>
+        <div style="font-family:'Newsreader';font-style:italic;font-size:20px;color:var(--primary);white-space:nowrap">Open the map →</div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ===== LEARN MAP (syllabus) ===== -->
+  <sc-if value="{{ isMap }}" hint-placeholder-val="{{ true }}">
+  <div class="d2-rise" style="max-width:1200px;margin:0 auto;padding:48px 32px 80px">
+    <div style="border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:8px">
+      <div style="font:600 10.5px 'IBM Plex Mono';letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px">The Curriculum · Contents</div>
+      <h1 style="font-family:'Newsreader';font-weight:500;font-size:52px;letter-spacing:-.02em;margin:0 0 10px">The Learn Map</h1>
+      <p style="font-size:18px;line-height:1.6;color:var(--ink2);max-width:620px;margin:0">Eleven domains, each climbing the same four-tier ladder — <em>local, production, enterprise, planet-scale</em>. The depth bars show how far each reaches today.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+      <sc-for list="{{ domains }}" as="d" hint-placeholder-count="8">
+        <div onClick="{{ d.open }}" style="cursor:pointer;padding:24px 28px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);transition:background .18s" style-hover="background:var(--surface2)">
+          <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:8px">
+            <span style="font:600 13px 'IBM Plex Mono';color:var(--ink3)">{{ d.num }}</span>
+            <div style="flex:1">
+              <div style="font-family:'Newsreader';font-weight:600;font-size:24px;line-height:1.05;letter-spacing:-.01em">{{ d.name }}</div>
+            </div>
+            <span style="font:500 12px 'IBM Plex Mono';color:var(--ink3)">{{ d.count }}</span>
+          </div>
+          <p style="font-size:15px;line-height:1.55;color:var(--ink2);margin:0 0 16px 34px">{{ d.blurb }}</p>
+          <div style="margin-left:34px">
+            <div style="display:flex;gap:4px;margin-bottom:10px">
+              <sc-for list="{{ d.ladder }}" as="L" hint-placeholder-count="4">
+                <div title="{{ L.tier }}" style="flex:1;height:4px;background:var(--surface2);overflow:hidden"><div style="height:100%;width:{{ L.pct }};background:var(--primary)"></div></div>
+              </sc-for>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px 14px">
+              <sc-for list="{{ d.topics }}" as="tp" hint-placeholder-count="3">
+                <span style="font:500 13px 'Source Serif 4';color:{{ tp.col }};border-bottom:1px solid {{ tp.bar }}">{{ tp.label }}</span>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ===== CODEX READER (the star) ===== -->
+  <sc-if value="{{ isCodex }}" hint-placeholder-val="{{ true }}">
+  <div class="d2-rise" style="max-width:1240px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:236px minmax(0,1fr) 200px;gap:44px">
+    <aside style="position:sticky;top:65px;align-self:start;height:calc(100vh - 65px);overflow:auto;padding:34px 6px 40px" class="d2-scroll">
+      <div style="font:600 10px 'IBM Plex Mono';letter-spacing:.16em;color:var(--ink3);margin-bottom:16px;text-transform:uppercase">The Codex</div>
+      <sc-for list="{{ tree }}" as="g" hint-placeholder-count="3">
+        <div style="margin-bottom:22px">
+          <div style="font:600 10px 'IBM Plex Mono';letter-spacing:.1em;color:var(--ink3);text-transform:uppercase;margin-bottom:9px">{{ g.group }}</div>
+          <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+            <div style="font-size:15px;line-height:1.35;padding:6px 0 6px 14px;margin-bottom:1px;cursor:pointer;color:{{ it.col }};font-weight:{{ it.weight }};font-style:{{ it.style }};border-left:2px solid {{ it.bar }}">{{ it.label }}</div>
+          </sc-for>
+        </div>
+      </sc-for>
+    </aside>
+
+    <article style="padding:48px 0 100px;max-width:660px">
+      <div style="font:600 11px 'IBM Plex Mono';letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:20px">Cross-cutting logic · Entry 14</div>
+      <h1 style="font-family:'Newsreader';font-weight:500;font-size:60px;line-height:1.0;letter-spacing:-.02em;margin:0 0 16px">Caching</h1>
+      <p style="font-family:'Newsreader';font-style:italic;font-size:24px;line-height:1.4;color:var(--ink2);margin:0 0 34px">Keeping the answer close, so you needn't ask the slow thing twice.</p>
+
+      <div style="border-left:3px solid var(--primary);padding:6px 0 6px 22px;margin-bottom:34px">
+        <div style="font:600 10.5px 'IBM Plex Mono';letter-spacing:.1em;text-transform:uppercase;color:var(--primary);margin-bottom:7px">The analogy</div>
+        <div style="font-size:18px;line-height:1.6">Your barista already knows your usual. They don't re-ask every morning — they keep it close. A <span data-word="cache" data-def="A small, fast store of copies of answers, kept close so you can skip the slow original work." onMouseEnter="{{ showTip }}" onMouseLeave="{{ hideTip }}" style="border-bottom:1px solid var(--primary);cursor:help">cache</span> is that memory for your software.</div>
+      </div>
+
+      <h2 style="font-family:'Newsreader';font-weight:600;font-size:30px;letter-spacing:-.01em;margin:0 0 14px"><span style="font:600 13px 'IBM Plex Mono';color:var(--ink3);vertical-align:middle;margin-right:12px">§1</span>What it is</h2>
+      <p style="font-size:19px;line-height:1.85;margin:0 0 20px"><span style="float:left;font-family:'Newsreader';font-size:58px;line-height:.78;font-weight:500;padding:7px 12px 0 0">A</span> cache stores copies of expensive answers. The first time you ask, the system does the slow work — a database query, an API call — and tucks the result away. The next time, it returns the stored copy. We call the first a <span data-word="cache miss" data-def="The answer wasn't in the cache yet, so the system did the full slow work and then stored it." onMouseEnter="{{ showTip }}" onMouseLeave="{{ hideTip }}" style="border-bottom:1px solid var(--primary);cursor:help">cache miss</span> and the second a <span data-word="cache hit" data-def="The answer was already in the cache, so it came back fast without the slow work." onMouseEnter="{{ showTip }}" onMouseLeave="{{ hideTip }}" style="border-bottom:1px solid var(--primary);cursor:help">cache hit</span>. More hits means lower <span data-word="latency" data-def="How long you wait for a response, usually measured in milliseconds." onMouseEnter="{{ showTip }}" onMouseLeave="{{ hideTip }}" style="border-bottom:1px solid var(--primary);cursor:help">latency</span>.</p>
+
+      <h2 style="font-family:'Newsreader';font-weight:600;font-size:30px;letter-spacing:-.01em;margin:34px 0 14px"><span style="font:600 13px 'IBM Plex Mono';color:var(--ink3);margin-right:12px">§2</span>What's inside</h2>
+      <div style="border-top:1px solid var(--border)">
+        <sc-for list="{{ insideCards }}" as="c" hint-placeholder-count="4">
+          <div style="display:grid;grid-template-columns:160px 1fr;gap:20px;padding:16px 0;border-bottom:1px solid var(--border)">
+            <div style="font-family:'Newsreader';font-weight:600;font-size:18px">{{ c.title }}</div>
+            <div style="font-size:16px;line-height:1.6;color:var(--ink2)">{{ c.body }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <h2 style="font-family:'Newsreader';font-weight:600;font-size:30px;letter-spacing:-.01em;margin:36px 0 14px"><span style="font:600 13px 'IBM Plex Mono';color:var(--ink3);margin-right:12px">§3</span>How it works</h2>
+      <p style="font-size:19px;line-height:1.85;margin:0 0 18px">The pattern is <em>get-or-set</em>. Ask the cache first. On a hit, return it. On a miss, do the real work, store it with a <span data-word="TTL" data-def="Time To Live — how long a cached copy may be reused before it's considered stale and refetched." onMouseEnter="{{ showTip }}" onMouseLeave="{{ hideTip }}" style="border-bottom:1px solid var(--primary);cursor:help">TTL</span>, and return it.</p>
+      <pre style="background:var(--code-bg);color:var(--code-ink);border:1px solid var(--border);border-radius:6px;padding:18px 20px;overflow:auto;font:500 14px/1.75 'IBM Plex Mono';margin:0 0 24px"><span style="color:var(--primary)">async function</span> getUser(id) {
+  <span style="color:var(--primary)">const</span> hit = <span style="color:var(--primary)">await</span> cache.get(<span style="color:var(--accent)">`user:${id}`</span>);
+  <span style="color:var(--primary)">if</span> (hit) <span style="color:var(--primary)">return</span> hit;            <span style="color:var(--ink3)">// cache hit</span>
+  <span style="color:var(--primary)">const</span> user = <span style="color:var(--primary)">await</span> db.users.find(id);  <span style="color:var(--ink3)">// slow work</span>
+  <span style="color:var(--primary)">await</span> cache.set(<span style="color:var(--accent)">`user:${id}`</span>, user, { ttl: <span style="color:var(--accent)">60</span> });
+  <span style="color:var(--primary)">return</span> user;
+}</pre>
+
+      <h2 style="font-family:'Newsreader';font-weight:600;font-size:30px;letter-spacing:-.01em;margin:36px 0 14px"><span style="font:600 13px 'IBM Plex Mono';color:var(--ink3);margin-right:12px">§4</span>Why it's built this way</h2>
+      <p style="font-size:19px;line-height:1.85;margin:0 0 26px">Databases are correct but comparatively slow. A cache trades a little freshness for a great deal of speed. The alternative — asking the database every single time — is simpler and always fresh, but falls over under load. Caching is the first lever you pull when reads outnumber writes.</p>
+
+      <div style="border:1px solid var(--accent);border-radius:6px;padding:22px 24px;background:color-mix(in srgb,var(--accent) 5%,transparent)">
+        <div style="font-family:'Newsreader';font-style:italic;font-size:22px;margin-bottom:12px;color:var(--accent)">When it breaks</div>
+        <ul style="margin:0;padding-left:20px;font-size:16.5px;line-height:1.8">
+          <li><b>Stale data.</b> A copy lives past its usefulness — users see an old price. TTLs and invalidation fight this.</li>
+          <li><b>Thundering herd.</b> A popular key expires and thousands of requests hit the database at once — a <span data-word="thundering herd" data-def="When a cached item expires and many requests miss simultaneously, all stampeding the slow source at once." onMouseEnter="{{ showTip }}" onMouseLeave="{{ hideTip }}" style="border-bottom:1px solid var(--accent);cursor:help">thundering herd</span>.</li>
+          <li><b>Eviction surprises.</b> Memory fills, the <span data-word="LRU" data-def="Least Recently Used — an eviction policy that drops the items untouched longest when space runs out." onMouseEnter="{{ showTip }}" onMouseLeave="{{ hideTip }}" style="border-bottom:1px solid var(--accent);cursor:help">LRU</span> policy drops the very thing you needed.</li>
+        </ul>
+      </div>
+    </article>
+
+    <aside style="position:sticky;top:65px;align-self:start;padding:50px 0;font-size:13px">
+      <div style="font:600 10px 'IBM Plex Mono';letter-spacing:.14em;color:var(--ink3);margin-bottom:14px;text-transform:uppercase">On this page</div>
+      <sc-for list="{{ onPage }}" as="o" hint-placeholder-count="5">
+        <div style="padding:6px 0 6px 13px;border-left:2px solid {{ o.bar }};color:{{ o.col }};font-weight:{{ o.weight }};font-size:14px;cursor:pointer">{{ o.label }}</div>
+      </sc-for>
+    </aside>
+  </div>
+  </sc-if>
+
+  <!-- ===== SIMULATOR ===== -->
+  <sc-if value="{{ isSim }}" hint-placeholder-val="{{ true }}">
+  <div class="d2-rise" style="max-width:1200px;margin:0 auto;padding:48px 32px 80px">
+    <div style="border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:24px">
+      <div style="font:600 10.5px 'IBM Plex Mono';letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px">Demonstration · Fig. 7</div>
+      <h1 style="font-family:'Newsreader';font-weight:500;font-size:52px;letter-spacing:-.02em;margin:0 0 8px">The Simulator</h1>
+      <p style="font-size:18px;line-height:1.6;color:var(--ink2);max-width:600px;margin:0">Don't merely read that systems fail — make them fail. Raise the traffic, withdraw a server, and observe.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:280px minmax(0,1fr);gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden">
+      <div style="padding:26px;border-right:1px solid var(--border);align-self:stretch;background:var(--surface)">
+        <div style="font:600 10.5px 'IBM Plex Mono';letter-spacing:.12em;text-transform:uppercase;color:var(--primary);margin-bottom:20px">Controls</div>
+        <label style="display:block;font-family:'Newsreader';font-size:17px;margin-bottom:6px">Incoming traffic <span style="float:right;font:500 14px 'IBM Plex Mono';color:var(--ink2)">{{ sim.rps }}/s</span></label>
+        <input type="range" min="5" max="200" value="{{ sim.rps }}" onInput="{{ setRps }}" style="width:100%;margin-bottom:22px">
+        <label style="display:block;font-family:'Newsreader';font-size:17px;margin-bottom:6px">Servers <span style="float:right;font:500 14px 'IBM Plex Mono';color:var(--ink2)">{{ sim.servers }}</span></label>
+        <input type="range" min="1" max="6" value="{{ sim.servers }}" onInput="{{ setServers }}" style="width:100%;margin-bottom:22px">
+        <div onClick="{{ toggleCache }}" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;border:1px solid var(--border);border-radius:6px;padding:11px 14px;margin-bottom:18px">
+          <span style="font-family:'Newsreader';font-size:17px">Cache layer</span>
+          <span style="font:600 12px 'IBM Plex Mono';color:{{ cacheCol }}">{{ cacheLabel }}</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button onClick="{{ togglePlay }}" style="flex:1;border:0;background:var(--ink);color:var(--bg);font:600 14px 'Source Serif 4';padding:11px;border-radius:6px;cursor:pointer">{{ playLabel }}</button>
+          <button onClick="{{ breakIt }}" style="flex:1;border:1px solid var(--accent);background:transparent;color:var(--accent);font:600 14px 'Source Serif 4';padding:11px;border-radius:6px;cursor:pointer">Break it</button>
+        </div>
+        <div style="font-size:13px;color:var(--ink3);margin-top:14px;line-height:1.55">"Break it" withdraws a server and takes the cache cold for a few seconds.</div>
+      </div>
+      <div style="padding:22px;background:var(--surface2)">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-bottom:18px;border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--surface)">
+          <div style="padding:16px 18px;border-right:1px solid var(--border)">
+            <div style="font:600 10px 'IBM Plex Mono';letter-spacing:.1em;color:var(--ink3);text-transform:uppercase">Latency</div>
+            <div style="font-family:'Newsreader';font-weight:500;font-size:34px;color:{{ latCol }}">{{ stats.lat }}<span style="font-size:15px;color:var(--ink3)">ms</span></div>
+          </div>
+          <div style="padding:16px 18px;border-right:1px solid var(--border)">
+            <div style="font:600 10px 'IBM Plex Mono';letter-spacing:.1em;color:var(--ink3);text-transform:uppercase">Success</div>
+            <div style="font-family:'Newsreader';font-weight:500;font-size:34px;color:{{ okCol }}">{{ stats.ok }}<span style="font-size:15px;color:var(--ink3)">%</span></div>
+          </div>
+          <div style="padding:16px 18px">
+            <div style="font:600 10px 'IBM Plex Mono';letter-spacing:.1em;color:var(--ink3);text-transform:uppercase">Load</div>
+            <div style="font-family:'Newsreader';font-weight:500;font-size:34px;color:{{ loadCol }}">{{ stats.load }}<span style="font-size:15px;color:var(--ink3)">%</span></div>
+          </div>
+        </div>
+        <canvas ref="{{ simRef }}" style="width:100%;height:300px;display:block;border:1px solid var(--border);border-radius:6px;background:var(--surface)"></canvas>
+        <div style="display:flex;align-items:center;gap:18px;margin-top:12px;font-size:13.5px;color:var(--ink2)">
+          <span style="display:flex;align-items:center;gap:7px"><span style="width:9px;height:9px;background:var(--primary)"></span>served</span>
+          <span style="display:flex;align-items:center;gap:7px"><span style="width:9px;height:9px;background:var(--accent)"></span>dropped</span>
+          <span style="margin-left:auto;font:500 13px 'IBM Plex Mono';color:{{ statusCol }}">{{ statusText }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ===== AI DRAWER (The Professor) ===== -->
+  <sc-if value="{{ palette }}" hint-placeholder-val="{{ false }}">
+  <div onClick="{{ closePalette }}" style="position:fixed;inset:0;z-index:90;background:color-mix(in srgb,var(--ink) 26%,transparent)">
+    <div onClick="{{ stop }}" class="d2-drawer d2-scroll" style="position:absolute;top:0;right:0;height:100%;width:min(440px,92vw);overflow:auto;background:var(--bg);border-left:1px solid var(--border2);box-shadow:var(--shadow-lg)">
+      <div style="position:sticky;top:0;background:var(--bg);border-bottom:1px solid var(--border);padding:20px 24px 16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div style="font-family:'Newsreader';font-style:italic;font-size:22px">The Professor</div>
+          <button onClick="{{ closePalette }}" style="border:1px solid var(--border2);background:var(--surface);border-radius:5px;font:600 10px 'IBM Plex Mono';padding:4px 8px;color:var(--ink3);cursor:pointer">ESC</button>
+        </div>
+        <input autofocus value="{{ q }}" onInput="{{ onQ }}" placeholder="Ask anything…" style="width:100%;border:1px solid var(--border2);background:var(--surface);border-radius:6px;padding:11px 14px;outline:none;color:var(--ink);font:400 16px 'Source Serif 4'">
+      </div>
+      <div style="padding:22px 24px 30px">
+        <div style="font:600 10px 'IBM Plex Mono';letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">Grounded answer</div>
+        <div style="font-family:'Newsreader';font-weight:600;font-size:28px;margin-bottom:20px">Idempotency</div>
+        <sc-for list="{{ answer }}" as="a" hint-placeholder-count="4">
+          <div style="margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--border)">
+            <div style="font-family:'Newsreader';font-style:italic;font-size:18px;color:{{ a.color }};margin-bottom:6px">{{ a.tag }}</div>
+            <div style="font-size:16px;line-height:1.65;color:var(--ink)">{{ a.text }}</div>
+          </div>
+        </sc-for>
+        <div style="margin-bottom:22px">
+          <div style="font:600 10px 'IBM Plex Mono';letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:9px">Sources</div>
+          <sc-for list="{{ sources }}" as="s" hint-placeholder-count="2">
+            <div style="font-size:14px;color:var(--ink2);padding:5px 0;border-bottom:1px dotted var(--border)">— {{ s }}</div>
+          </sc-for>
+        </div>
+        <div style="font:600 10px 'IBM Plex Mono';letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:10px">Continue reading</div>
+        <sc-for list="{{ suggest }}" as="sg" hint-placeholder-count="3">
+          <div style="font-family:'Newsreader';font-size:17px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer;color:var(--primary)">{{ sg }} →</div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ===== JARGON TOOLTIP ===== -->
+  <sc-if value="{{ tip }}" hint-placeholder-val="{{ null }}">
+  <div onMouseEnter="{{ keepTip }}" onMouseLeave="{{ hideTip }}" style="position:fixed;z-index:80;left:{{ tip.x }}px;top:{{ tip.y }}px;transform:translate(-50%,10px);width:288px;background:var(--tip-bg);border:1px solid var(--border2);border-radius:7px;box-shadow:var(--shadow-lg);padding:16px 18px">
+    <div style="font-family:'Newsreader';font-weight:600;font-size:17px;margin-bottom:5px">{{ tip.word }}</div>
+    <div style="font-size:14.5px;line-height:1.6;color:var(--ink2);margin-bottom:13px">{{ tip.def }}</div>
+    <button onClick="{{ openPalette }}" style="border:0;background:var(--ink);color:var(--bg);font:600 12.5px 'Source Serif 4';padding:8px 14px;border-radius:5px;cursor:pointer">Ask the Professor →</button>
+  </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  rootRef = (el) => { if (el) { this._rootEl = el; this.applyTheme(el); } };
+  heroRef = (el) => { if (el && el !== this._heroEl) { this._heroEl = el; this.initHero(el); } };
+  simRef  = (el) => { if (el && el !== this._simEl) { this._simEl = el; this.initSim(el); } };
+
+  lightVars = {'--bg':'#FBFAF6','--surface':'#ffffff','--surface2':'#F4F1E8','--ink':'#1C1A15','--ink2':'#57534A','--ink3':'#8B857A','--border':'#E6E1D4','--border2':'#D6D0C0','--primary':'#2E4B73','--accent':'#9C4422','--shadow':'0 1px 2px rgba(40,36,28,.06)','--shadow-lg':'0 14px 38px -20px rgba(40,36,28,.28)','--code-bg':'#F4F1E8','--code-ink':'#2A2720','--tip-bg':'#ffffff','--bronze':'#9a7b45'};
+  darkVars = {'--bg':'#1A1915','--surface':'#222018','--surface2':'#2A281F','--ink':'#ECE7DB','--ink2':'#B4AE9E','--ink3':'#857F70','--border':'#34322A','--border2':'#403D33','--primary':'#90B2DE','--accent':'#D4895E','--shadow':'0 1px 2px rgba(0,0,0,.3)','--shadow-lg':'0 18px 44px -20px rgba(0,0,0,.6)','--code-bg':'#15140F','--code-ink':'#E6E1D4','--tip-bg':'#2A281F','--bronze':'#caa468'};
+
+  state = {
+    screen: 'landing', theme: 'light', palette: false, q: '', tip: null,
+    sim: { rps: 45, servers: 3, cache: true, playing: true, broken: 0 },
+    stats: { lat: 24, ok: 100, load: 30 }
+  };
+
+  applyTheme(el){ const m = this.state.theme==='dark'?this.darkVars:this.lightVars; for(const k in m) el.style.setProperty(k,m[k]); }
+  componentDidUpdate(){ if(this._rootEl) this.applyTheme(this._rootEl); }
+  componentDidMount(){
+    this._reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this._key = (e)=>{ if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){ e.preventDefault(); this.setState(s=>({palette:!s.palette})); } if(e.key==='Escape') this.setState({palette:false,tip:null}); };
+    window.addEventListener('keydown', this._key);
+  }
+  componentWillUnmount(){ window.removeEventListener('keydown', this._key); if(this._raf) cancelAnimationFrame(this._raf); if(this._sraf) cancelAnimationFrame(this._sraf); }
+
+  initHero(canvas){
+    const start = ()=>{
+      if(!window.THREE){ return setTimeout(start, 120); }
+      const THREE = window.THREE;
+      const col = ()=> this.state.theme==='dark' ? 0xcaa468 : 0x9a7b45;
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+      renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setSize(w,h,false);
+      const scene = new THREE.Scene(); this._scene = scene;
+      const cam = new THREE.PerspectiveCamera(42, w/h, .1, 100); cam.position.set(0,0,6);
+      const group = new THREE.Group(); scene.add(group);
+      const mat = new THREE.LineBasicMaterial({color:col(), transparent:true, opacity:.85}); this._mat = mat;
+      // inner wireframe icosahedron
+      const ico = new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.IcosahedronGeometry(1.25,1)), mat);
+      group.add(ico);
+      // armillary rings
+      const ringMat = new THREE.LineBasicMaterial({color:col(), transparent:true, opacity:.5}); this._mat2 = ringMat;
+      const mkRing=(r,rx,ry,rz)=>{ const pts=[]; for(let i=0;i<=80;i++){ const a=i/80*Math.PI*2; pts.push(new THREE.Vector3(Math.cos(a)*r,Math.sin(a)*r,0)); } const g=new THREE.BufferGeometry().setFromPoints(pts); const l=new THREE.Line(g,ringMat); l.rotation.set(rx,ry,rz); return l; };
+      group.add(mkRing(2.15,0,0,0)); group.add(mkRing(2.15,Math.PI/2.2,0,0)); group.add(mkRing(2.15,0,Math.PI/2.4,Math.PI/6));
+      // small orbiting node
+      const node = new THREE.Mesh(new THREE.SphereGeometry(.07,16,16), new THREE.MeshBasicMaterial({color:col()}));
+      scene.add(node); this._nodeMat = node.material;
+      let tx=0,ty=0;
+      this._heroEl.onpointermove=(e)=>{ const r=canvas.getBoundingClientRect(); tx=((e.clientX-r.left)/r.width-.5)*.6; ty=((e.clientY-r.top)/r.height-.5)*.6; };
+      const resize=()=>{ const W=canvas.clientWidth,H=canvas.clientHeight; renderer.setSize(W,H,false); cam.aspect=W/H; cam.updateProjectionMatrix(); };
+      window.addEventListener('resize', resize);
+      let t=0;
+      const loop=()=>{ this._raf=requestAnimationFrame(loop);
+        if(!this._reduce){ group.rotation.y += .0035; group.rotation.x = -0.25 + ty*0.5; group.rotation.y += tx*0.004; t+=.012; }
+        const c = col(); mat.color.setHex(c); ringMat.color.setHex(c); this._nodeMat.color.setHex(c);
+        node.position.set(Math.cos(t)*2.15, Math.sin(t)*0.4, Math.sin(t)*2.15);
+        renderer.render(scene, cam);
+      };
+      loop();
+    };
+    start();
+  }
+
+  compute(){
+    const {rps, servers, cache, broken} = this.state.sim;
+    const eff = Math.max(1, servers - (broken>0?1:0));
+    const perServer = (cache && broken<=0) ? 42 : 22;
+    const cap = eff * perServer; const load = rps / cap;
+    const lat = Math.round(18 + Math.max(0,load-1)*150 + (broken>0?70:0) + (cache&&broken<=0?0:14));
+    const ok = Math.round(load>1 ? Math.max(40, 100-(load-1)*110) : (broken>0?88:100));
+    return { lat, ok, load: Math.round(load*100), eff, cap };
+  }
+  initSim(canvas){
+    const ctx = canvas.getContext('2d'); this._packets=[]; let acc=0, statAcc=0, last=performance.now();
+    const C = ()=>{ const d=this.state.theme==='dark'; return d?{p:'#90B2DE',a:'#D4895E',box:'#34322A',boxbg:'#222018',txt:'#857F70',deadbg:'#3a2a22'}:{p:'#2E4B73',a:'#9C4422',box:'#D6D0C0',boxbg:'#ffffff',txt:'#8B857A',deadbg:'#f3e6df'}; };
+    const draw=(now)=>{ this._sraf=requestAnimationFrame(draw);
+      const dt=Math.min(40,now-last); last=now; const dpr=Math.min(devicePixelRatio,2);
+      const W=canvas.clientWidth,H=canvas.clientHeight; if(canvas.width!==W*dpr){canvas.width=W*dpr;canvas.height=H*dpr;}
+      ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,W,H);
+      const col=C(); const {servers,rps,cache,playing,broken}=this.state.sim; const c=this.compute(); const eff=c.eff;
+      const sx=W-94; const laneH=H/servers;
+      for(let i=0;i<servers;i++){ const cy=laneH*i+laneH/2; const dead=(broken>0&&i===servers-1);
+        ctx.fillStyle=dead?col.deadbg:col.boxbg; ctx.strokeStyle=dead?col.a:col.box; ctx.lineWidth=1;
+        this._rr(ctx,sx,cy-laneH*.32,78,laneH*.64,4); ctx.fill(); ctx.stroke();
+        ctx.fillStyle=dead?col.a:col.txt; ctx.font='500 11px "IBM Plex Mono"'; ctx.fillText(dead?'down':('server '+(i+1)),sx+10,cy+4);
+      }
+      ctx.strokeStyle=(cache&&broken<=0)?col.p:col.a; ctx.lineWidth=1; this._rr(ctx,16,14,96,24,4); ctx.stroke();
+      ctx.fillStyle=(cache&&broken<=0)?col.p:col.a; ctx.font='500 11px "IBM Plex Mono"'; ctx.fillText((cache&&broken<=0)?'cache: on':'cache: off',26,30);
+      if(playing){ acc+=dt*(rps/1000); while(acc>=1){ acc-=1; const over=c.load>1&&Math.random()<Math.min(.7,c.load-1); this._packets.push({x:0,y:20+Math.random()*(H-40),lane:Math.floor(Math.random()*eff),drop:over}); } }
+      const sp=.28*dt;
+      this._packets=this._packets.filter(p=>{ p.x+=sp; const ty=laneH*p.lane+laneH/2; if(p.x>sx-20)p.y+=(ty-p.y)*.12;
+        ctx.fillStyle=p.drop?col.a:col.p; ctx.fillRect(p.x-2,p.y-2,4,4);
+        if(p.drop&&p.x>W*0.62)return false; return p.x<sx+8; });
+      if(this._packets.length>600)this._packets.splice(0,200);
+      statAcc+=dt; if(statAcc>180){ statAcc=0; const s=this.compute(); const cur=this.state.stats; if(cur.lat!==s.lat||cur.ok!==s.ok||cur.load!==s.load) this.setState({stats:{lat:s.lat,ok:s.ok,load:s.load}}); }
+    };
+    draw(performance.now());
+  }
+  _rr(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+
+  go(s){ return ()=>this.setState({screen:s, palette:false, tip:null}); }
+  toggleTheme = ()=> this.setState(s=>({theme:s.theme==='dark'?'light':'dark'}));
+  openPalette = ()=> this.setState({palette:true, tip:null});
+  closePalette = ()=> this.setState({palette:false});
+  stop = (e)=> e.stopPropagation();
+  onQ = (e)=> this.setState({q:e.target.value});
+  setRps = (e)=> this.setState(s=>({sim:{...s.sim, rps:+e.target.value}}));
+  setServers = (e)=> this.setState(s=>({sim:{...s.sim, servers:+e.target.value}}));
+  toggleCache = ()=> this.setState(s=>({sim:{...s.sim, cache:!s.sim.cache}}));
+  togglePlay = ()=> this.setState(s=>({sim:{...s.sim, playing:!s.sim.playing}}));
+  breakIt = ()=>{ this.setState(s=>({sim:{...s.sim, broken:1}})); clearTimeout(this._bt); this._bt=setTimeout(()=>this.setState(s=>({sim:{...s.sim,broken:0}})),5000); };
+  showTip = (e)=>{ clearTimeout(this._tt); const el=e.currentTarget; const r=el.getBoundingClientRect(); this.setState({tip:{word:el.dataset.word, def:el.dataset.def, x:r.left+r.width/2, y:r.bottom}}); };
+  hideTip = ()=>{ this._tt=setTimeout(()=>this.setState({tip:null}),260); };
+  keepTip = ()=> clearTimeout(this._tt);
+
+  renderVals(){
+    const s = this.state; const dark = s.theme==='dark';
+    const mkNav = (label, screen) => ({ label, go:this.go(screen), col: s.screen===screen?'var(--ink)':'var(--ink3)', bar: s.screen===screen?'var(--ink)':'transparent' });
+    const navItems = [ mkNav('Home','landing'), mkNav('Curriculum','map'), mkNav('Codex','codex'), mkNav('Simulator','sim') ];
+
+    const rom=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI'];
+    const dom = (name,count,blurb,topics,ladder,i)=>({num:rom[i]+'.',name,count,blurb,open:this.go('map'),
+      ladder: ladder.map((pct,k)=>({tier:['Local','Production','Enterprise','Planet'][k], pct:pct+'%'})),
+      topics: topics.map(t=>({label:t[0], col:t[1]?'var(--ink)':'var(--ink3)', bar:t[1]?'var(--primary)':'transparent'}))
+    });
+    const domains = [
+      dom('Foundations','10 entries','How code, memory and the machine actually fit together.',[['Variables',1],['Memory',1],['Compilers',0]],[100,80,55,30],0),
+      dom('The Web','14 entries','From a single HTML file to a global rendering pipeline.',[['HTTP',1],['REST',1],['SSR / CSR',1]],[100,90,70,45],1),
+      dom('Mobile','9 entries','One codebase, many devices — and offline-first thinking.',[['Flutter',1],['State',1],['Offline',0]],[100,70,40,15],2),
+      dom('Backend','16 entries','Routes, services and auth — the brain behind the screen.',[['Express',1],['Auth',1],['Queues',1]],[100,95,75,50],3),
+      dom('Databases','13 entries','The memory: tables, money, and transactions you can trust.',[['SQL',1],['Indexes',1],['ACID',1]],[100,85,60,35],4),
+      dom('Algorithms','40 problems','Patterns over puzzles — recognise, then solve.',[['Arrays',1],['Graphs',1],['DP',0]],[100,70,40,10],5),
+      dom('System Design','12 entries','Drawing the boxes and arrows that survive real load.',[['Caching',1],['Sharding',1],['Queues',0]],[80,70,55,40],6),
+      dom('DevOps','11 entries','Ship safely, often, and roll back without fear.',[['Docker',1],['CI / CD',1],['K8s',0]],[100,75,50,25],7),
+      dom('Cloud','10 entries','Renting planet-scale infrastructure by the second.',[['Regions',1],['Scaling',1],['Cost',0]],[90,70,50,30],8),
+      dom('AI & ML','12 entries','Embeddings, vector search, and grounding an LLM.',[['Embeddings',1],['RAG',1],['Evals',0]],[80,55,30,12],9),
+      dom('Security','11 entries','Threats, trust boundaries, and the cost of getting it wrong.',[['Auth',1],['CSRF',1],['Secrets',0]],[90,70,45,20],10)
+    ];
+
+    const fourQ = [
+      {tag:'What',text:'What it actually is, in plain language.',color:'var(--primary)'},
+      {tag:'Why',text:'Why it’s built this way — and the alternatives.',color:'var(--primary)'},
+      {tag:'How',text:'How it works under the hood, step by step.',color:'var(--primary)'},
+      {tag:'When it breaks',text:'Where it fails, and what failure looks like.',color:'var(--accent)'}
+    ];
+    const modes = [
+      {icon:'❦',title:'Read',desc:'Plain-language entries. No term left unexplained.',go:this.go('codex')},
+      {icon:'◷',title:'See',desc:'Demonstrations of systems running, scaling, failing.',go:this.go('sim')},
+      {icon:'✑',title:'Practice',desc:'A patterns-first lab — recognise, then solve.',go:this.go('map')},
+      {icon:'✦',title:'Ask',desc:'A Socratic professor in the margin of every page.',go:this.openPalette}
+    ];
+
+    const tItem=(label,active)=>({label, col:active?'var(--ink)':'var(--ink2)', weight:active?'600':'400', style:active?'normal':'normal', bar:active?'var(--primary)':'transparent'});
+    const tree=[
+      {group:'Foundations', items:[tItem('How it all fits',false),tItem('Layers & separation',false),tItem('State management',false)]},
+      {group:'Cross-cutting', items:[tItem('Transactions & ACID',false),tItem('Idempotency',false),tItem('Caching',true),tItem('Concurrency',false)]},
+      {group:'The wider stack', items:[tItem('Docker',false),tItem('Kubernetes',false),tItem('Observability',false)]}
+    ];
+    const insideCards=[
+      {title:'Keys & values',body:'Every cached answer is filed under a key — like user:42 — for instant lookup.'},
+      {title:'TTL',body:'A timer on each copy. When it expires, the next request refetches fresh data.'},
+      {title:'Eviction policy',body:'When memory fills, a rule (often LRU) decides what to drop.'},
+      {title:'Hit ratio',body:'The share of requests answered from cache. Higher is faster and cheaper.'}
+    ];
+    const op=(label,active)=>({label,col:active?'var(--ink)':'var(--ink3)',bar:active?'var(--ink)':'var(--border)',weight:active?'600':'400'});
+    const onPage=[op('The analogy',true),op('§1 What it is',false),op('§2 What’s inside',false),op('§3 How it works',false),op('§4 Why this way',false),op('When it breaks',false)];
+
+    const answer=[
+      {tag:'What',color:'var(--primary)',text:'An operation is idempotent if doing it twice has the same effect as doing it once. Tap “pay” twice on a flaky connection — you’re still charged once.'},
+      {tag:'Why',color:'var(--primary)',text:'Networks are unreliable; retries are normal. Idempotency lets a client safely retry without double-charging. The alternative — hoping requests never repeat — fails in practice.'},
+      {tag:'How',color:'var(--primary)',text:'The client sends a unique idempotency key. The server records the key with the result; if the same key returns, it replays the stored result instead of re-running the work.'},
+      {tag:'When it breaks',color:'var(--accent)',text:'If keys aren’t stored long enough, a late retry re-executes. If two requests with one key race, you need a lock or unique constraint — or you get duplicates anyway.'}
+    ];
+    const sources=['Stripe — Idempotent Requests','Google SRE — Handling Overload'];
+    const suggest=['Why use a message queue?','SQL versus NoSQL','How a CDN speeds a site'];
+
+    const c = this.compute();
+    const latCol = c.lat>120?'var(--accent)':'var(--ink)';
+    const okCol = s.stats.ok<90?'var(--accent)':'var(--ink)';
+    const loadCol = c.load>100?'var(--accent)':'var(--ink)';
+    const statusText = s.sim.broken>0?'Incident — server withdrawn, cache cold':(c.load>100?'Overloaded — requests dropping':'Healthy — all requests served');
+    const statusCol = (s.sim.broken>0||c.load>100)?'var(--accent)':'var(--primary)';
+
+    return {
+      rootRef:this.rootRef, heroRef:this.heroRef, simRef:this.simRef,
+      themeIcon: dark?'☀':'☾',
+      isLanding:s.screen==='landing', isMap:s.screen==='map', isCodex:s.screen==='codex', isSim:s.screen==='sim',
+      palette:s.palette, tip:s.tip, q:s.q,
+      goHome:this.go('landing'), goMap:this.go('map'), goCodex:this.go('codex'), goSim:this.go('sim'),
+      toggleTheme:this.toggleTheme, openPalette:this.openPalette, closePalette:this.closePalette, stop:this.stop, onQ:this.onQ,
+      showTip:this.showTip, hideTip:this.hideTip, keepTip:this.keepTip,
+      navItems, domains, fourQ, modes, tree, insideCards, onPage, answer, sources, suggest,
+      sim:s.sim, stats:s.stats,
+      setRps:this.setRps, setServers:this.setServers, toggleCache:this.toggleCache, togglePlay:this.togglePlay, breakIt:this.breakIt,
+      cacheLabel:(s.sim.cache&&s.sim.broken<=0)?'ON':'OFF', cacheCol:(s.sim.cache&&s.sim.broken<=0)?'var(--primary)':'var(--accent)',
+      playLabel:s.sim.playing?'Pause':'Play',
+      latCol, okCol, loadCol, statusText, statusCol
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,9 +1,27 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import ThemeToggle from "./ThemeToggle";
 
+const NAV = [
+  { label: "Home", href: "/", match: (p) => p === "/" },
+  { label: "Curriculum", href: "/learn", match: (p) => p.startsWith("/learn") },
+  { label: "Codex", href: "/codex/foundations", match: (p) => p.startsWith("/codex") },
+  { label: "Simulator", href: "/simulator", match: (p) => p.startsWith("/simulator") },
+];
+
 export default function SiteNav() {
+  const path = usePathname() || "/";
+  const [mac, setMac] = useState(false);
+
+  useEffect(() => {
+    setMac(typeof navigator !== "undefined" && /Mac|iPhone|iPad/.test(navigator.platform));
+  }, []);
+
+  const openProfessor = () => window.dispatchEvent(new CustomEvent("toggle-rag-drawer"));
+
   return (
     <nav
       style={{
@@ -11,93 +29,116 @@ export default function SiteNav() {
         top: 0,
         zIndex: 50,
         backdropFilter: "saturate(140%) blur(12px)",
-        background: "color-mix(in srgb, var(--bg) 80%, transparent)",
-        borderBottom: "1px solid var(--hairline)",
+        background: "color-mix(in srgb, var(--bg) 86%, transparent)",
+        borderBottom: "1px solid var(--border)",
       }}
     >
       <div
-        className="wrap"
         style={{
+          maxWidth: 1200,
+          margin: "0 auto",
+          height: 62,
+          padding: "0 32px",
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
-          height: 62,
+          gap: 28,
         }}
       >
-        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 11 }}>
+        {/* Wordmark */}
+        <Link href="/" style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
           <span
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: 9,
-              background: "var(--ink)",
-              color: "var(--bg)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: 700,
-              fontSize: 17,
+              fontFamily: "var(--font-display)",
+              fontStyle: "italic",
+              fontWeight: 600,
+              fontSize: 22,
+              letterSpacing: "-.01em",
+              color: "var(--ink)",
             }}
           >
-            ✦
+            Software Universe
           </span>
-          <span style={{ fontWeight: 600, fontSize: 15.5, letterSpacing: "-.01em" }}>
-            Software&nbsp;Universe
+          <span
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontWeight: 600,
+              fontSize: 9.5,
+              letterSpacing: ".16em",
+              textTransform: "uppercase",
+              color: "var(--ink-3)",
+            }}
+          >
+            est. 2026
           </span>
         </Link>
 
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <NavLink href="/learn" label="Learn" />
-          <NavLink href="/universe" label="Command Center" />
-          <NavLink href="/codex/foundations" label="The Codex" />
-          <NavLink href="/roadmap" label="The Roadmap" />
-          <NavLink href="/simulator" label="The Simulator" />
-          <div style={{ width: 1, height: 16, background: "var(--hairline-2)", margin: "0 4px" }} />
-          
-          {/* Socratic RAG Search Button */}
+        {/* Sections */}
+        <div style={{ display: "flex", gap: 2, marginLeft: 8 }}>
+          {NAV.map((n) => {
+            const active = n.match(path);
+            return (
+              <Link
+                key={n.label}
+                href={n.href}
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontWeight: 600,
+                  fontSize: 11,
+                  letterSpacing: ".12em",
+                  textTransform: "uppercase",
+                  color: active ? "var(--ink)" : "var(--ink-3)",
+                  padding: "8px 13px",
+                  borderBottom: `2px solid ${active ? "var(--ink)" : "transparent"}`,
+                }}
+              >
+                {n.label}
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Right cluster */}
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 10 }}>
           <button
-            onClick={() => window.dispatchEvent(new CustomEvent("toggle-rag-drawer"))}
+            onClick={openProfessor}
+            title="Ask the Professor"
             style={{
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              padding: "8px",
-              borderRadius: "8px",
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
+              gap: 9,
+              border: "1px solid var(--border-2)",
+              background: "var(--surface)",
               color: "var(--ink-2)",
-              transition: "background 0.15s ease, color 0.15s ease",
+              fontFamily: "var(--font-body)",
+              fontWeight: 500,
+              fontSize: 13,
+              padding: "8px 13px",
+              borderRadius: 6,
+              cursor: "pointer",
             }}
-            className="btn-search-trigger"
-            title="Ask Socratic RAG (Ctrl+K)"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
+            <span style={{ fontStyle: "italic", fontFamily: "var(--font-display)", color: "var(--primary)" }}>
+              Ask the Professor
+            </span>
+            <span
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontWeight: 600,
+                fontSize: 10,
+                background: "var(--surface-2)",
+                border: "1px solid var(--border)",
+                borderRadius: 4,
+                padding: "2px 6px",
+                color: "var(--ink-3)",
+              }}
+            >
+              {mac ? "⌘K" : "Ctrl K"}
+            </span>
           </button>
-          
+
           <ThemeToggle />
         </div>
       </div>
     </nav>
-  );
-}
-
-function NavLink({ href, label }) {
-  return (
-    <Link
-      href={href}
-      style={{
-        fontSize: 14,
-        fontWeight: 500,
-        color: "var(--ink-2)",
-        padding: "8px 12px",
-        borderRadius: 10,
-      }}
-    >
-      {label}
-    </Link>
   );
 }
