@@ -15,16 +15,18 @@ export default function PlaygroundPage() {
         </div>
         <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 500, fontSize: 48, letterSpacing: "-.02em", margin: "0 0 8px" }}>Run it yourself</h1>
         <p style={{ fontSize: 18, lineHeight: 1.6, color: "var(--ink-2)", maxWidth: 640, margin: 0 }}>
-          Reading about code and making the machine actually <em>do</em> it are different skills. Here's a real JavaScript
-          sandbox — type, press Run, and watch what happens. Start from an example or write your own.
+          Reading about code and making the machine actually <em>do</em> it are different skills. Here's a real
+          <strong style={{ color: "var(--ink)" }}> JavaScript and Python</strong> sandbox — type, press Run, and watch what
+          happens. Start from an example or write your own.
         </p>
       </div>
 
       <div className="prose" style={{ marginBottom: 24 }}>
         <p>
-          Your code runs in an isolated background thread, so a mistake can't hurt anything — and if you write an infinite loop,
-          it's stopped after two seconds. Use <code>console.log(...)</code> to print things, or just leave a value on the last
-          line to see it returned.
+          Your code runs in an isolated background thread, so a mistake can't hurt anything — a JavaScript infinite loop is
+          stopped after two seconds. Print with <code>console.log(...)</code> in JavaScript or <code>print(...)</code> in
+          Python. The first Python run downloads the language runtime (a real Python, compiled to WebAssembly), so give it a
+          few seconds; every run after that is quick.
         </p>
       </div>
 
