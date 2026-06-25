@@ -1,5 +1,6 @@
 // app/api/rag/query/route.js
 import { searchRAG } from '@/lib/rag_search';
+import { searchByEmbedding } from '@/lib/embeddings_search';
 import https from 'https';
 
 function callOpenAI(apiKey, prompt, systemContext) {
@@ -134,12 +135,22 @@ export async function POST(request) {
       });
     }
 
-    // 1. Search local knowledge index (degrades to [] if no corpus — never throws)
+    // 1. Retrieve. Prefer semantic embeddings; fall back to TF-IDF; never throw.
     let references = [];
+    let retrieval = 'tfidf';
     try {
-      references = searchRAG(query, 4);
+      const emb = await searchByEmbedding(query, 4);
+      if (emb && emb.length) {
+        references = emb;
+        retrieval = 'embeddings';
+      } else {
+        references = searchRAG(query, 4);
+      }
     } catch (searchErr) {
-      console.warn('RAG search unavailable:', searchErr.message);
+      console.warn('RAG search degraded:', searchErr.message);
+      try {
+        references = searchRAG(query, 4);
+      } catch (_) {}
     }
 
     // 2. Determine provider + key. Priority: client-supplied key →
@@ -182,7 +193,7 @@ Answer the user's query grounding yourself strictly in the provided context docu
         } else {
           responseText = await callOpenAI(apiKey, query, systemPrompt);
         }
-        return new Response(JSON.stringify({ answer: responseText, references, isMock: false }), {
+        return new Response(JSON.stringify({ answer: responseText, references, isMock: false, retrieval }), {
           status: 200,
           headers: { 'Content-Type': 'application/json' }
         });
@@ -224,7 +235,7 @@ Based on the SRE book chapters and outage blogs:
 *(💡 Tip: To enable full AI-driven Socratic synthesis and follow-up dialogue, enter your OpenAI API Key in the panel below).*`;
     }
 
-    return new Response(JSON.stringify({ answer: answerText, references, isMock: true }), {
+    return new Response(JSON.stringify({ answer: answerText, references, isMock: true, retrieval }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });

@@ -5,13 +5,15 @@
   "scripts": {
     "dev": "next dev",
     "check": "node scripts/check_content.js",
-    "prebuild": "node scripts/check_content.js && (node scripts/build_knowledge_index.js || true)",
+    "prebuild": "node scripts/check_content.js && (node scripts/build_knowledge_index.js || true) && (node scripts/build_embeddings.js || true)",
     "build": "next build",
     "start": "next start",
-    "index": "node scripts/build_knowledge_index.js"
+    "index": "node scripts/build_knowledge_index.js",
+    "embeddings": "node scripts/build_embeddings.js"
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.19",
+    "@huggingface/transformers": "^4.2.0",
     "@react-three/drei": "^9.122.0",
     "@react-three/fiber": "^8.18.0",
     "@xyflow/react": "^12.11.0",
