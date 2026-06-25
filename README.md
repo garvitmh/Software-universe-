@@ -133,3 +133,49 @@ npm run check && npm run build
 ```
 
 `check` gates the content graph; `build` runs it, rebuilds the index, and compiles every route.
+
+## Deploy
+
+It's a standard Next.js **server** app (`next build` → `next start`) that ships its own
+knowledge index in git — **no database, and no env vars required.** Deploy it to any Node
+host. (It is *not* a Vercel-friendly static export: the Professor's embedding dependency
+ships a ~210 MB native runtime that exceeds Vercel's serverless function limit, so use a
+long-running Node host instead.)
+
+### Render (one click via the included blueprint)
+
+A `render.yaml` is included. In Render: **New ▸ Blueprint**, connect this repo, and it sets:
+
+```
+Build:  npm install && npm run build
+Start:  npm start
+```
+
+The blueprint targets the free instance and runs the lighter **keyword** search there
+(`DISABLE_EMBEDDINGS=1`) so it never runs out of memory. To turn on **semantic** search,
+pick a **1 GB+ instance** and delete the `DISABLE_EMBEDDINGS` lines from `render.yaml`.
+
+### Railway / Fly.io / a VPS
+
+Same idea — any Node host:
+
+```bash
+npm install
+npm run build
+npm start            # serves on $PORT (honored by next start)
+```
+
+Give it **≥ 1 GB RAM** if you want semantic embeddings; otherwise set `DISABLE_EMBEDDINGS=1`
+and it uses keyword search (still grounded, still good).
+
+### Optional env vars
+
+| Var | Effect |
+|-----|--------|
+| `OPENROUTER_API_KEY` | AI-written answers for every visitor (free tier at openrouter.ai/keys). Unset → answers come from the local index. |
+| `OPENROUTER_MODEL` | Pin a specific model (defaults to a free Llama-3.3-70B). |
+| `DISABLE_EMBEDDINGS=1` | Skip the embedding model; use keyword search. Set this on small (< 1 GB) instances. |
+
+Build downloads the embedding model (~25 MB) once; if that ever fails it's non-fatal — the
+committed `lib/knowledge/embeddings.json` is used, and retrieval falls back to keyword.
+

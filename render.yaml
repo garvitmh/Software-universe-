@@ -1,0 +1,37 @@
+# Render Blueprint — deploys Software Universe as a Node web service.
+#
+# In Render:  New ▸ Blueprint ▸ connect this repo (it reads this file).
+# Or create a Web Service manually with the same Build/Start commands below.
+#
+# The app needs no env vars to run — it ships its own knowledge index and the
+# Professor falls back gracefully. The two optional vars are noted below.
+
+services:
+  - type: web
+    name: software-universe
+    runtime: node
+    plan: free
+    region: oregon
+    branch: testing
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "20.11.1"
+
+      # ── Semantic search (optional) ──────────────────────────────────────────
+      # The Professor can rank by *meaning* using a small embedding model, which
+      # needs ~1 GB+ RAM. The free instance (512 MB) runs the lighter *keyword*
+      # search instead — still grounded in the same content, never errors.
+      # To enable semantic search: choose a 1 GB+ instance and DELETE these two lines.
+      - key: DISABLE_EMBEDDINGS
+        value: "1"
+
+      # ── AI-written answers (optional) ───────────────────────────────────────
+      # With no key, the Professor answers from the local index. Add a free
+      # OpenRouter key (https://openrouter.ai/keys) here in the dashboard to get
+      # full AI synthesis for every visitor. Left unset by default.
+      - key: OPENROUTER_API_KEY
+        sync: false
