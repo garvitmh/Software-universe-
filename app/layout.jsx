@@ -49,16 +49,28 @@ export default function RootLayout({ children }) {
               justifyContent: "space-between",
               alignItems: "center",
               flexWrap: "wrap",
-              gap: 12,
-              fontFamily: "var(--font-mono)",
-              fontSize: 10.5,
-              letterSpacing: ".1em",
-              textTransform: "uppercase",
-              color: "var(--ink-3)",
+              gap: 16,
             }}
           >
-            <span>Software Universe · Vol. I</span>
-            <span>A visual field guide to software · est. 2026</span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 10.5, letterSpacing: ".1em", textTransform: "uppercase", color: "var(--ink-3)" }}>
+              Software Universe · Vol. I
+            </span>
+            <nav style={{ display: "flex", gap: 18, flexWrap: "wrap" }}>
+              {[
+                ["Curriculum", "/learn"],
+                ["Codex", "/codex/foundations"],
+                ["Simulator", "/simulator"],
+                ["Glossary", "/glossary"],
+                ["The Plan", "/plan"],
+              ].map(([label, href]) => (
+                <a key={href} href={href} style={{ fontFamily: "var(--font-mono)", fontSize: 10.5, letterSpacing: ".1em", textTransform: "uppercase", color: "var(--ink-3)" }}>
+                  {label}
+                </a>
+              ))}
+            </nav>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 10.5, letterSpacing: ".1em", textTransform: "uppercase", color: "var(--ink-3)" }}>
+              est. 2026
+            </span>
           </div>
         </footer>
 

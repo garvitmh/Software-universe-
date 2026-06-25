@@ -435,6 +435,7 @@ p { margin: 0; }
 .ed-mode:hover { background: var(--surface-2); }
 .ed-domain { transition: background .18s ease; }
 .ed-domain:hover { background: var(--surface-2); }
+@media (max-width: 640px) { .ed-glossary-row { grid-template-columns: 1fr !important; gap: 4px !important; } }
 
 /* Editorial home responsive */
 @media (max-width: 880px) {
