@@ -83,6 +83,13 @@ export default function TechArticle({ content: c }) {
           </>
         )}
 
+        {c.how && (
+          <>
+            <H2 n={++n}>How it works</H2>
+            <Paras items={c.how} />
+          </>
+        )}
+
         {c.why && (
           <>
             <H2 n={++n}>Why we use it (and what else exists)</H2>
