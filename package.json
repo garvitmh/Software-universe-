@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/build_knowledge_index.js || true",
+    "check": "node scripts/check_content.js",
+    "prebuild": "node scripts/check_content.js && (node scripts/build_knowledge_index.js || true)",
     "build": "next build",
     "start": "next start",
     "index": "node scripts/build_knowledge_index.js"

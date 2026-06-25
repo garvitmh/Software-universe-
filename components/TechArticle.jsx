@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Callout from "@/components/Callout";
-import { ALL_TECH } from "@/lib/curriculum";
+import { ALL_TECH, ALL_CODEX_CHAPTERS } from "@/lib/curriculum";
 import { fmt } from "@/lib/fmt";
 import { readingMinutes } from "@/lib/readingTime";
 
@@ -27,8 +27,15 @@ function H2({ n, children }) {
 }
 
 export default function TechArticle({ content: c }) {
+  // related[] may point at a tech entry OR a Codex chapter — resolve both.
   const relatedTech = (c.related || [])
-    .map((slug) => ALL_TECH.find((t) => t.slug === slug))
+    .map((slug) => {
+      const t = ALL_TECH.find((x) => x.slug === slug);
+      if (t) return { title: t.title, href: t.href };
+      const ch = ALL_CODEX_CHAPTERS.find((x) => x.slug === slug);
+      if (ch) return { title: ch.title, href: ch.href };
+      return null;
+    })
     .filter(Boolean);
 
   const idx = ALL_TECH.findIndex((t) => t.slug === c.slug);
@@ -155,7 +162,7 @@ export default function TechArticle({ content: c }) {
             <div style={{ display: "flex", flexWrap: "wrap", gap: "6px 16px" }}>
               {relatedTech.map((t) => (
                 <Link
-                  key={t.slug}
+                  key={t.href}
                   href={t.href}
                   style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: 14, color: "var(--ink)", borderBottom: "1px solid var(--primary)" }}
                 >
