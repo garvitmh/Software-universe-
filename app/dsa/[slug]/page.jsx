@@ -37,6 +37,13 @@ export default function DsaProblemPage({ params }) {
   if (!p) notFound();
   const pattern = DSA_PATTERNS.find((x) => x.id === p.pattern);
   const related = (p.related || []).map((s) => DSA_PROBLEMS.find((x) => x.slug === s)).filter(Boolean);
+
+  // Walk the problems within this pattern, in order — prev/next, like a chapter.
+  const inPattern = DSA_PROBLEMS.filter((x) => x.pattern === p.pattern);
+  const pIdx = inPattern.findIndex((x) => x.slug === p.slug);
+  const prevP = pIdx > 0 ? inPattern[pIdx - 1] : null;
+  const nextP = pIdx >= 0 && pIdx < inPattern.length - 1 ? inPattern[pIdx + 1] : null;
+
   let n = 0;
 
   return (
@@ -191,6 +198,27 @@ export default function DsaProblemPage({ params }) {
           </>
         )}
       </div>
+
+      {(prevP || nextP) && (
+        <nav style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 44, borderTop: "1px solid var(--border)", paddingTop: 24 }}>
+          {prevP ? (
+            <Link href={`/dsa/${prevP.slug}`} style={{ textAlign: "left" }}>
+              <div style={{ ...label, color: "var(--ink-3)", marginBottom: 5 }}>← Prev · {pattern ? pattern.name : ""}</div>
+              <div style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 18, color: "var(--ink)" }}>{prevP.title}</div>
+            </Link>
+          ) : (
+            <span />
+          )}
+          {nextP ? (
+            <Link href={`/dsa/${nextP.slug}`} style={{ textAlign: "right" }}>
+              <div style={{ ...label, color: "var(--ink-3)", marginBottom: 5 }}>Next · {pattern ? pattern.name : ""} →</div>
+              <div style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 18, color: "var(--ink)" }}>{nextP.title}</div>
+            </Link>
+          ) : (
+            <span />
+          )}
+        </nav>
+      )}
     </main>
   );
 }
