@@ -48,11 +48,7 @@ export default function DsaProblemPage({ params }) {
       <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", marginBottom: 12 }}>
         <span style={{ ...label, color: "var(--primary)" }}>{pattern ? pattern.name : "DSA"}</span>
         <span style={{ ...label, color: DIFF[p.difficulty] || "var(--ink-3)" }}>{p.difficulty}</span>
-        {p.leetcode && (
-          <a href={`https://leetcode.com/problems/${p.slug}/`} target="_blank" rel="noopener noreferrer" style={{ ...label, color: "var(--ink-3)", borderBottom: "1px solid var(--border-2)" }}>
-            LeetCode #{p.leetcode} ↗
-          </a>
-        )}
+        {p.leetcode && <span style={{ ...label, color: "var(--ink-3)" }}>LeetCode #{p.leetcode}</span>}
       </div>
       <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 500, fontSize: 46, lineHeight: 1.05, letterSpacing: "-.02em" }}>{p.title}</h1>
 

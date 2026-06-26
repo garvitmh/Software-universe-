@@ -58,13 +58,34 @@ function loadContentEntries() {
   return merged;
 }
 
+// Merge the base DSA problems with the wave batches in lib/dsa/*.js.
+function loadDsaProblems() {
+  let all = [...(loadModule("lib/dsa.js").DSA_PROBLEMS || [])];
+  const dir = path.join(ROOT, "lib", "dsa");
+  if (fs.existsSync(dir)) {
+    for (const f of fs.readdirSync(dir).filter((x) => x.endsWith(".js"))) {
+      let sb;
+      try {
+        sb = loadModule(`lib/dsa/${f}`);
+      } catch (e) {
+        continue;
+      }
+      for (const k of Object.keys(sb)) {
+        const v = sb[k];
+        if (Array.isArray(v) && v[0] && v[0].slug && v[0].pattern) all = all.concat(v);
+      }
+    }
+  }
+  return all;
+}
+
 // ── load data ──
 const TECH_CONTENT = { ...loadModule("lib/tech-content.js").TECH_CONTENT, ...loadContentEntries() };
 const { GLOSSARY } = loadModule("lib/glossary.js");
 const { CODEX_PARTS, TECH_SECTIONS } = loadModule("lib/curriculum.js");
 const { DOMAINS } = loadModule("lib/domains.js");
 const { PATHS } = loadModule("lib/paths.js");
-const { DSA_PROBLEMS } = loadModule("lib/dsa.js");
+const DSA_PROBLEMS = loadDsaProblems();
 
 // ── build the set of valid routes ──
 const techSlugs = new Set(Object.keys(TECH_CONTENT));
@@ -148,6 +169,21 @@ for (const p of PATHS) {
 // 6. glossary integrity
 for (const [id, v] of Object.entries(GLOSSARY)) {
   if (!v.term || !v.def) errors.push(`glossary "${id}" missing term/def`);
+}
+
+// 7. DSA problems — core fields present, related[] resolves, no duplicate slugs
+const dsaSet = new Set();
+const dsaPatternIds = new Set(loadModule("lib/dsa.js").DSA_PATTERNS.map((p) => p.id));
+for (const p of DSA_PROBLEMS) {
+  if (!p.slug || !p.pattern || !p.statement) errors.push(`dsa "${p.slug || "?"}" missing slug/pattern/statement`);
+  if (dsaSet.has(p.slug)) errors.push(`dsa duplicate slug "${p.slug}"`);
+  dsaSet.add(p.slug);
+  if (p.pattern && !dsaPatternIds.has(p.pattern)) errors.push(`dsa "${p.slug}" has unknown pattern "${p.pattern}"`);
+}
+for (const p of DSA_PROBLEMS) {
+  for (const r of p.related || []) {
+    if (!dsaSet.has(r)) warnings.push(`dsa "${p.slug}" → related "${r}" not found`);
+  }
 }
 
 // ── report ──
