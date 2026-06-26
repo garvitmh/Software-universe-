@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "next dev",
     "check": "node scripts/check_content.js",
-    "prebuild": "node scripts/check_content.js && (node scripts/build_knowledge_index.js || true) && (node scripts/build_embeddings.js || true)",
+    "prebuild": "node scripts/check_content.js && (node scripts/build_dsa_index.js || true) && (node scripts/build_knowledge_index.js || true) && (node scripts/build_embeddings.js || true)",
     "build": "next build",
     "start": "next start",
     "index": "node scripts/build_knowledge_index.js",
