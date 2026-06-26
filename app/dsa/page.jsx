@@ -2,86 +2,73 @@ import Link from "next/link";
 import { DSA_PATTERNS, problemsByPattern, DSA_STATS } from "@/lib/dsa";
 
 export const metadata = {
-  title: "DSA Lab — solve by pattern · Software Universe",
-  description: "Learn data structures & algorithms by recognizing the pattern, not memorizing problems.",
+  title: "DSA Lab — solve by pattern, in Java · Software Universe",
+  description: "Learn data structures & algorithms by recognising the pattern and deriving the optimal from scratch — every problem worked in Java.",
 };
 
-const TINT = {
-  blue: { soft: "var(--blue-soft)", ink: "var(--blue)" },
-  teal: { soft: "var(--teal-soft)", ink: "var(--teal)" },
-  brand: { soft: "var(--brand-soft)", ink: "var(--brand-2)" },
-  purple: { soft: "var(--purple-soft)", ink: "var(--purple)" },
-  amber: { soft: "var(--amber-soft)", ink: "var(--amber)" },
-  pink: { soft: "var(--pink-soft)", ink: "var(--pink)" },
-};
-
-const DIFF = {
-  Easy: "var(--teal)",
-  Medium: "var(--amber)",
-  Hard: "var(--pink)",
-};
+const DIFF = { Easy: "var(--teal)", Medium: "var(--bronze)", Hard: "var(--accent)" };
+const label = { fontFamily: "var(--font-mono)", fontWeight: 600, fontSize: 10, letterSpacing: ".12em", textTransform: "uppercase", color: "var(--ink-3)" };
 
 export default function DsaLab() {
   return (
-    <main className="wrap" style={{ paddingTop: 40, paddingBottom: 64 }}>
-      <Link href="/learn" style={{ fontSize: 13.5, color: "var(--muted)", display: "inline-flex", alignItems: "center", gap: 6, marginBottom: 22 }}>
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M11 6l-6 6 6 6" /></svg>
-        The map
-      </Link>
-
-      <div style={{ maxWidth: 700, marginBottom: 30 }}>
-        <span className="eyebrow" style={{ color: "var(--brand-2)" }}>DSA Lab</span>
-        <h1 style={{ fontSize: "clamp(34px, 5vw, 52px)", lineHeight: 1.04, fontWeight: 600, letterSpacing: "-.02em", marginTop: 8 }}>
-          Solve by <span className="grad-text" style={{ fontStyle: "italic" }}>pattern</span>, not by memory.
+    <div className="ed-rise" style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 32px 80px" }}>
+      <div style={{ borderBottom: "2px solid var(--ink)", paddingBottom: 18, marginBottom: 28 }}>
+        <div style={{ ...label, fontSize: 10.5, letterSpacing: ".16em", marginBottom: 12 }}>Practice · The DSA Lab</div>
+        <h1 style={{ fontFamily: "var(--font-display)", fontWeight: 500, fontSize: 52, letterSpacing: "-.02em", margin: "0 0 10px" }}>
+          Solve by pattern, not by memory.
         </h1>
-        <p style={{ fontSize: 18, color: "var(--ink-2)", marginTop: 14, lineHeight: 1.55 }}>
-          The trap is memorizing 250 problems. The skill is recognizing that a new problem is really one of a dozen shapes you already know. Each problem here shows you <strong>how to spot the pattern</strong>, the path from brute-force to optimal, and <strong>what happens when the question is twisted</strong>.
+        <p style={{ fontSize: 18, lineHeight: 1.6, color: "var(--ink-2)", maxWidth: 660, margin: 0 }}>
+          The trap is memorising 250 problems. The skill is seeing that a new problem is really one of ~18 shapes you
+          already know — and being able to <em>derive</em> the optimal from scratch. Every problem here teaches the
+          thinking (not just the answer), brute-force → optimal, worked in <strong style={{ color: "var(--ink)" }}>Java</strong>.
         </p>
-        <div style={{ display: "flex", gap: 18, marginTop: 14, fontSize: 13.5, color: "var(--muted)" }}>
-          <span><strong style={{ color: "var(--ink)" }}>{DSA_STATS.patterns}</strong> patterns</span>
-          <span><strong style={{ color: "var(--ink)" }}>{DSA_STATS.problems}</strong> problems</span>
-          <span style={{ color: "var(--faint)" }}>more landing continuously</span>
+        <div style={{ display: "flex", gap: 20, marginTop: 16, fontFamily: "var(--font-mono)", fontSize: 11.5, letterSpacing: ".04em", color: "var(--ink-3)" }}>
+          <span><span style={{ color: "var(--primary)", fontWeight: 600 }}>{DSA_STATS.problems}</span> problems</span>
+          <span><span style={{ color: "var(--primary)", fontWeight: 600 }}>{DSA_STATS.patterns}</span> patterns</span>
+          <span>building toward {DSA_STATS.target} (NeetCode)</span>
         </div>
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
-        {DSA_PATTERNS.map((pat) => {
-          const tint = TINT[pat.tint] || TINT.brand;
-          const probs = problemsByPattern(pat.id);
-          return (
-            <section key={pat.id} className="card" style={{ padding: 0, overflow: "hidden" }}>
-              <div style={{ padding: "20px 22px", background: tint.soft, borderBottom: "1px solid var(--hairline)" }}>
-                <h2 style={{ fontFamily: "Fraunces", fontSize: 23, fontWeight: 600, color: "var(--ink)" }}>{pat.name}</h2>
-                <p style={{ fontSize: 14.5, color: "var(--ink-2)", marginTop: 6, lineHeight: 1.55, maxWidth: 760 }}>{pat.idea}</p>
-                <div style={{ marginTop: 12 }}>
-                  <div style={{ fontSize: 11.5, fontWeight: 700, letterSpacing: ".06em", textTransform: "uppercase", color: tint.ink, marginBottom: 6 }}>How to recognize it</div>
-                  <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 3 }}>
-                    {pat.recognize.map((r, i) => (
-                      <li key={i} style={{ fontSize: 13.5, color: "var(--ink-2)", lineHeight: 1.5 }}>{r}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-              <div style={{ padding: "16px 22px 20px", display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
+      {DSA_PATTERNS.map((pat, idx) => {
+        const probs = problemsByPattern(pat.id);
+        return (
+          <section key={pat.id} style={{ padding: "26px 0", borderBottom: "1px solid var(--border)" }}>
+            <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 8 }}>
+              <h2 style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 26, letterSpacing: "-.01em" }}>
+                <span style={{ fontFamily: "var(--font-mono)", fontWeight: 600, fontSize: 13, color: "var(--ink-3)", marginRight: 12 }}>{String(idx + 1).padStart(2, "0")}</span>
+                {pat.name}
+              </h2>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--ink-3)", whiteSpace: "nowrap" }}>
+                {probs.length} {probs.length === 1 ? "problem" : "problems"}
+              </span>
+            </div>
+
+            <p style={{ fontSize: 15.5, lineHeight: 1.6, color: "var(--ink-2)", margin: "0 0 12px", maxWidth: 820 }}>{pat.idea}</p>
+
+            <div style={{ marginBottom: probs.length ? 14 : 0 }}>
+              <div style={{ ...label, color: "var(--bronze)", marginBottom: 6 }}>Recognise it</div>
+              <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 2 }}>
+                {pat.recognize.map((r, i) => (
+                  <li key={i} style={{ fontSize: 14, color: "var(--ink-2)", lineHeight: 1.5 }}>{r}</li>
+                ))}
+              </ul>
+            </div>
+
+            {probs.length > 0 ? (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 0, borderTop: "1px solid var(--border)", borderLeft: "1px solid var(--border)" }}>
                 {probs.map((p) => (
-                  <Link key={p.slug} href={`/dsa/${p.slug}`}>
-                    <div className="card" style={{ padding: "14px 16px", height: "100%", borderRadius: 14, display: "flex", flexDirection: "column", gap: 6 }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-                        <span style={{ fontWeight: 600, fontSize: 15, color: "var(--ink)" }}>{p.title}</span>
-                        <span style={{ fontSize: 11, fontWeight: 700, color: DIFF[p.difficulty] || "var(--muted)" }}>{p.difficulty}</span>
-                      </div>
-                      <span style={{ fontSize: 12.5, color: "var(--brand-2)", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 5 }}>
-                        Open
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-                      </span>
-                    </div>
+                  <Link key={p.slug} href={`/dsa/${p.slug}`} className="ed-domain" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, padding: "13px 16px", borderBottom: "1px solid var(--border)", borderRight: "1px solid var(--border)" }}>
+                    <span style={{ fontFamily: "var(--font-body)", fontWeight: 500, fontSize: 15, color: "var(--ink)" }}>{p.title}</span>
+                    <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, fontWeight: 600, letterSpacing: ".04em", color: DIFF[p.difficulty] || "var(--ink-3)", textTransform: "uppercase" }}>{p.difficulty}</span>
                   </Link>
                 ))}
               </div>
-            </section>
-          );
-        })}
-      </div>
-    </main>
+            ) : (
+              <div style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--ink-3)", marginTop: 10 }}>— worked problems landing here next —</div>
+            )}
+          </section>
+        );
+      })}
+    </div>
   );
 }
