@@ -7,13 +7,15 @@ how · when it breaks** — and you can learn it four ways:
 
 | Pillar | Where | What it is |
 |--------|-------|------------|
-| **READ** | `/codex`, `/learn`, `/glossary` | 48 plain-language entries, 11 chapters, 153 glossary terms, every Learn-Map topic live |
-| **SEE** | `/simulator` | 10 interactive demos — a live load simulator, a Big-O/sorting visualizer, and more |
-| **PRACTICE** | `/playground`, `/dsa` | Run real JavaScript **and Python** in the browser; a NeetCode-style DSA lab |
+| **READ** | `/codex`, `/learn`, `/glossary` | 144 plain-language entries, 11 chapters, 153 glossary terms, every Learn-Map topic live |
+| **SEE** | `/simulator` | 10 owned interactive demos — a live load simulator, a Big-O/sorting visualizer, a real-API playground, a B-tree index visualizer, an LLM next-token sim, and more |
+| **PRACTICE** | `/playground`, `/dsa` | Run real JavaScript **and Python** in the browser; a **676-problem** DSA lab (the NeetCode-All set, worked from scratch in Java) |
 | **ASK** | ⌘K anywhere | "The Professor" — a grounded RAG assistant that's also instant jump-to-anything navigation |
 
-Plus **guided paths** (`/paths`) — ordered routes that build one idea on the last — and local
-**progress** that remembers where you've been.
+Plus a **case study** (`/case-study`) that takes the real *Burger Farm* platform apart in
+extreme detail — every architectural decision (what/why/alternatives/how) and an exhaustive
+"what if it breaks?" failure playbook; **guided paths** (`/paths`) — ordered routes that build
+one idea on the last; and local **progress** that remembers where you've been.
 
 The design is the **Editorial** direction: a textbook-as-software look (Newsreader display
 serif, Source Serif 4 body, IBM Plex Mono labels; warm paper, navy + rust accents; light + dark).
@@ -41,19 +43,24 @@ app/                      Next.js App Router
   learn/                  The Learn Map (domains × depth ladder)
   codex/                  The reader: /codex (contents), /codex/<chapter>, /codex/tech/<slug>
   paths/                  Guided paths: index + /paths/<id> reader
-  simulator/              Sim hub + each demo (complexity, scaling, raft, …)
+  simulator/              Sim hub + each owned demo (complexity, scaling, raft, api-playground, visualgo/B-tree, llm, …)
+  dsa/                    DSA Lab hub + /dsa/<slug> per-problem pages
+  case-study/             Burger Farm case study: /case-study (cover) + /case-study/<chapter>
   playground/             JS + Python sandbox
   glossary/               Filterable lexicon
   api/                    Backend route handlers (content, glossary, search, stats)
 components/
   TechArticle.jsx         Renders every tech entry (§-markers, drop-caps, callouts, prev/next)
   InlineRAGDrawer.jsx     The Professor (⌘K) — RAG answer + instant nav
+  case-study/             CaseStudyChapter.jsx renderer (decision cards + edge-case register)
   sim/ playground/ paths/ home/   Feature components
 lib/
   content/repository.js   The single content data-access layer (the DB-swap seam)
-  tech-content.js         The tech entries (the bulk of the content)
+  tech-content.js         The tech entries (merges lib/content/*.js area files)
+  dsa.js                  DSA registry (merges lib/dsa/wave*.js); dsa-index.json built in prebuild
+  caseStudy.js            The Burger Farm case-study chapters (decisions + "what if?" edge cases)
   curriculum.js           CODEX_PARTS (chapters) + TECH_SECTIONS (sidebar order)
-  domains.js              The 11 domains + depth ladders (drives /learn)
+  domains.js              The 17 domains + depth ladders (drives /learn)
   glossary.js             ~153 plain-language term definitions (powers tooltips + search)
   paths.js                The guided paths
   learnerStore.js         localStorage progress (recents, read-count, bookmarks)
@@ -101,6 +108,23 @@ Add to `lib/glossary.js` (`id: { term, def, more? }`). It instantly powers the i
 
 Add to `lib/paths.js` (`{ id, title, subtitle, blurb, steps: [{ href, title, note }] }`).
 Steps can point at any real route; `npm run check` validates them.
+
+### DSA problems
+
+Problems live in `lib/dsa/wave*.js` (each file exports an array of problem objects) and are
+merged into `DSA_PROBLEMS` in `lib/dsa.js` via `import` + a `typeof`-guarded spread. Each
+problem carries `slug, title, difficulty, pattern, leetcode, statement, examples, constraints,
+recognize, figureItOut[], approaches[] (brute→optimal, with a walkthrough on the optimal),
+edgeCases, twists, related`. Add a new `lib/dsa/<name>.js`, wire its import + spread in
+`lib/dsa.js`, and `npm run build` rebuilds `lib/dsa-index.json` (the lightweight ⌘K index) in
+prebuild. Keep `pattern` to one of the `DSA_PATTERNS` ids so it renders on the hub; keep slugs
+**and** LeetCode numbers unique.
+
+### A case-study chapter
+
+Add a chapter object to `CASE_STUDY.chapters` in `lib/caseStudy.js` (`{ slug, num, eyebrow,
+title, dek, sections[], decisions?[], edgeCases?[] }`). The `/case-study/<slug>` page and the
+⌘K index pick it up automatically.
 
 ## Backend
 
