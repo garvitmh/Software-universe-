@@ -1,50 +1,158 @@
-# 04 · Architecture & How to add a topic
+# 04 · Architecture & How-To
 
-## Tech
-- **Next.js 14.2** (app router), **JavaScript** (`.jsx`, not TypeScript — keep it that way for low friction).
-- **React 18** + **framer-motion 11** (animations).
-- Plain CSS design system (`app/globals.css`). No Tailwind, no CSS-in-JS lib.
-- Fonts via Google Fonts `<link>` in `app/layout.jsx` (not `next/font`, to avoid build-time font fetches).
+> For working method + continuation, see `docs/00-AI-HANDOFF.md`.
 
-## Folder layout
+This is the architecture map and the "how to add X" cookbook, kept honest against the live files. Read it before touching content or wiring.
+
+## Stack
+- **Next.js 14.2.15** App Router, **JavaScript** (`.jsx`/`.js`, no TypeScript — keep it that way).
+- **React 18.3**, **framer-motion 11**, **d3**, **three / @react-three/fiber+drei**, **@xyflow/react** (React Flow), **lenis** (smooth scroll), **marked**, **@huggingface/transformers** (embeddings).
+- Plain CSS design system in `app/globals.css`. No Tailwind, no CSS-in-JS.
+- Fonts loaded via a Google Fonts `<link>` in `app/layout.jsx` (not `next/font`). Known debt: the link still pulls **Fraunces / Inter / JetBrains Mono** for un-migrated aux pages, alongside the current Newsreader / Source Serif 4 / IBM Plex Mono set.
+- Import alias `@/*` → project root (`jsconfig.json`). The build is the source of truth — **no preview server** (`npm run dev` exists for local work only).
+
+---
+
+## 1. Component & data architecture
+
+### Routes (everything under `app/`)
+- `/` — home/campus.
+- `/learn` — the Learn Map (17 domains).
+- `/codex` — Codex hub; hand-written chapters `/codex/<chapter>` (`foundations`, `layers-and-separation`, `state-management`, `flutter-app`, `backend`, `database`, `admin-panel`, `burger-builder`, `big-systems`, `scale`, `deployment`); the tech encyclopedia `/codex/tech/[slug]`; embedded source viewers `/codex/library/[slug]`.
+- `/dsa` + `/dsa/[slug]` — the DSA Lab.
+- `/simulator` + 10 sim routes (`api-playground`, `cart-drift`, `complexity`, `dependency-explorer`, `llm`, `loyalty-ledger`, `order-journey`, `raft`, `scaling`, `visualgo`).
+- `/case-study` + `/case-study/[slug]` — the Burger Farm teardown.
+- `/playground`, `/glossary`, `/paths` + `/paths/[id]`, `/roles`, `/roadmap`, `/plan` + `/plan/[slug]`, `/universe`, `/worlds/[slug]`.
+- `/api/*` route handlers (see §1.4).
+
+`/codex/tech/[slug]`, `/dsa/[slug]`, `/case-study/[slug]` each use `generateStaticParams()` over their data module, so adding a data entry makes its page live at build with no extra wiring.
+
+### 1.1 Content data modules (in `lib/`)
+The "database" is committed JS. Each domain owns a file; a hub merges them.
+
+**Tech encyclopedia — 144 entries.** `lib/tech-content.js` defines `const BASE_CONTENT = { ... }` (the languages/foundational entries inline) and imports the area files from `lib/content/*.js` — `cs-core`, `systems-networks`, `craft-systemdesign`, `web-deep`, `backend-deep`, `ai-security-deep`, `mobile-devops-deep`, `cloud-dataeng-deep`, `foundations-deep`, `data-deep`, `web-platform-deep`, `systems-ops-deep`. It merges them into one map:
+```js
+export const TECH_CONTENT = {
+  ...BASE_CONTENT,
+  ...(typeof CS_CORE !== "undefined" ? CS_CORE : {}),
+  ...(typeof SYSTEMS_NETWORKS !== "undefined" ? SYSTEMS_NETWORKS : {}),
+  // …one spread per area file
+};
 ```
-software-universe/
-├── app/
-│   ├── globals.css                 # the Warm Farm design system (tokens + helpers)
-│   ├── layout.jsx                  # <html>, fonts, <SiteNav/>, footer
-│   ├── page.jsx                    # HOME (the campus)
-│   ├── codex/<topic>/page.jsx      # World 1 chapters
-│   └── simulator/<topic>/page.jsx  # World 2 interactives
-├── components/                     # shared (SiteNav, FlowMap, OrderJourney, …)
-├── docs/                           # THIS folder — read it first
-├── package.json                    # next/react/react-dom/framer-motion
-└── jsconfig.json                   # "@/*" import alias → project root
+The `typeof X !== "undefined"` guards exist because the build scripts (`check_content.js`, `build_dsa_index.js`) load these files through a `vm` sandbox that strips `import` lines — without the guards an unimported symbol would throw. Each entry is rendered by **`components/TechArticle.jsx`**.
+
+**Sidebar order & chapters.** `lib/curriculum.js` — `TECH_SECTIONS` (sidebar sections → ordered tech slugs, each with a `ready` flag) and `CODEX_PARTS` (the hand-written chapters). It derives `ALL_TECH` and `ALL_CODEX_CHAPTERS` and the `techHref()` / `codexHref()` helpers.
+
+**Learn Map — 17 domains.** `lib/domains.js` (`DOMAINS`, `DEPTH_LADDER`, `DOMAIN_LADDER`, `CURRICULUM_STATS`). Each domain lists topics with an `href` that must resolve to a real route.
+
+**Glossary — 153 terms.** `lib/glossary.js` exports `GLOSSARY`, an **object keyed by id**: `{ api: { term, def, more? }, … }`. Rendered inline via `components/Term.jsx`.
+
+**Guided paths — 6.** `lib/paths.js` exports `PATHS` — `[{ id, title, subtitle, steps: [{ href, title, note }] }]`. Every step `href` must resolve.
+
+**Roles.** `lib/content/roles.js` (`ROLES`).
+
+**DSA — 676 problems, 18 patterns.** `lib/dsa.js` holds `DSA_PATTERNS` (18; each `{ id, name, tint, idea, recognize[] }`) and an inline `BASE_PROBLEMS`, then imports `lib/dsa/wave1a … wave19c` (**57 files**) and merges each:
+```js
+import { WAVE1A } from "./dsa/wave1a";
+export const DSA_PROBLEMS = [
+  ...BASE_PROBLEMS,
+  ...(typeof WAVE1A !== "undefined" ? WAVE1A : []),
+  // …one spread per wave file
+];
 ```
-Routing convention: **Codex = `/codex/<slug>`**, **Simulator = `/simulator/<slug>`**. Use the slug from `05-SYLLABUS-AND-STATUS.md`.
+`DSA_STATS` reports `{ patterns, problems, target: 700 }`. Per-problem schema (see any wave file, e.g. `lib/dsa/wave1a.js`): `slug`, `title`, `difficulty`, `pattern` (must be a `DSA_PATTERNS` id), `leetcode` (number), `statement`, `examples[]`, `constraints[]`, `recognize`, `figureItOut[]`, `approaches[]{ name, intuition, time, timeWhy, space, spaceWhy, code, walkthrough[] }`, optional `related[]`.
 
-## Conventions
-- Interactive components (anything using framer-motion / state) need `"use client";` at the top. Page files can stay server components and import client components.
-- Import shared components via the alias: `import FlowMap from "@/components/FlowMap";`.
-- Use the design tokens (`var(--brand)`, `.card`, `.prose`, …) — never hardcode new colours.
-- Cite real Burger Farm files in `code` style (e.g. `apps/backend/src/routes/menu.routes.ts`). Read the real file in `~/Desktop/zone-trial` to get it right.
+`lib/dsa-index.json` is a **build artifact** — a lightweight `{ slug, title, difficulty, pattern }` list generated by `scripts/build_dsa_index.js` in prebuild, so ⌘K can include DSA without bundling the heavy problem content.
 
-## Recipe: add ONE new topic (do this for every domain)
-A topic = a Codex chapter **+** (where it makes sense) a Simulator interactive, cross-linked.
+**Case study — 11 chapters.** `lib/caseStudy.js` exports `CASE_STUDY = { meta, chapters[] }`. Each chapter: `{ slug, num, eyebrow, title, dek, sections[] }`, optionally `decisions[]{ id, title, what, why, alternatives, how }` and `edgeCases[]{ q, risk, answer }`. Section `body` blocks are strings (with `**bold**`/`` `code` ``) or `{list}`/`{steps}`/`{note,tone}`/`{fig,caption}`. Rendered by **`components/case-study/CaseStudyChapter.jsx`** (a small inline `**bold**`/`` `code` `` parser + block renderer).
 
-1. **Reverse-engineer first.** Read the relevant real code in `~/Desktop/zone-trial` so the chapter is grounded (real files, real flow). Don't write from generic knowledge.
-2. **Codex chapter** — create `app/codex/<slug>/page.jsx`, modelled on `app/codex/foundations/page.jsx`:
-   - `.wrap-narrow` + a category `.pill` ("World 1 · The Codex · Part NN") + Fraunces `<h1>` + `.prose` body.
-   - Walk the depth ladder (`02-PRODUCT-SPEC.md`); use the `Why` / `What breaks` / `Go deeper` callouts. **Always** answer what / why(+alternatives) / how / when-it-breaks.
-   - Embed a diagram (reuse `FlowMap`, or build a small topic-specific SVG/animated component).
-   - End with prev/next links.
-3. **Simulator interactive** — create `app/simulator/<slug>/page.jsx` + a `components/<Topic>Sim.jsx` client component, modelled on `OrderJourney.jsx`:
-   - Pick the right interactive pattern (flow / failure-toggle / slider / click-to-open — see `02-PRODUCT-SPEC.md`).
-   - It must let the learner *see and break* the thing, with narration explaining what's happening.
-4. **Wire it up** — add the topic to the home learning-path list (`app/page.jsx` `PARTS`), set its status, and cross-link the Codex chapter ↔ the Simulator.
-5. **Verify** — run `npm run dev -- -p 4000`, open the new routes, confirm they compile and look right (screenshot). Fix before moving on.
-6. **Update status** — tick it off in `05-SYLLABUS-AND-STATUS.md`.
+### 1.2 Render components
+- `components/TechArticle.jsx` — every `/codex/tech/[slug]` page.
+- `components/case-study/CaseStudyChapter.jsx` — every case-study chapter.
+- `components/Term.jsx` — inline glossary popovers; `components/CodexSidebar.jsx`, `OnThisPage.jsx`, `Callout.jsx`, `Aside.jsx` — chapter chrome.
+- **Simulators — 10 owned interactive components, no iframes.** Split between `components/sim/` (`ApiPlayground`, `BTreeSim`, `ComplexityChart` + `SortRace`, `LLMSim`, `RaftSim`) and `components/` top-level (`OrderJourney`, `CartDriftSim`, `LoyaltyLedgerSim`, `ScalingSim`, plus `FlowMap` for data-in-motion). Each `/simulator/<slug>/page.jsx` imports its component directly.
+- `components/SplitPaneViewer.jsx` is the **only** component using an `<iframe>`, and it is used **only** by `/codex/library/[slug]` (embedded source viewing).
+
+> Note the two read paths: **pages read the data modules directly** (`/codex/tech/[slug]` imports `TECH_CONTENT`; `/dsa/[slug]` imports `DSA_PROBLEMS`; `/case-study/[slug]` imports `CASE_STUDY`), while the **API routes go through the repository seam** (§1.3–1.4).
+
+### 1.3 The repository seam
+`lib/content/repository.js` is the single content data-access layer — the DB-swap seam. It imports `TECH_CONTENT`, the curriculum, `GLOSSARY`, `PATHS`, `DOMAINS`, and exposes `listEntries({category,q})`, `getEntry(slug)`, `listCategories()`, `getGlossary({q})`, `search(q,limit)`, `stats()`, etc. "Today it reads committed JS; tomorrow a database, and not a single caller changes."
+
+### 1.4 API route handlers (`app/api/*/route.js`)
+- `GET /api` — self-describing endpoint index.
+- `GET /api/content` (`?category=`, `?q=`) and `GET /api/content/:slug` — via the repository (`listEntries`, `getEntry`; 404 on miss).
+- `GET /api/glossary` (`?q=`) — `getGlossary`.
+- `GET /api/search` (`?q=`, `?limit=`) — repository `search`.
+- `GET /api/stats` — repository `stats`.
+- `GET /api/rag/query` and `GET /api/rag/search` — see RAG below.
+
+### 1.5 RAG (the "Professor")
+- `scripts/build_knowledge_index.js` builds the committed TF-IDF chunk index `lib/knowledge/search_index.json`.
+- `scripts/build_embeddings.js` reads that index and computes a MiniLM embedding per chunk (`Xenova/all-MiniLM-L6-v2` via `@huggingface/transformers`), writing int8-quantized vectors to `lib/knowledge/embeddings.json`.
+- At query time `lib/embeddings_search.js` ranks by semantic similarity, **honoring `DISABLE_EMBEDDINGS`** (skips the model, falls back to keyword). `lib/rag_search.js` is the TF-IDF keyword search.
+- `GET /api/rag/query` prefers embeddings and falls back to TF-IDF (deploy-safe — never 500s); with an `OPENROUTER_API_KEY`/OpenAI key it also synthesizes an answer, otherwise it returns grounded retrieval.
+- `lib/searchIndex.js` is the separate **⌘K nav index** (entries, tech, paths, sims, key pages, glossary, and DSA via `dsa-index.json`) — navigation, not grounded retrieval.
+
+### 1.6 Integrity checker (the prebuild gate)
+`scripts/check_content.js` runs first in prebuild and **exits non-zero on errors** (errors fail the build; orphans are warnings). It validates: every `related[]`/`prereqs[]` slug exists (as a tech entry **or** a Codex chapter); every `ready` sidebar item has content; orphan entries (have content but unlisted) → warning; every domain topic + path step `href` resolves to a real route; glossary terms have `term`/`def`; DSA problems have `slug`/`pattern`/`statement`, no duplicate slug, and a `pattern` that is a known `DSA_PATTERNS` id (DSA `related[]` misses → warning). It prints the live counts, e.g. `{"entries":144,"terms":153,"chapters":11,"paths":6,"domains":17,"simulators":10}`.
+
+### 1.7 Build pipeline
+`package.json` scripts:
+- `dev` → `next dev`
+- `check` → `node scripts/check_content.js`
+- `prebuild` → `check_content.js && (build_dsa_index.js || true) && (build_knowledge_index.js || true) && (build_embeddings.js || true)`
+- `build` → `next build`
+- `start` → `next start`
+
+The integrity gate is hard (no `|| true`); the index/embedding builds are best-effort so a missing model never blocks a build.
+
+---
+
+## 2. How to add X
+
+> Always run `npm run check` after any change — it's the same gate the build uses. Add the entry to the right sidebar/curriculum list or the checker will warn it's orphaned (and error if a sidebar item is marked `ready` with no content).
+
+### 2.1 A tech entry (`/codex/tech/<slug>`)
+1. Pick the area file in `lib/content/` (e.g. `web-deep.js`). Add a keyed entry to its exported object: `myslug: { slug:"myslug", title, category, color, tagline, oneLiner, what[], why[], alternatives[], how[]/howWeUse, breaks, scale, related[], … }` — match the shape of a neighboring entry (`TechArticle.jsx` renders these fields).
+2. Confirm the area file's symbol is already imported + spread in `lib/tech-content.js`. New file? Add `import { X } from "./content/x"` and a guarded `...(typeof X !== "undefined" ? X : {})` spread.
+3. List the slug in `lib/curriculum.js` `TECH_SECTIONS` (under the right section, `ready: true`) so it appears in the sidebar and isn't an orphan. Optionally add it to a Learn Map domain in `lib/domains.js`.
+4. Keep `related[]` pointing only at existing tech slugs or Codex chapters.
+5. `npm run check`. The page is live at `/codex/tech/myslug` via `generateStaticParams`.
+
+### 2.2 A glossary term
+1. Add a keyed entry to `GLOSSARY` in `lib/glossary.js`: `myterm: { term: "My Term", def: "1–2 plain sentences.", more: "optional second layer" }`.
+2. Use it inline anywhere: `<Term id="myterm">My Term</Term>`.
+3. `npm run check` (errors if `term` or `def` is missing).
+
+### 2.3 A guided path (`/paths/<id>`)
+1. Append to `PATHS` in `lib/paths.js`: `{ id:"my-path", title, subtitle, steps: [{ href:"/codex/tech/http-rest", title, note }, …] }`.
+2. Every step `href` must resolve to a real route (the checker validates this).
+3. `npm run check`. Live at `/paths/my-path`.
+
+### 2.4 A DSA problem
+1. Create a new wave file `lib/dsa/<name>.js` exporting an array, e.g. `export const WAVE20A = [ { … } ]` — or append to an existing wave's array.
+2. The problem object must include `slug`, `title`, `difficulty`, `pattern`, `leetcode` (number), `statement`, plus the teaching fields (`recognize`, `figureItOut[]`, `approaches[]`, `examples[]`, `constraints[]`); optional `related[]`. Copy the shape from `lib/dsa/wave1a.js`.
+   - **`slug` must be unique** across all problems (checker errors on duplicates).
+   - **`leetcode` number should be unique** too (keep one problem per LeetCode id).
+   - **`pattern` must be one of the 18 `DSA_PATTERNS` ids** (e.g. `arrays-hashing`, `two-pointers`) — the checker errors on an unknown pattern.
+3. Wire the new file into `lib/dsa.js`: add `import { WAVE20A } from "./dsa/wave20a";` and a guarded spread `...(typeof WAVE20A !== "undefined" ? WAVE20A : [])` inside `DSA_PROBLEMS`.
+4. `npm run check`, then rebuild the index (`node scripts/build_dsa_index.js`, or just `npm run build` which does it in prebuild) so ⌘K and `/dsa/<slug>` pick it up.
+
+### 2.5 A case-study chapter (`/case-study/<slug>`)
+1. Append a chapter object to `CASE_STUDY.chapters` in `lib/caseStudy.js`: `{ slug, num, eyebrow, title, dek, sections: [{ heading, body: [ "…**bold** `code`…", { list:[…] }, { steps:[…] }, { note:"…", tone:"info|warn|good" }, { fig:"…", caption:"…" } ] }] }`. Optionally add `decisions[]{ id, title, what, why, alternatives, how }` and `edgeCases[]{ q, risk, answer }`.
+2. Keep `num` sequential and `slug` unique (prev/next nav and `generateStaticParams` key off the array).
+3. `npm run check`. Live at `/case-study/<slug>`.
+
+---
+
+## 3. Build / verify / deploy
+1. **`npm run check`** — runs the integrity gate; fix every error (and ideally orphan warnings).
+2. **`npm run build`** — prebuild re-runs the gate, builds the DSA index, the knowledge/TF-IDF index, and the embeddings, then `next build`. **The build is the source of truth** — there is no preview server; if it builds clean, the content graph is consistent.
+3. **Deploy** via `render.yaml` (Render, Node web service: `npm install && npm run build` / `npm start`). On the free tier `DISABLE_EMBEDDINGS=1` is set (keyword RAG, ~512 MB); for semantic search use a 1 GB+ instance and remove that var. `OPENROUTER_API_KEY` (optional) enables AI-synthesized answers. Vercel does not fit — the `onnxruntime` dependency (~210 MB) for embeddings exceeds its limits; use a Node host.
+
+---
 
 ## Patterns worth reusing
-- The **animated pipeline + failure toggle + click-to-open detail** in `OrderJourney.jsx` is the template for most "watch a process, then break it" interactives.
-- The **looping flow-packet** in `FlowMap.jsx` is the template for "show data moving between parts".
-- Later, shared infra to add (see roadmap): a `Callout` component, a `KnowledgeGraph` (React Flow), Mermaid sequence diagrams, a `react-three-fiber` 3D journey, and progress tracking (localStorage).
+- **`OrderJourney.jsx`** — animated pipeline + failure toggle + click-to-open detail. The template for "watch a process, then break it" sims.
+- **`FlowMap.jsx`** — looping flow-packet; the template for "show data moving between parts".
+- **`TechArticle.jsx`** — the depth-ladder layout (what / why+alternatives / how / when-it-breaks / scale). Author tech entries to fill its fields rather than building bespoke layouts.
