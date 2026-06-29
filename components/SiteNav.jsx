@@ -10,6 +10,7 @@ const NAV = [
   { label: "Curriculum", href: "/learn", match: (p) => p.startsWith("/learn") },
   { label: "Codex", href: "/codex", match: (p) => p.startsWith("/codex") },
   { label: "Simulator", href: "/simulator", match: (p) => p.startsWith("/simulator") },
+  { label: "Case study", href: "/case-study", match: (p) => p.startsWith("/case-study") },
 ];
 
 export default function SiteNav() {
