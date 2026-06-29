@@ -18,7 +18,7 @@ export default function DsaLab() {
           Solve by pattern, not by memory.
         </h1>
         <p style={{ fontSize: 18, lineHeight: 1.6, color: "var(--ink-2)", maxWidth: 660, margin: 0 }}>
-          The trap is memorising 250 problems. The skill is seeing that a new problem is really one of ~18 shapes you
+          The trap is memorising hundreds of problems. The skill is seeing that a new problem is really one of ~18 shapes you
           already know — and being able to <em>derive</em> the optimal from scratch. Every problem here teaches the
           thinking (not just the answer), brute-force → optimal, worked in <strong style={{ color: "var(--ink)" }}>Java</strong>.
         </p>
