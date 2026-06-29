@@ -62,7 +62,7 @@ export default function VisualgoPage() {
         </ul>
         <p style={{ fontFamily: "var(--font-mono)", fontSize: 11, letterSpacing: ".06em", color: "var(--ink-3)", marginTop: 20 }}>
           Read the full entry:{" "}
-          <Link href="/codex/tech/sql" style={{ color: "var(--primary)", borderBottom: "1px solid var(--primary)" }}>SQL &amp; indexes</Link>. Stuck? Press ⌘/Ctrl K.
+          <Link href="/codex/tech/database-indexes" style={{ color: "var(--primary)", borderBottom: "1px solid var(--primary)" }}>Database indexes</Link>. Stuck? Press ⌘/Ctrl K.
         </p>
       </div>
     </div>
