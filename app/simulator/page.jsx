@@ -9,6 +9,12 @@ const SIMS = [
     tag: "Flagship",
   },
   {
+    href: "/simulator/api-playground",
+    title: "Ask the internet a question",
+    desc: "Send a real HTTP request to a live public API — crypto prices, the weather, the Space Station's position — and watch the actual JSON answer come back. No keys, real data.",
+    tag: "Live data",
+  },
+  {
     href: "/simulator/cart-drift",
     title: "The cart that disagrees with itself",
     desc: "The most common bug in app development, live. Toggle “everyone keeps a copy” vs “one source of truth” and watch three parts of the screen drift apart — or stay locked together.",
